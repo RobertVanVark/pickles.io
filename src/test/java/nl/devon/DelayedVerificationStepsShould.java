@@ -11,9 +11,11 @@ import org.reflections.util.FilterBuilder;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.concurrent.Delayed;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class DelayedVerificationStepsShould {
@@ -41,7 +43,8 @@ public class DelayedVerificationStepsShould {
         DelayedVerificationSteps steps = new DelayedVerificationSteps();
         steps.initiateDelayedVerification("","");
 
-        assertThat(steps.getDelayedVerification(), is("1"));
+        DelayedVerification verification = steps.getDelayedVerification();
+        assertThat(verification, notNullValue());
     }
 
     @Test
@@ -49,10 +52,10 @@ public class DelayedVerificationStepsShould {
         DelayedVerificationSteps steps = new DelayedVerificationSteps();
 
         steps.initiateDelayedVerification("","");
-        String first = steps.getDelayedVerification();
+        DelayedVerification first = steps.getDelayedVerification();
 
         steps.initiateDelayedVerification("","");
-        String second = steps.getDelayedVerification();
+        DelayedVerification second = steps.getDelayedVerification();
 
         assertThat(first, not(second));
     }
