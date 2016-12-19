@@ -17,8 +17,8 @@ public class DelayedVerificationSteps {
         delayedVerification++;
     }
 
-    @Given("^Test Execution Context is loaded with dv-id=(\\d+)$")
-    public void testExecutionContextIsLoadedWithDvId(Integer dvId)  {
+    @Given("^Test Execution Context is loaded with dv-id=(.+)$")
+    public void testExecutionContextIsLoadedWithDvId(String dvId)  {
         System.out.println("Load Test Execution Context with id=" + dvId);
     }
 
