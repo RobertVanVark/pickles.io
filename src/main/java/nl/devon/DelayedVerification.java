@@ -13,12 +13,12 @@ public class DelayedVerification {
     private String id;
 
     public DelayedVerification(DateTime verifyAt, String scenarioChecksum) {
-        this(verifyAt,scenarioChecksum, UUID.randomUUID().toString());
+        this(DateTime.now(),verifyAt,scenarioChecksum, UUID.randomUUID().toString());
     }
 
-    public DelayedVerification(DateTime verifyAt, String scenarioChecksum, String id) {
+    public DelayedVerification(DateTime createdAt, DateTime verifyAt, String scenarioChecksum, String id) {
         this.scenarioChecksum = scenarioChecksum;
-        createdAt = DateTime.now();
+        this.createdAt = createdAt;
         this.verifyAt = verifyAt;
         this.id = id;
     }
