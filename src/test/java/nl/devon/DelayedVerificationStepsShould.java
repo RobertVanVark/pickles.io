@@ -1,7 +1,18 @@
 package nl.devon;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.lang.reflect.Method;
+import java.util.Set;
+
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -9,82 +20,90 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.concurrent.Delayed;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 
 public class DelayedVerificationStepsShould {
 
-    /*
-       **** Step created Delayed Verificaton
-       *
-       **** create unique Delayed Verifications
-       *
-       **** match Then after
-       *
-       * Step can be used in consumer application
-       *
-       * match Then after 2:00 hr .*
-       *
-       * call TestExecutionContext to persist itself
-       *
-       * call all TestExecutionContexts
-       *
-       *
-     */
+	/*
+	 *
+	 * match Then after 2:00 hr .*
+	 *
+	 * call TestExecutionContext to persist itself
+	 *
+	 * call all TestExecutionContexts
+	 *
+	 */
 
-    @Test
-    public void createDelayedVerification() {
-        DelayedVerificationSteps steps = new DelayedVerificationSteps();
-        steps.initiateDelayedVerification("","");
+	DelayedVerificationStorage storage;
 
-        DelayedVerification verification = steps.getDelayedVerification();
-        assertThat(verification, notNullValue());
-    }
+	@Test
+	public void createDelayedVerification() {
+		DelayedVerificationSteps steps = givenStepsStoring(1);
 
-    @Test
-    public void createUniqueDelayedVerifications() {
-        DelayedVerificationSteps steps = new DelayedVerificationSteps();
+		steps.initiateDelayedVerification("step expression", "checksum");
 
-        steps.initiateDelayedVerification("","");
-        DelayedVerification first = steps.getDelayedVerification();
+		DelayedVerification verification = steps.getDelayedVerification();
+		assertThat(verification, notNullValue());
+		assertThat(verification.getScenarioChecksum(), is("checksum"));
+	}
 
-        steps.initiateDelayedVerification("","");
-        DelayedVerification second = steps.getDelayedVerification();
+	@Test
+	public void createUniqueDelayedVerifications() {
+		DelayedVerificationSteps steps = givenStepsStoring(2);
 
-        assertThat(first, not(second));
-    }
+		steps.initiateDelayedVerification("", "");
+		DelayedVerification first = steps.getDelayedVerification();
 
-    @Test
-    public void matchThenAfterExpression() {
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
-                .setUrls(ClasspathHelper.forPackage("nl.devon"))
-                .setScanners(new MethodAnnotationsScanner()));
+		steps.initiateDelayedVerification("", "");
+		DelayedVerification second = steps.getDelayedVerification();
 
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(Then.class);
-        Object[] result = methods.stream().filter(m -> m.getAnnotation(Then.class).value().equals("^after (.*) \\(dv-checksum=(.+)\\)$")).toArray();
+		assertThat(first, not(second));
+	}
 
-        assertThat(result.length, is(1));
-    }
+	@Test
+	public void storeDelayedVerification() {
+		DelayedVerificationSteps steps = givenStepsStoring(1);
 
-    @Test
-    public void matchGivenAfterExpression() {
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
-                .setUrls(ClasspathHelper.forPackage("nl.devon"))
-                .setScanners(new MethodAnnotationsScanner()));
+		steps.initiateDelayedVerification("", "");
 
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(Given.class);
-        Object[] result = methods.stream().filter(m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded with dv-id=(.+)$")).toArray();
+		verify(storage);
+	}
 
-        assertThat(result.length, is(1));
-    }
+	@Test
+	public void matchThenAfterExpression() {
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
+						.setUrls(ClasspathHelper.forPackage("nl.devon")).setScanners(new MethodAnnotationsScanner()));
 
+		Set<Method> methods = reflections.getMethodsAnnotatedWith(Then.class);
+		Object[] result = methods.stream()
+				.filter(m -> m.getAnnotation(Then.class).value().equals("^after (.*) \\(dv-checksum=(.+)\\)$"))
+				.toArray();
+
+		assertThat(result.length, is(1));
+	}
+
+	@Test
+	public void matchGivenAfterExpression() {
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
+						.setUrls(ClasspathHelper.forPackage("nl.devon")).setScanners(new MethodAnnotationsScanner()));
+
+		Set<Method> methods = reflections.getMethodsAnnotatedWith(Given.class);
+		Object[] result = methods.stream().filter(
+				m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded with dv-id=(.+)$"))
+				.toArray();
+
+		assertThat(result.length, is(1));
+	}
+
+	private DelayedVerificationSteps givenStepsStoring(int nrDvStored) {
+		storage = mock(DelayedVerificationStorage.class);
+		expect(storage.store(anyObject(DelayedVerification.class))).andReturn(true).times(nrDvStored);
+		replay(storage);
+
+		return new DelayedVerificationSteps(storage);
+	}
 
 }
