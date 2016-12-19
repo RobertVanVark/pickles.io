@@ -3,16 +3,24 @@ package nl.devon;
 
 import org.joda.time.DateTime;
 
+import java.util.UUID;
+
 public class DelayedVerification {
 
     private final DateTime createdAt;
     private final DateTime verifyAt;
     private final String scenarioChecksum;
+    private String id;
 
     public DelayedVerification(DateTime verifyAt, String scenarioChecksum) {
+        this(verifyAt,scenarioChecksum, UUID.randomUUID().toString());
+    }
+
+    public DelayedVerification(DateTime verifyAt, String scenarioChecksum, String id) {
         this.scenarioChecksum = scenarioChecksum;
         createdAt = DateTime.now();
         this.verifyAt = verifyAt;
+        this.id = id;
     }
 
     public DateTime getCreatedAt() {
@@ -25,5 +33,9 @@ public class DelayedVerification {
 
     public String getScenarioChecksum() {
         return scenarioChecksum;
+    }
+
+    public String getId() {
+        return id;
     }
 }
