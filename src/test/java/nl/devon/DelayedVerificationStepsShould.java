@@ -1,5 +1,6 @@
 package nl.devon;
 
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import org.junit.Test;
 import org.reflections.Reflections;
@@ -38,7 +39,7 @@ public class DelayedVerificationStepsShould {
     @Test
     public void createDelayedVerification() {
         DelayedVerificationSteps steps = new DelayedVerificationSteps();
-        executeinitiateDelayedVerificationStep(steps);
+        steps.initiateDelayedVerification("","");
 
         assertThat(steps.getDelayedVerification(), is("1"));
     }
@@ -47,17 +48,13 @@ public class DelayedVerificationStepsShould {
     public void createUniqueDelayedVerifications() {
         DelayedVerificationSteps steps = new DelayedVerificationSteps();
 
-        executeinitiateDelayedVerificationStep(steps);
+        steps.initiateDelayedVerification("","");
         String first = steps.getDelayedVerification();
 
-        executeinitiateDelayedVerificationStep(steps);
+        steps.initiateDelayedVerification("","");
         String second = steps.getDelayedVerification();
 
         assertThat(first, not(second));
-    }
-
-    private void executeinitiateDelayedVerificationStep(DelayedVerificationSteps steps) {
-        steps.initiateDelayedVerification("","");
     }
 
     @Test
@@ -69,6 +66,19 @@ public class DelayedVerificationStepsShould {
 
         Set<Method> methods = reflections.getMethodsAnnotatedWith(Then.class);
         Object[] result = methods.stream().filter(m -> m.getAnnotation(Then.class).value().equals("^after (.*) \\(dv-checksum=(.+)\\)$")).toArray();
+
+        assertThat(result.length, is(1));
+    }
+
+    @Test
+    public void matchGivenAfterExpression() {
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
+                .setUrls(ClasspathHelper.forPackage("nl.devon"))
+                .setScanners(new MethodAnnotationsScanner()));
+
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(Given.class);
+        Object[] result = methods.stream().filter(m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded with dv-id=(.+)$")).toArray();
 
         assertThat(result.length, is(1));
     }
