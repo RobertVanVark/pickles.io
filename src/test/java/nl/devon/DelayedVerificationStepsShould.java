@@ -1,10 +1,6 @@
 package nl.devon;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -13,6 +9,7 @@ import static org.junit.Assert.assertThat;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -35,11 +32,11 @@ public class DelayedVerificationStepsShould {
 	 *
 	 */
 
-	DelayedVerificationStorage storage;
+	DelayedVerificationStore storage;
 
 	@Test
 	public void createDelayedVerification() {
-		DelayedVerificationSteps steps = givenStepsStoring(1);
+		DelayedVerificationSteps steps = stepsWithMockStoringTimes(1);
 
 		steps.initiateDelayedVerification("step expression", "checksum");
 
@@ -50,7 +47,7 @@ public class DelayedVerificationStepsShould {
 
 	@Test
 	public void createUniqueDelayedVerifications() {
-		DelayedVerificationSteps steps = givenStepsStoring(2);
+		DelayedVerificationSteps steps = stepsWithMockStoringTimes(2);
 
 		steps.initiateDelayedVerification("", "");
 		DelayedVerification first = steps.getDelayedVerification();
@@ -63,7 +60,7 @@ public class DelayedVerificationStepsShould {
 
 	@Test
 	public void storeDelayedVerification() {
-		DelayedVerificationSteps steps = givenStepsStoring(1);
+		DelayedVerificationSteps steps = stepsWithMockStoringTimes(1);
 
 		steps.initiateDelayedVerification("", "");
 
@@ -98,9 +95,27 @@ public class DelayedVerificationStepsShould {
 		assertThat(result.length, is(1));
 	}
 
-	private DelayedVerificationSteps givenStepsStoring(int nrDvStored) {
-		storage = mock(DelayedVerificationStorage.class);
-		expect(storage.store(anyObject(DelayedVerification.class))).andReturn(true).times(nrDvStored);
+	@Test
+	public void loadDelayedVerification() {
+		DelayedVerificationSteps steps = stepsWithMockLoad("an-id");
+
+		steps.testExecutionContextIsLoadedWithDvId("an-id");
+		verify(storage);
+	}
+
+	private DelayedVerificationSteps stepsWithMockLoad(String dvId) {
+		storage = mock(DelayedVerificationStore.class);
+		DelayedVerification verification = new DelayedVerification(DateTime.now(),DateTime.now(),"",dvId);
+		expect(storage.load(dvId)).andReturn(verification);
+		replay(storage);
+
+		return new DelayedVerificationSteps(storage);
+	}
+
+	private DelayedVerificationSteps stepsWithMockStoringTimes(int nrDvStored) {
+		storage = mock(DelayedVerificationStore.class);
+		storage.save(anyObject(DelayedVerification.class));
+		expectLastCall().times(nrDvStored);
 		replay(storage);
 
 		return new DelayedVerificationSteps(storage);
