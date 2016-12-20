@@ -2,7 +2,7 @@ package nl.devon;
 
 public interface DelayedVerificationStore {
 
-	void save(DelayedVerification verification);
+    void save(DelayedVerification verification);
 
-	DelayedVerification load(String dvId);
+    DelayedVerification load(String dvId);
 }
