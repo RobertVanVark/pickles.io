@@ -106,24 +106,12 @@ public class DelayedVerificationStepsShould {
     }
 
     @Test
-    public void instantiateDelayedVerificationStore() {
+    public void instantiateDelayedVerificationStore() throws InstantiationException, IllegalAccessException {
         StubDelayedVerificationStore.resetNrTimesCreated();
 
         DelayedVerificationSteps steps = new DelayedVerificationSteps();
 
         assertThat(StubDelayedVerificationStore.getNrTimesCreated(),is(1));
-    }
-
-    @Ignore
-    @Test
-    public void executeDVLoadHook() {
-        String dvId = "an-id";
-        StubDVLoadHook.reset();
-        DelayedVerificationSteps steps = stepsWithMockLoad(dvId);
-
-        steps.testExecutionContextIsLoadedWithDvId(dvId);
-
-        assertThat(StubDVLoadHook.getNrTimesCalled(), is(1));
     }
 
     private DelayedVerificationSteps stepsWithMockLoad(String dvId) {

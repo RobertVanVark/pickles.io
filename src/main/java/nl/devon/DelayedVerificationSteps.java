@@ -14,28 +14,23 @@ public class DelayedVerificationSteps {
     private DelayedVerification verification;
     private DelayedVerificationStore storage;
 
-    public DelayedVerificationSteps() {
+    public DelayedVerificationSteps() throws IllegalAccessException, InstantiationException {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setUrls(ClasspathHelper.forJavaClassPath()));
 
         Set<Class<?>> stores = reflections.getTypesAnnotatedWith(DVStore.class);
         if (stores.size() == 1) {
             for (Class<?> store : stores) {
-                try {
-                    Object obj = store.newInstance();
-                    if (obj instanceof DelayedVerificationStore) {
-                        storage = (DelayedVerificationStore) obj;
-                    }
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                Object obj = null;
+                obj = store.newInstance();
+                if (obj instanceof DelayedVerificationStore) {
+                    storage = (DelayedVerificationStore) obj;
                 }
             }
         }
     }
 
-    public DelayedVerificationSteps(DelayedVerificationStore store) {
+    DelayedVerificationSteps(DelayedVerificationStore store) {
         storage = store;
     }
 
@@ -48,23 +43,6 @@ public class DelayedVerificationSteps {
     @Given("^Test Execution Context is loaded with dv-id=(.+)$")
     public void testExecutionContextIsLoadedWithDvId(String dvId) {
         storage.load(dvId);
-        System.out.println("Load Test Execution Context with id=" + dvId);
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forJavaClassPath()));
-
-//        Set<Class<?>> callbacks = reflections.getTypesAnnotatedWith(Loaded.class);
-//        for (Class<?> callback : callbacks) {
-//            try {
-//                Object obj = callback.newInstance();
-//                if (obj instanceof DelayedVerificationStore) {
-//                    storage = (DelayedVerificationStore) obj;
-//                }
-//            } catch (InstantiationException e) {
-//                e.printStackTrace();
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     public DelayedVerification getDelayedVerification() {
