@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -36,7 +37,7 @@ public class DelayedVerificationStepsShould {
 
     @Test
     public void createDelayedVerification() {
-        DelayedVerificationSteps steps = stepsWithMockStoringTimes();
+        DelayedVerificationSteps steps = stepsWithMockStoring();
 
         steps.initiateDelayedVerification("step expression", "checksum");
 
@@ -47,7 +48,7 @@ public class DelayedVerificationStepsShould {
 
     @Test
     public void createUniqueDelayedVerifications() {
-        DelayedVerificationSteps steps = stepsWithMockStoringTimes();
+        DelayedVerificationSteps steps = stepsWithMockStoring();
 
         steps.initiateDelayedVerification("", "");
         DelayedVerification first = steps.getDelayedVerification();
@@ -60,7 +61,7 @@ public class DelayedVerificationStepsShould {
 
     @Test
     public void storeDelayedVerification() {
-        DelayedVerificationSteps steps = stepsWithMockStoringTimes();
+        DelayedVerificationSteps steps = stepsWithMockStoring();
 
         steps.initiateDelayedVerification("", "");
 
@@ -104,6 +105,18 @@ public class DelayedVerificationStepsShould {
         verify(storage).load(dvId);
     }
 
+    @Ignore
+    @Test
+    public void executeDVLoadHook() {
+        String dvId = "an-id";
+        StubDVLoadHook.reset();
+        DelayedVerificationSteps steps = stepsWithMockLoad(dvId);
+
+        steps.testExecutionContextIsLoadedWithDvId(dvId);
+
+        assertThat(StubDVLoadHook.getNrTimesCalled(), is(1));
+    }
+
     private DelayedVerificationSteps stepsWithMockLoad(String dvId) {
         storage = mock(DelayedVerificationStore.class);
         DelayedVerification verification = new DelayedVerification(DateTime.now(), DateTime.now(), "", dvId);
@@ -112,7 +125,7 @@ public class DelayedVerificationStepsShould {
         return new DelayedVerificationSteps(storage);
     }
 
-    private DelayedVerificationSteps stepsWithMockStoringTimes() {
+    private DelayedVerificationSteps stepsWithMockStoring() {
         storage = mock(DelayedVerificationStore.class);
 
         return new DelayedVerificationSteps(storage);

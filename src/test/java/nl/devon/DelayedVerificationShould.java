@@ -13,11 +13,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class DelayedVerificationShould {
 
-    /*
-    * have a unique id
-    *
-     */
-
     @Test
     public void haveCreationTime() {
         DelayedVerification verification = newDelayedVerification(DateTime.now(), "");
