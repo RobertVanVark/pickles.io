@@ -105,6 +105,15 @@ public class DelayedVerificationStepsShould {
         verify(storage).load(dvId);
     }
 
+    @Test
+    public void instantiateDelayedVerificationStore() {
+        StubDelayedVerificationStore.resetNrTimesCreated();
+
+        DelayedVerificationSteps steps = new DelayedVerificationSteps();
+
+        assertThat(StubDelayedVerificationStore.getNrTimesCreated(),is(1));
+    }
+
     @Ignore
     @Test
     public void executeDVLoadHook() {
