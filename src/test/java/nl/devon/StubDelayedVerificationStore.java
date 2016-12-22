@@ -3,7 +3,6 @@ package nl.devon;
 /**
  * Created by harm on 20-12-2016.
  */
-@DVStore
 public class StubDelayedVerificationStore implements DelayedVerificationStore {
 
     private static int nrTimesCreated;

@@ -37,8 +37,9 @@ public class DelayedVerificationStepsShould {
 	 */
 
 	DelayedVerificationStore storage;
+    private TestExecutionContext context;
 
-	@Test
+    @Test
 	public void createDelayedVerification() {
 		DelayedVerificationSteps steps = stepsWithMockStoring();
 
@@ -70,6 +71,14 @@ public class DelayedVerificationStepsShould {
 
 		verify(storage, times(1)).save(any(DelayedVerification.class));
 	}
+
+    @Test
+    public void saveTestExecutionContext() {
+        DelayedVerificationSteps steps = stepsWithMockStoringAndContext();
+        steps.initiateDelayedVerification("", "checksum");
+
+        verify(context).save(any(DelayedVerification.class));
+    }
 
 	@Test
 	public void matchThenAfterExpression() {
@@ -108,17 +117,24 @@ public class DelayedVerificationStepsShould {
 		verify(storage).load(dvId);
 	}
 
-	// @Test
-	// public void instantiateDelayedVerificationStore() throws
-	// InstantiationException, IllegalAccessException {
-	// StubDelayedVerificationStore.resetNrTimesCreated();
-	//
-	// DelayedVerificationSteps steps = new DelayedVerificationSteps();
-	//
-	// assertThat(StubDelayedVerificationStore.getNrTimesCreated(), is(1));
-	// }
-	//
-	private DelayedVerificationSteps stepsWithMockLoad(String dvId) {
+	@Test
+    public void loadTestExecutionContext() {
+        String dvId = "an-id";
+        DelayedVerificationSteps steps = stepsWithMockLoadAndContext(dvId);
+
+        steps.testExecutionContextIsLoadedWithDvId(dvId);
+
+        verify(context).load(any(DelayedVerification.class));
+    }
+
+    private DelayedVerificationSteps stepsWithMockLoadAndContext(String dvId) {
+        DelayedVerificationSteps steps = stepsWithMockLoad(dvId);
+        context = mock(TestExecutionContext.class);
+        steps.setContext(context);
+        return steps;
+    }
+
+    private DelayedVerificationSteps stepsWithMockLoad(String dvId) {
 		storage = mock(DelayedVerificationStore.class);
 		DelayedVerification verification = new DelayedVerification(DateTime.now(), DateTime.now(), "", dvId);
 		when(storage.load(dvId)).thenReturn(verification);
@@ -135,5 +151,12 @@ public class DelayedVerificationStepsShould {
 		steps.setDelayedVerificationStore(storage);
 		return steps;
 	}
+
+    private DelayedVerificationSteps stepsWithMockStoringAndContext() {
+        context = mock(TestExecutionContext.class);
+        DelayedVerificationSteps steps = stepsWithMockStoring();
+        steps.setContext(context);
+        return steps;
+    }
 
 }
