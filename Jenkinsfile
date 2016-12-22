@@ -1,3 +1,4 @@
+#!groovy
 stage('Build') {
 node {
   checkout scm
