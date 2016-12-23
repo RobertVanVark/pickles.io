@@ -4,16 +4,12 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -32,61 +28,29 @@ public class DelayedVerificationStepsShould {
 	 *
 	 * call TestExecutionContext to persist itself
 	 *
-	 * call all TestExecutionContexts
-	 *
 	 */
 
-	DelayedVerificationStore storage;
-    private TestExecutionContext context;
+	private DelayedVerificationSteps steps;
+	private TestExecutionContext executionContext;
+	private StubTestData testData;
+	private StubDelayedVerificationStore verificationStore;
 
-    @Test
-	public void createDelayedVerification() {
-		DelayedVerificationSteps steps = stepsWithMockStoring();
+	@Before
+	public void givenStepsWithExecutionContextAndTestData() {
+		verificationStore = new StubDelayedVerificationStore();
+		steps = new DelayedVerificationSteps(verificationStore);
 
-		steps.initiateDelayedVerification("step expression", "checksum");
+		executionContext = new StubExecutionContext();
+		steps.setTestExecutionContext(executionContext);
 
-		DelayedVerification verification = steps.getDelayedVerification();
-		assertThat(verification, notNullValue());
-		assertThat(verification.getScenarioChecksum(), is("checksum"));
+		testData = new StubTestData();
+		steps.setPersistableTestData(testData);
+
 	}
-
-	@Test
-	public void createUniqueDelayedVerifications() {
-		DelayedVerificationSteps steps = stepsWithMockStoring();
-
-		steps.initiateDelayedVerification("", "");
-		DelayedVerification first = steps.getDelayedVerification();
-
-		steps.initiateDelayedVerification("", "");
-		DelayedVerification second = steps.getDelayedVerification();
-
-		assertThat(first, not(second));
-	}
-
-	@Test
-	public void storeDelayedVerification() {
-		DelayedVerificationSteps steps = stepsWithMockStoring();
-
-		steps.initiateDelayedVerification("", "");
-
-		verify(storage, times(1)).save(any(DelayedVerification.class));
-	}
-
-    @Test
-    public void saveTestExecutionContext() {
-        DelayedVerificationSteps steps = stepsWithMockStoringAndContext();
-        steps.initiateDelayedVerification("", "checksum");
-
-        verify(context).save(any(DelayedVerification.class));
-    }
 
 	@Test
 	public void matchThenAfterExpression() {
-		Reflections reflections = new Reflections(
-				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
-						.setUrls(ClasspathHelper.forPackage("nl.devon")).setScanners(new MethodAnnotationsScanner()));
-
-		Set<Method> methods = reflections.getMethodsAnnotatedWith(Then.class);
+		Set<Method> methods = reflections().getMethodsAnnotatedWith(Then.class);
 		Object[] result = methods.stream()
 				.filter(m -> m.getAnnotation(Then.class).value().equals("^after (.*) \\(dv-checksum=(.+)\\)$"))
 				.toArray();
@@ -95,12 +59,40 @@ public class DelayedVerificationStepsShould {
 	}
 
 	@Test
-	public void matchGivenAfterExpression() {
-		Reflections reflections = new Reflections(
-				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
-						.setUrls(ClasspathHelper.forPackage("nl.devon")).setScanners(new MethodAnnotationsScanner()));
+	public void createDelayedVerificationInThenAfter() {
+		steps.initiateDelayedVerification("step expression", "checksum");
 
-		Set<Method> methods = reflections.getMethodsAnnotatedWith(Given.class);
+		DelayedVerification verification = executionContext.get();
+		assertThat(verification, notNullValue());
+		assertThat(verification.getScenarioChecksum(), is("checksum"));
+	}
+
+	@Test
+	public void createUniqueDelayedVerificationsInThenAfter() {
+		steps.initiateDelayedVerification("", "");
+		DelayedVerification first = executionContext.get();
+
+		steps.initiateDelayedVerification("", "");
+		DelayedVerification second = executionContext.get();
+
+		assertThat(first, not(second));
+	}
+
+	@Test
+	public void saveDelayedVerificationInThenAfter() {
+		steps.initiateDelayedVerification("", "checksum");
+		assertThat(verificationStore.getNrSavesCalled(), is(1));
+	}
+
+	@Test
+	public void saveTestDataInThenAfter() {
+		steps.initiateDelayedVerification("", "checksum");
+		assertThat(testData.getNrSavesCalled(), is(1));
+	}
+
+	@Test
+	public void matchGivenExpression() {
+		Set<Method> methods = reflections().getMethodsAnnotatedWith(Given.class);
 		Object[] result = methods.stream().filter(
 				m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded with dv-id=(.+)$"))
 				.toArray();
@@ -109,54 +101,96 @@ public class DelayedVerificationStepsShould {
 	}
 
 	@Test
-	public void loadDelayedVerification() {
-		String dvId = "an-id";
-		DelayedVerificationSteps steps = stepsWithMockLoad(dvId);
-
+	public void loadDelayedVerificationInGiven() {
+		String dvId = "loadId";
 		steps.testExecutionContextIsLoadedWithDvId(dvId);
-		verify(storage).load(dvId);
+
+		assertThat(verificationStore.getNrLoadsCalled(), is(1));
 	}
 
 	@Test
-    public void loadTestExecutionContext() {
-        String dvId = "an-id";
-        DelayedVerificationSteps steps = stepsWithMockLoadAndContext(dvId);
+	public void setTestExeuctionContextInGiven() {
+		String dvId = "loadId";
+		steps.testExecutionContextIsLoadedWithDvId(dvId);
 
-        steps.testExecutionContextIsLoadedWithDvId(dvId);
-
-        verify(context).load(any(DelayedVerification.class));
-    }
-
-    private DelayedVerificationSteps stepsWithMockLoadAndContext(String dvId) {
-        DelayedVerificationSteps steps = stepsWithMockLoad(dvId);
-        context = mock(TestExecutionContext.class);
-        steps.setContext(context);
-        return steps;
-    }
-
-    private DelayedVerificationSteps stepsWithMockLoad(String dvId) {
-		storage = mock(DelayedVerificationStore.class);
-		DelayedVerification verification = new DelayedVerification(DateTime.now(), DateTime.now(), "", dvId);
-		when(storage.load(dvId)).thenReturn(verification);
-
-		DelayedVerificationSteps steps = new DelayedVerificationSteps();
-		steps.setDelayedVerificationStore(storage);
-		return steps;
+		assertThat(executionContext.get().getId(), is(dvId));
 	}
 
-	private DelayedVerificationSteps stepsWithMockStoring() {
-		storage = mock(DelayedVerificationStore.class);
-
-		DelayedVerificationSteps steps = new DelayedVerificationSteps();
-		steps.setDelayedVerificationStore(storage);
-		return steps;
+	@Test
+	public void loadTestDataInGiven() {
+		steps.testExecutionContextIsLoadedWithDvId("dvId");
+		assertThat(testData.getNrLoadsCalled(), is(1));
 	}
 
-    private DelayedVerificationSteps stepsWithMockStoringAndContext() {
-        context = mock(TestExecutionContext.class);
-        DelayedVerificationSteps steps = stepsWithMockStoring();
-        steps.setContext(context);
-        return steps;
-    }
+	private Reflections reflections() {
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("nl.devon"))
+						.setUrls(ClasspathHelper.forPackage("nl.devon")).setScanners(new MethodAnnotationsScanner()));
+		return reflections;
+	}
+
+	private class StubExecutionContext implements TestExecutionContext {
+
+		private DelayedVerification verification;
+
+		@Override
+		public void set(DelayedVerification verification) {
+			this.verification = verification;
+		}
+
+		@Override
+		public DelayedVerification get() {
+			return verification;
+		}
+	}
+
+	private class StubTestData implements PersistableTestData {
+
+		private int nrSaves = 0;
+		private int nrLoads = 0;
+
+		@Override
+		public void save(DelayedVerification delayedVerification) {
+			nrSaves++;
+		}
+
+		@Override
+		public void load(DelayedVerification delayedVerification) {
+			nrLoads++;
+		}
+
+		public int getNrSavesCalled() {
+			return nrSaves;
+		}
+
+		public int getNrLoadsCalled() {
+			return nrLoads;
+		}
+	}
+
+	private class StubDelayedVerificationStore implements DelayedVerificationStore {
+
+		int nrLoads = 0;
+		int nrSaves = 0;
+
+		@Override
+		public void save(DelayedVerification verification) {
+			nrSaves++;
+		}
+
+		@Override
+		public DelayedVerification load(String dvId) {
+			nrLoads++;
+			return new DelayedVerification(DateTime.now(), DateTime.now(), "stubChecksum", dvId);
+		}
+
+		public int getNrLoadsCalled() {
+			return nrLoads;
+		}
+
+		public int getNrSavesCalled() {
+			return nrSaves;
+		}
+	}
 
 }

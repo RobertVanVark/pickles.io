@@ -8,35 +8,44 @@ import cucumber.api.java.en.Then;
 public class DelayedVerificationSteps {
 
 	private DelayedVerification verification;
-	private DelayedVerificationStore storage;
-    private TestExecutionContext context;
+	private DelayedVerificationStore verificationStore;
+	private TestExecutionContext context;
+	private PersistableTestData testData;
 
-    public void setDelayedVerificationStore(DelayedVerificationStore store) {
-		storage = store;
+	public DelayedVerificationSteps(DelayedVerificationStore delayedVerificationStore) {
+		verificationStore = delayedVerificationStore;
+	}
+
+	public void setTestExecutionContext(TestExecutionContext executionContext) {
+		context = executionContext;
+	}
+
+	public void setPersistableTestData(PersistableTestData testData) {
+		this.testData = testData;
 	}
 
 	@Then("^after (.*) \\(dv-checksum=(.+)\\)$")
 	public void initiateDelayedVerification(String expression, String checksum) {
 		verification = new DelayedVerification(DateTime.now(), checksum);
-		storage.save(verification);
+		verificationStore.save(verification);
+
 		if (context != null) {
-            context.save(verification);
-        }
+			context.set(verification);
+		}
+
+		if (testData != null) {
+			testData.save(verification);
+		}
 	}
 
 	@Given("^Test Execution Context is loaded with dv-id=(.+)$")
 	public void testExecutionContextIsLoadedWithDvId(String dvId) {
-		verification = storage.load(dvId);
+		verification = verificationStore.load(dvId);
 		if (context != null) {
-		    context.load(verification);
-        }
+			context.set(verification);
+			if (testData != null) {
+				testData.load(verification);
+			}
+		}
 	}
-
-    public void setContext(TestExecutionContext context) {
-        this.context = context;
-    }
-
-    public DelayedVerification getDelayedVerification() {
-        return verification;
-    }
 }
