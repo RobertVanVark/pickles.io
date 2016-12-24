@@ -37,8 +37,10 @@ public class DelayedVerificationStepsShould {
 
 	@Before
 	public void givenStepsWithExecutionContextAndTestData() {
+		steps = new DelayedVerificationSteps();
+
 		verificationStore = new StubDelayedVerificationStore();
-		steps = new DelayedVerificationSteps(verificationStore);
+		steps.setDelayedVerificationStore(verificationStore);
 
 		executionContext = new StubExecutionContext();
 		steps.setTestExecutionContext(executionContext);

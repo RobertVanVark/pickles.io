@@ -12,16 +12,16 @@ public class DelayedVerificationSteps {
 	private TestExecutionContext context;
 	private PersistableTestData testData;
 
-	public DelayedVerificationSteps(DelayedVerificationStore delayedVerificationStore) {
-		verificationStore = delayedVerificationStore;
-	}
-
 	public void setTestExecutionContext(TestExecutionContext executionContext) {
 		context = executionContext;
 	}
 
 	public void setPersistableTestData(PersistableTestData testData) {
 		this.testData = testData;
+	}
+
+	public void setDelayedVerificationStore(DelayedVerificationStore delayedVerificationStore) {
+		verificationStore = delayedVerificationStore;
 	}
 
 	@Then("^after (.*) \\(dv-checksum=(.+)\\)$")
