@@ -6,7 +6,7 @@ try {
 
       docker.image('maven').inside("-e MAVEN_CONFIG=${pwd tmp: true}/m2repo") {
         withSonarQubeEnv {
-          sh "mvn -Dmaven.repo.local=${pwd tmp: true}/m2repo -B clean package sonar:sonar"
+          sh "mvn -Dmaven.repo.local=${pwd tmp: true}/m2repo -B clean install sonar:sonar"
         }
 
       }
