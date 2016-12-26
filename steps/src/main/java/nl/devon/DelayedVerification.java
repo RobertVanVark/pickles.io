@@ -6,35 +6,48 @@ import org.joda.time.DateTime;
 
 public class DelayedVerification {
 
-    private final DateTime createdAt;
-    private final DateTime verifyAt;
-    private final String scenarioChecksum;
-    private String id;
+	private final String id;
+	private final DateTime createdAt;
+	private final DateTime verifyAt;
+	private final DateTime processedAt;
+	private final String scenarioChecksum;
+	private final String feature;
 
-    public DelayedVerification(DateTime verifyAt, String scenarioChecksum) {
-        this(DateTime.now(), verifyAt, scenarioChecksum, UUID.randomUUID().toString());
-    }
+	public DelayedVerification(DateTime verifyAt, String scenarioChecksum, String feature) {
+		this(UUID.randomUUID().toString(), DateTime.now(), verifyAt, null, scenarioChecksum, feature);
+	}
 
-    public DelayedVerification(DateTime createdAt, DateTime verifyAt, String scenarioChecksum, String id) {
-        this.scenarioChecksum = scenarioChecksum;
-        this.createdAt = createdAt;
-        this.verifyAt = verifyAt;
-        this.id = id;
-    }
+	public DelayedVerification(String id, DateTime createdAt, DateTime verifyAt, DateTime processedAt,
+			String scenarioChecksum, String feature) {
+		this.id = id;
+		this.createdAt = createdAt;
+		this.verifyAt = verifyAt;
+		this.processedAt = processedAt;
+		this.scenarioChecksum = scenarioChecksum;
+		this.feature = feature;
+	}
 
-    public DateTime getCreatedAt() {
-        return createdAt;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public DateTime getVerifyAt() {
-        return verifyAt;
-    }
+	public DateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public String getScenarioChecksum() {
-        return scenarioChecksum;
-    }
+	public DateTime getVerifyAt() {
+		return verifyAt;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public DateTime getProcessedAt() {
+		return processedAt;
+	}
+
+	public String getScenarioChecksum() {
+		return scenarioChecksum;
+	}
+
+	public String getFeature() {
+		return feature;
+	}
 }
