@@ -26,7 +26,7 @@ public class DelayedVerificationSteps {
 
 	@Then("^after (.*) \\(dv-checksum=(.+)\\)$")
 	public void initiateDelayedVerification(String expression, String checksum) {
-		verification = new DelayedVerification(DateTime.now(), checksum);
+		verification = new DelayedVerification(DateTime.now(), checksum, "");
 		verificationStore.save(verification);
 
 		if (context != null) {

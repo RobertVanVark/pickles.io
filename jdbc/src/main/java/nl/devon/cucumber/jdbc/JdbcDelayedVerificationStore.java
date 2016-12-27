@@ -61,9 +61,39 @@ public class JdbcDelayedVerificationStore {
 		return results.get(0);
 	}
 
+	public List<DelayedVerification> getAllForChecksum(String checksum) {
+		List<DelayedVerification> results;
+		try {
+			PreparedStatement statement = setupConnection().prepareStatement(
+					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE FROM DELAYED_VERIFICATION WHERE CHECKSUM = ?");
+			statement.setString(1, checksum);
+			results = delayedVerificationsFrom(statement.executeQuery());
+		} catch (SQLException ex) {
+			throw new DelayedVerificationStoreException(
+					"Could not retrieve Delayed Verifications for checksum=" + checksum, ex);
+		}
+
+		return results;
+	}
+
+	public List<DelayedVerification> getAllToVerify(String checksum) {
+		List<DelayedVerification> results;
+		try {
+			PreparedStatement statement = setupConnection().prepareStatement(
+					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE FROM DELAYED_VERIFICATION WHERE CHECKSUM = ? AND PROCESSED_AT IS NULL");
+			statement.setString(1, checksum);
+			results = delayedVerificationsFrom(statement.executeQuery());
+		} catch (SQLException ex) {
+			throw new DelayedVerificationStoreException(
+					"Could not retrieve Delayed Verifications for checksum=" + checksum, ex);
+		}
+
+		return results;
+	}
+
 	private List<DelayedVerification> delayedVerificationsFrom(ResultSet resultSet) throws SQLException {
 		List<DelayedVerification> results = new ArrayList<>();
-		if (resultSet.next()) {
+		while (resultSet.next()) {
 			String id = resultSet.getString(1);
 			DateTime createdAt = new DateTime(resultSet.getTimestamp(2));
 			DateTime verifyAt = new DateTime(resultSet.getTimestamp(3));
@@ -109,4 +139,25 @@ public class JdbcDelayedVerificationStore {
 		}
 	}
 
+	public void update(DelayedVerification verification) {
+		try {
+			PreparedStatement statement = setupConnection().prepareStatement(
+					"UPDATE DELAYED_VERIFICATION SET CREATED_AT=?,VERIFY_AT=?,PROCESSED_AT=?,CHECKSUM=?,FEATURE=? WHERE ID=?");
+			statement.setTimestamp(1, new Timestamp(verification.getCreatedAt().getMillis()));
+			statement.setTimestamp(2, new Timestamp(verification.getVerifyAt().getMillis()));
+			if (verification.getProcessedAt() != null) {
+				statement.setTimestamp(3, new Timestamp(verification.getProcessedAt().getMillis()));
+			} else {
+				statement.setTimestamp(3, null);
+			}
+			statement.setString(4, verification.getScenarioChecksum());
+			statement.setString(5, verification.getFeature());
+			statement.setString(6, verification.getId());
+
+			statement.execute();
+		} catch (SQLException ex) {
+			throw new DelayedVerificationStoreException(
+					"Could not update Delayed Verification for id=" + verification.getId(), ex);
+		}
+	}
 }

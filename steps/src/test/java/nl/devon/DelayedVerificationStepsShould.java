@@ -183,7 +183,7 @@ public class DelayedVerificationStepsShould {
 		@Override
 		public DelayedVerification load(String dvId) {
 			nrLoads++;
-			return new DelayedVerification(DateTime.now(), DateTime.now(), "stubChecksum", dvId);
+			return new DelayedVerification(dvId, DateTime.now(), DateTime.now(), null, "stubChecksum", "stubFeature");
 		}
 
 		public int getNrLoadsCalled() {

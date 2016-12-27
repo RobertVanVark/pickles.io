@@ -33,5 +33,15 @@
 			<column name="CHECKSUM">checksum for scenario 2</column>
 			<column name="FEATURE">Test feature 1</column>
 		</insert>
+		<insert tableName="DELAYED_VERIFICATION">
+			<column name="ID">b4d08bf9-cb55-497d-b39e-5ada14462107</column>
+			<column name="CREATED_AT" valueDate="2016-12-27T00:00:00"/>
+			<column name="VERIFY_AT" valueDate="2016-12-27T00:00:00"/>
+			<column name="PROCESSED_AT" valueDate="2016-12-27T00:00:00"/>
+			<column name="CHECKSUM">checksum for update tests</column>
+			<column name="FEATURE">Test feature 2</column>
+		</insert>
+		
+		
 	</changeSet>
 </databaseChangeLog>

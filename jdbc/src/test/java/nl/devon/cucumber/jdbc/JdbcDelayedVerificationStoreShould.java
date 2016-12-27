@@ -1,12 +1,15 @@
 package nl.devon.cucumber.jdbc;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -24,14 +27,6 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import nl.devon.DelayedVerification;
 
 public class JdbcDelayedVerificationStoreShould {
-
-	/*
-	 * getAll(checksum)
-	 *
-	 * getAllToBeVerified(checksum)
-	 *
-	 * getAndSetVerifiedById(id) + update field
-	 */
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -80,7 +75,7 @@ public class JdbcDelayedVerificationStoreShould {
 	}
 
 	@Test
-	public void shouldSignalWhenDelayedVerificationNotFound() {
+	public void signalWhenDelayedVerificationNotFound() {
 		thrown.expect(DelayedVerificationStoreException.class);
 		thrown.expectMessage("No Delayed Verification found for id=non existing delayed verification id");
 
@@ -88,7 +83,28 @@ public class JdbcDelayedVerificationStoreShould {
 	}
 
 	@Test
-	public void shouldSaveDelayedVerification() {
+	public void getAllForChecksum() {
+		String checksumWithOneEntry = "checksum for scenario 1";
+		List<DelayedVerification> results = getAllForChecksum(checksumWithOneEntry);
+		assertThat(results, hasSize(1));
+
+		String checksumWithThreeEntries = "checksum for scenario 2";
+		results = getAllForChecksum(checksumWithThreeEntries);
+		assertThat(results, hasSize(3));
+	}
+
+	@Test
+	public void getAllToBeVerifiedForChecksum() {
+		String checksumWithThreeEntriesOneVerified = "checksum for scenario 2";
+		List<DelayedVerification> results = getAllForChecksum(checksumWithThreeEntriesOneVerified);
+		assertThat(results, hasSize(3));
+
+		results = getAllToVerify(checksumWithThreeEntriesOneVerified);
+		assertThat(results, hasSize(2));
+	}
+
+	@Test
+	public void saveDelayedVerification() {
 		DelayedVerification aVerification = new DelayedVerification(DateTime.parse("2016-12-26T00:00:00"),
 				"save checksum", "save feature");
 		save(aVerification);
@@ -97,14 +113,47 @@ public class JdbcDelayedVerificationStoreShould {
 		assertThat(verificationFromDb, notNullValue());
 	}
 
+	@Test
+	public void updateDelayedVerification() {
+		String validId = "b4d08bf9-cb55-497d-b39e-5ada14462107";
+		DelayedVerification original = getBy(validId);
+		DelayedVerification verification = new DelayedVerification(validId, DateTime.now().minusHours(1),
+				DateTime.now(), DateTime.now().plusHours(1), "updated checksum", "updated feature");
+		update(verification);
+
+		DelayedVerification updated = getBy(validId);
+		assertThat(updated.getCreatedAt(), is(not(original.getCreatedAt())));
+		assertThat(updated.getCreatedAt(), is(verification.getCreatedAt()));
+
+		assertThat(updated.getVerifyAt(), is(not(original.getVerifyAt())));
+		assertThat(updated.getVerifyAt(), is(verification.getVerifyAt()));
+
+		assertThat(updated.getProcessedAt(), is(not(original.getProcessedAt())));
+		assertThat(updated.getProcessedAt(), is(verification.getProcessedAt()));
+	}
+
 	private DelayedVerification getBy(String id) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
-		DelayedVerification delayedVerification = store.get(id);
-		return delayedVerification;
+		return store.get(id);
+	}
+
+	private List<DelayedVerification> getAllForChecksum(String checksum) {
+		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		return store.getAllForChecksum(checksum);
+	}
+
+	private List<DelayedVerification> getAllToVerify(String checksum) {
+		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		return store.getAllToVerify(checksum);
 	}
 
 	private void save(DelayedVerification verification) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
 		store.save(verification);
+	}
+
+	private void update(DelayedVerification verification) {
+		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		store.update(verification);
 	}
 }
