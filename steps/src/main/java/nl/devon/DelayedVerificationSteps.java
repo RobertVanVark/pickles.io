@@ -7,6 +7,8 @@ import cucumber.api.java.en.Then;
 
 public class DelayedVerificationSteps {
 
+	static final String DELAY_EXPRESSION = TimeOffsetDelay.EXPRESSION;
+
 	private DelayedVerification verification;
 	private DelayedVerificationStore verificationStore;
 	private TestExecutionContext context;
@@ -24,14 +26,16 @@ public class DelayedVerificationSteps {
 		verificationStore = delayedVerificationStore;
 	}
 
-	@Then("^after (.*) \\(dv-checksum=(.+)\\)$")
-	public void initiateDelayedVerification(String expression, String checksum) {
-		verification = new DelayedVerification(DateTime.now(), checksum, "");
-		verificationStore.save(verification);
+	@Then("^after (" + DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$")
+	public void initiateDelayedVerification(String expression, String stepdef, String checksum) {
 
-		if (context != null) {
-			context.set(verification);
-		}
+		Delay delay = new TimeOffsetDelay(expression);
+		DateTime verifyAt = delay.getVerifyAt(context);
+
+		verification = new DelayedVerification(verifyAt, checksum, "");
+		verificationStore.create(verification);
+
+		context.set(verification);
 
 		if (testData != null) {
 			testData.save(verification);
@@ -39,13 +43,13 @@ public class DelayedVerificationSteps {
 	}
 
 	@Given("^Test Execution Context is loaded with dv-id=(.+)$")
-	public void testExecutionContextIsLoadedWithDvId(String dvId) {
-		verification = verificationStore.load(dvId);
-		if (context != null) {
-			context.set(verification);
-			if (testData != null) {
-				testData.load(verification);
-			}
+	public void testExecutionContextIsLoadedForDvId(String dvId) {
+		verification = verificationStore.read(dvId);
+
+		context.set(verification);
+
+		if (testData != null) {
+			testData.load(verification);
 		}
 	}
 }

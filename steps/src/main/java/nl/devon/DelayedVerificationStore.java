@@ -1,8 +1,16 @@
 package nl.devon;
 
+import java.util.List;
+
 public interface DelayedVerificationStore {
 
-    void save(DelayedVerification verification);
+	void create(DelayedVerification verification);
 
-    DelayedVerification load(String dvId);
+	DelayedVerification read(String dvId);
+
+	void update(DelayedVerification verification);
+
+	List<DelayedVerification> readAllForChecksum(String checksum);
+
+	List<DelayedVerification> readAllToVerify(String checksum);
 }

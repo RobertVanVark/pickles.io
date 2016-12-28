@@ -134,22 +134,22 @@ public class JdbcDelayedVerificationStoreShould {
 
 	private DelayedVerification getBy(String id) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
-		return store.get(id);
+		return store.read(id);
 	}
 
 	private List<DelayedVerification> getAllForChecksum(String checksum) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
-		return store.getAllForChecksum(checksum);
+		return store.readAllForChecksum(checksum);
 	}
 
 	private List<DelayedVerification> getAllToVerify(String checksum) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
-		return store.getAllToVerify(checksum);
+		return store.readAllToVerify(checksum);
 	}
 
 	private void save(DelayedVerification verification) {
 		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
-		store.save(verification);
+		store.create(verification);
 	}
 
 	private void update(DelayedVerification verification) {

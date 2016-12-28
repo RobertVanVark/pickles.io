@@ -15,8 +15,9 @@ import java.util.Properties;
 import org.joda.time.DateTime;
 
 import nl.devon.DelayedVerification;
+import nl.devon.DelayedVerificationStore;
 
-public class JdbcDelayedVerificationStore {
+public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 
 	private String url;
 	private String username;
@@ -44,7 +45,8 @@ public class JdbcDelayedVerificationStore {
 		password = properties.getProperty("password");
 	}
 
-	public DelayedVerification get(String id) {
+	@Override
+	public DelayedVerification read(String id) {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
@@ -61,7 +63,8 @@ public class JdbcDelayedVerificationStore {
 		return results.get(0);
 	}
 
-	public List<DelayedVerification> getAllForChecksum(String checksum) {
+	@Override
+	public List<DelayedVerification> readAllForChecksum(String checksum) {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
@@ -76,7 +79,8 @@ public class JdbcDelayedVerificationStore {
 		return results;
 	}
 
-	public List<DelayedVerification> getAllToVerify(String checksum) {
+	@Override
+	public List<DelayedVerification> readAllToVerify(String checksum) {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
@@ -117,7 +121,8 @@ public class JdbcDelayedVerificationStore {
 		return connection;
 	}
 
-	public void save(DelayedVerification verification) {
+	@Override
+	public void create(DelayedVerification verification) {
 		try {
 			PreparedStatement statement = setupConnection()
 					.prepareStatement("INSERT INTO DELAYED_VERIFICATION VALUES (?, ?, ?, ?, ?, ?)");
@@ -139,6 +144,7 @@ public class JdbcDelayedVerificationStore {
 		}
 	}
 
+	@Override
 	public void update(DelayedVerification verification) {
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
