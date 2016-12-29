@@ -10,7 +10,7 @@ try {
         }
 
       }
-      junit 'target/surefire-reports/*.xml'
+      junit '**/target/surefire-reports/*.xml'
     }
   }
   slackSend color: 'good', message: "Build success: ${env.JOB_NAME}!"
