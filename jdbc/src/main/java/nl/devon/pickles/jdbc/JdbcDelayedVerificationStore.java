@@ -1,4 +1,4 @@
-package nl.devon.cucumber.jdbc;
+package nl.devon.pickles.jdbc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +14,8 @@ import java.util.Properties;
 
 import org.joda.time.DateTime;
 
-import nl.devon.DelayedVerification;
-import nl.devon.DelayedVerificationStore;
+import nl.devon.pickles.steps.DelayedVerification;
+import nl.devon.pickles.steps.DelayedVerificationStore;
 
 public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 

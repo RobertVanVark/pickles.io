@@ -1,4 +1,4 @@
-package nl.devon;
+package nl.devon.pickles.steps;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import nl.devon.stubs.StubExecutionContext;
+import nl.devon.pickles.steps.stubs.StubExecutionContext;
 
 public class TimeOffsetDelayShould {
 

@@ -1,4 +1,4 @@
-package nl.devon;
+package nl.devon.pickles.steps;
 
 public interface PersistableTestData {
 

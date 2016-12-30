@@ -1,4 +1,4 @@
-package nl.devon.cucumber.jdbc;
+package nl.devon.pickles.jdbc;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -24,7 +24,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import nl.devon.DelayedVerification;
+import nl.devon.pickles.steps.DelayedVerification;
 
 public class JdbcDelayedVerificationStoreShould {
 
@@ -42,7 +42,7 @@ public class JdbcDelayedVerificationStoreShould {
 				database);
 		liquibase.update("");
 
-		liquibase = new Liquibase("nl/devon/cucumber/jdbc/delayed-verification-testdata.xml",
+		liquibase = new Liquibase("nl/devon/pickles/jdbc/delayed-verification-testdata.xml",
 				new ClassLoaderResourceAccessor(), database);
 		liquibase.update("");
 	}

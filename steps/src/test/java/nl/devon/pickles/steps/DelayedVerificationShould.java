@@ -1,4 +1,4 @@
-package nl.devon;
+package nl.devon.pickles.steps;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import nl.devon.pickles.steps.DelayedVerification;
 
 public class DelayedVerificationShould {
 

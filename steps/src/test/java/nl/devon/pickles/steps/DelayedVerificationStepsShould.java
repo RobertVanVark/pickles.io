@@ -1,4 +1,4 @@
-package nl.devon;
+package nl.devon.pickles.steps;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -19,9 +19,9 @@ import org.reflections.util.FilterBuilder;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import nl.devon.stubs.StubDelayedVerificationStore;
-import nl.devon.stubs.StubExecutionContext;
-import nl.devon.stubs.StubTestData;
+import nl.devon.pickles.steps.stubs.StubDelayedVerificationStore;
+import nl.devon.pickles.steps.stubs.StubExecutionContext;
+import nl.devon.pickles.steps.stubs.StubTestData;
 
 public class DelayedVerificationStepsShould {
 

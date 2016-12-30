@@ -1,4 +1,4 @@
-package nl.devon;
+package nl.devon.pickles.steps;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -2,14 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Cucumber Delayed Verification - Steps</name>
+	<name>Pickles - Steps</name>
 
-	<artifactId>cucumber-delayed-verification-steps</artifactId>
+	<artifactId>pickles-steps</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>nl.devon.cucumber</groupId>
-		<artifactId>cucumber-delayed-verification</artifactId>
+		<groupId>nl.devon.pickles</groupId>
+		<artifactId>pickles</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>

@@ -1,7 +1,7 @@
-package nl.devon.stubs;
+package nl.devon.pickles.steps.stubs;
 
-import nl.devon.DelayedVerification;
-import nl.devon.PersistableTestData;
+import nl.devon.pickles.steps.DelayedVerification;
+import nl.devon.pickles.steps.PersistableTestData;
 
 public class StubTestData implements PersistableTestData {
 

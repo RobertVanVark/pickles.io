@@ -1,4 +1,4 @@
-package nl.devon.cucumber.jdbc;
+package nl.devon.pickles.jdbc;
 
 public class DelayedVerificationStoreException extends RuntimeException {
 

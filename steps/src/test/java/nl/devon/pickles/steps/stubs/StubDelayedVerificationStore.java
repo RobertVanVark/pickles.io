@@ -1,11 +1,11 @@
-package nl.devon.stubs;
+package nl.devon.pickles.steps.stubs;
 
 import java.util.List;
 
 import org.joda.time.DateTime;
 
-import nl.devon.DelayedVerification;
-import nl.devon.DelayedVerificationStore;
+import nl.devon.pickles.steps.DelayedVerification;
+import nl.devon.pickles.steps.DelayedVerificationStore;
 
 public class StubDelayedVerificationStore implements DelayedVerificationStore {
 
