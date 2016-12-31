@@ -1,5 +1,6 @@
 package nl.devon.pickles.preprocessor.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -10,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import org.junit.Test;
 
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
+import gherkin.formatter.model.Tag;
 import nl.devon.pickles.preprocessor.Preprocessor;
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.DelayedVerificationStore;
@@ -40,22 +43,22 @@ public class PreprocessorShould {
 	 *
 	 * *** Every follow up scenario name should be the same as the initiation scenario appended with dvId
 	 *
-	 * Every Scenario should have @Pickles_Initiation
+	 * *** Every Scenario should have @Pickles_Initiation
 	 *
-	 * Every follow up scenario should have @Pickles_Verification
+	 * *** Every follow up scenario should have @Pickles_Verification
 	 *
-	 * Tags should be copied from Scenario to Verification scenarios
+	 * *** Tags should be copied from Scenario to Verification scenarios
 	 *
 	 * Some tags will not be copied to Verification scenarios (configurable). These tags should be moved from Feature to
 	 * initiation scenario
-	 *
-	 * Skip follow up scenarios without delayed verification
 	 *
 	 * *** dvId in verificaiton scenarios should be retreived from DelayedVerificationStore
 	 *
 	 * Checksum calculation !
 	 *
 	 * Construct new id for verification scenarios ?
+	 *
+	 * Skip follow up scenarios without delayed verification
 	 *
 	 * Should add verification scenario for each dvId for that checksum
 	 *
@@ -130,6 +133,43 @@ public class PreprocessorShould {
 
 		Scenario secondVerification = featureTemplate.getScenarios().get(0).getScenario();
 		assertThat(secondVerification.getName(), startsWith("scenario name"));
+	}
+
+	@Test
+	public void copyTagsToVerificationScenarios() {
+		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+
+		List<Tag> tags = featureTemplate.getScenarios().get(0).getScenario().getTags();
+		List<Tag> firstTags = featureTemplate.getScenarios().get(1).getScenario().getTags();
+		List<Tag> secondTags = featureTemplate.getScenarios().get(2).getScenario().getTags();
+		for (Tag tag : tags) {
+			if (!"@Pickles_Initiation".equals(tag.getName())) {
+				assertThat(firstTags, hasItem(tag));
+				assertThat(secondTags, hasItem(tag));
+			}
+		}
+	}
+
+	@Test
+	public void addInitiationTagToScenario() {
+		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+
+		List<Tag> tags = featureTemplate.getScenarios().get(0).getScenario().getTags();
+		List<String> tagNames = tags.stream().map(t -> t.getName()).collect(Collectors.toList());
+		assertThat(tagNames, hasItem("@Pickles_Initiation"));
+	}
+
+	@Test
+	public void addVerificationTagToScenario() {
+		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+
+		List<Tag> firstTags = featureTemplate.getScenarios().get(1).getScenario().getTags();
+		List<String> firstTagNames = firstTags.stream().map(t -> t.getName()).collect(Collectors.toList());
+		assertThat(firstTagNames, hasItem("@Pickles_Verification"));
+
+		List<Tag> secondTags = featureTemplate.getScenarios().get(2).getScenario().getTags();
+		List<String> secondTagNames = secondTags.stream().map(t -> t.getName()).collect(Collectors.toList());
+		assertThat(secondTagNames, hasItem("@Pickles_Verification"));
 	}
 
 	@Test
