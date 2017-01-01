@@ -1,15 +1,11 @@
-package nl.devon.pickles.preprocessor.model;
+package nl.devon.pickles.preprocessor;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,17 +16,12 @@ import org.junit.Test;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import nl.devon.pickles.preprocessor.Preprocessor;
-import nl.devon.pickles.steps.DelayedVerification;
-import nl.devon.pickles.steps.DelayedVerificationStore;
+import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 
-public class PreprocessorShould {
+public class TemplateTransformerShould {
 
 	/*
-	 * FeatureTemplate.toGherkinFeatureFile()
-	 *
-	 * transform all featuretemplates on the classpath or features setting in CucumberOptions into feature files
-	 *
 	 * *** Every Then after should result in new follow up scenario
 	 *
 	 * Every ending Then after should be appended with (dvChecksum=......,dvFeature=featurefilename)
@@ -76,7 +67,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void splitAtEveryThenAfter() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(3));
 		assertThat(featureTemplate.getScenarios().get(0).getSteps(), Matchers.hasSize(3));
@@ -86,7 +77,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void startEachFollowUpScenarioWithGiven() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		Step firstScenarioStep = featureTemplate.getScenarios().get(1).getSteps().get(0);
 		assertThat(firstScenarioStep.getKeyword(), is("Given "));
@@ -99,7 +90,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void copyEachThenAfterToVerificationScenario() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		Step firstScenarioStep = featureTemplate.getScenarios().get(1).getSteps().get(1);
 		assertThat(firstScenarioStep.getKeyword(), is("Then "));
@@ -112,7 +103,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void copyScenarioNameToVerificationScenarios() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		Scenario initiationScenario = featureTemplate.getScenarios().get(0).getScenario();
 		assertThat(initiationScenario.getName(), is("scenario name"));
@@ -126,7 +117,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void createUniqueVerificationScenarios() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		Scenario firstVerification = featureTemplate.getScenarios().get(0).getScenario();
 		assertThat(firstVerification.getName(), startsWith("scenario name"));
@@ -137,7 +128,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void copyTagsToVerificationScenarios() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		List<Tag> tags = featureTemplate.getScenarios().get(0).getScenario().getTags();
 		List<Tag> firstTags = featureTemplate.getScenarios().get(1).getScenario().getTags();
@@ -152,7 +143,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void addInitiationTagToScenario() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		List<Tag> tags = featureTemplate.getScenarios().get(0).getScenario().getTags();
 		List<String> tagNames = tags.stream().map(t -> t.getName()).collect(Collectors.toList());
@@ -161,7 +152,7 @@ public class PreprocessorShould {
 
 	@Test
 	public void addVerificationTagToScenario() {
-		FeatureTemplate featureTemplate = preprocessor.process(twoThenAfterScenario());
+		FeatureTemplate featureTemplate = transform(twoThenAfterScenario());
 
 		List<Tag> firstTags = featureTemplate.getScenarios().get(1).getScenario().getTags();
 		List<String> firstTagNames = firstTags.stream().map(t -> t.getName()).collect(Collectors.toList());
@@ -172,41 +163,10 @@ public class PreprocessorShould {
 		assertThat(secondTagNames, hasItem("@Pickles_Verification"));
 	}
 
-	@Test
-	public void parseTemplateFile() throws UnsupportedEncodingException, FileNotFoundException, RuntimeException {
-		String path = "target/test-classes/features/SimpleBankingScenario.feature";
-		FeatureTemplate featureTemplate = preprocessor.parse(path);
-
-		assertThat(featureTemplate.getFeature(), notNullValue());
-		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(2));
-		assertThat(featureTemplate.getScenarios().get(0).getSteps(), Matchers.hasSize(8));
-		assertThat(featureTemplate.getScenarios().get(1).getSteps(), Matchers.hasSize(7));
-	}
-
-	@Test
-	public void parseTemplate() {
-		FeatureTemplate featureTemplate = preprocessor.process(oneScenarioFeature());
-
-		assertThat(featureTemplate.getFeature(), notNullValue());
-		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(1));
-		assertThat(featureTemplate.getScenarios().get(0).getSteps(), Matchers.hasSize(3));
-	}
-
-	private List<String> oneScenarioFeature() {
-		List<String> template = new ArrayList<>();
-
-		template.add("@FeatureTag");
-		template.add("Feature: feature name");
-		template.add("");
-		template.add("Description");
-		template.add("");
-		template.add("@ScenarioTag1");
-		template.add("Scenario: scenario name");
-		template.add("Given a precondition");
-		template.add("When an action");
-		template.add("Then an outcome");
-
-		return template;
+	private FeatureTemplate transform(List<String> scenario) {
+		FeatureTemplate featureTemplate = new TemplateParser().parse(scenario);
+		TemplateTransformer transformer = new TemplateTransformer(featureTemplate, new DummyDelayedVerificationStore());
+		return transformer.doIt();
 	}
 
 	private List<String> twoThenAfterScenario() {
@@ -227,41 +187,4 @@ public class PreprocessorShould {
 
 		return template;
 	}
-
-	private class DummyDelayedVerificationStore implements DelayedVerificationStore {
-
-		private Integer nextId = 1000;
-
-		@Override
-		public void create(DelayedVerification verification) {
-		}
-
-		@Override
-		public DelayedVerification read(String dvId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void update(DelayedVerification verification) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public List<DelayedVerification> readAllForChecksum(String checksum) {
-			DelayedVerification verification = new DelayedVerification(nextId.toString(), null, null, null, checksum,
-					null);
-			nextId++;
-			return Arrays.asList(verification);
-		}
-
-		@Override
-		public List<DelayedVerification> readAllToVerify(String checksum) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-	}
-
 }

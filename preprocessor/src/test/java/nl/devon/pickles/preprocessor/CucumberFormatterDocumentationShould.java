@@ -1,4 +1,4 @@
-package nl.devon.pickles.preprocessor.model;
+package nl.devon.pickles.preprocessor;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,6 +16,7 @@ import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import nl.devon.pickles.preprocessor.Preprocessor;
+import nl.devon.pickles.preprocessor.model.FeatureTemplate;
 
 public class CucumberFormatterDocumentationShould {
 

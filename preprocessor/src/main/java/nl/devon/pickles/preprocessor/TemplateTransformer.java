@@ -14,7 +14,11 @@ import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.DelayedVerificationStore;
 import nl.devon.pickles.steps.TimeOffsetDelay;
 
-public class TransformMethodObject {
+/*
+ * MethodObject pattern as we're constantly passing around templateSCenario, templateFeature, etc.
+ */
+
+public class TemplateTransformer {
 
 	private static final String INITIATION_TAG = "@Pickles_Initiation";
 	private static final String VERIFICATION_TAG = "@Pickles_Verification";
@@ -22,7 +26,7 @@ public class TransformMethodObject {
 	private FeatureTemplate originalFeatureTemplate;
 	private DelayedVerificationStore store;
 
-	public TransformMethodObject(FeatureTemplate featureTemplate, DelayedVerificationStore store) {
+	public TemplateTransformer(FeatureTemplate featureTemplate, DelayedVerificationStore store) {
 		originalFeatureTemplate = featureTemplate;
 		this.store = store;
 	}

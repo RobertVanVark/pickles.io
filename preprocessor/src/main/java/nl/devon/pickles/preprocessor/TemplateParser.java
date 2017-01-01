@@ -9,21 +9,13 @@ import java.util.List;
 import gherkin.parser.Parser;
 import gherkin.util.FixJava;
 import nl.devon.pickles.preprocessor.model.FeatureTemplate;
-import nl.devon.pickles.steps.DelayedVerificationStore;
 
-public class Preprocessor {
+public class TemplateParser {
 
-	private DelayedVerificationStore store;
-
-	public void setDelayedVerificationStore(DelayedVerificationStore store) {
-		this.store = store;
-	}
-
-	public FeatureTemplate process(List<String> lines) {
+	public FeatureTemplate parse(List<String> lines) {
 		String featureUri = "";
 		String gherkin = String.join("\n", lines);
-		FeatureTemplate featureTemplate = parseGherkin(featureUri, gherkin);
-		return new TemplateTransformer(featureTemplate, store).doIt();
+		return parseGherkin(featureUri, gherkin);
 	}
 
 	public FeatureTemplate parse(String path) {
