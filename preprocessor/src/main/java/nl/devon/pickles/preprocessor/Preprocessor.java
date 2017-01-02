@@ -1,13 +1,11 @@
 package nl.devon.pickles.preprocessor;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
-import gherkin.parser.Parser;
-import gherkin.util.FixJava;
 import nl.devon.pickles.preprocessor.model.FeatureTemplate;
 import nl.devon.pickles.steps.DelayedVerificationStore;
 
@@ -19,31 +17,14 @@ public class Preprocessor {
 		this.store = store;
 	}
 
-	public FeatureTemplate process(List<String> lines) {
-		String featureUri = "";
-		String gherkin = String.join("\n", lines);
-		FeatureTemplate featureTemplate = parseGherkin(featureUri, gherkin);
-		return new TemplateTransformer(featureTemplate, store).doIt();
+	public List<String> process(List<String> lines) {
+		FeatureTemplate original = new TemplateParser().parse(lines);
+		FeatureTemplate transformed = new TemplateTransformer(original, store).doIt();
+		return new FeatureWriter(transformed).generate();
 	}
 
-	public FeatureTemplate parse(String path) {
-		String gherkin;
-		try {
-			gherkin = FixJava.readReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
-		} catch (UnsupportedEncodingException | FileNotFoundException | RuntimeException ex) {
-			throw new PicklesPreprocessorException("Could not read feature template file: " + path, ex);
-		}
-
-		return parseGherkin(path, gherkin);
-	}
-
-	private FeatureTemplate parseGherkin(String featureUri, String gherkin) {
-		StringBuilder output = new StringBuilder();
-		FeatureTemplate featureTemplate = new FeatureTemplate();
-		TemplateFormatter formatter = new TemplateFormatter(output, featureTemplate);
-		Parser parser = new Parser(formatter);
-		parser.parse(gherkin, featureUri, 0);
-
-		return featureTemplate;
+	public List<String> process(String path) throws IOException {
+		List<String> templateLines = Files.readAllLines(Paths.get(URI.create(path)));
+		return process(templateLines);
 	}
 }

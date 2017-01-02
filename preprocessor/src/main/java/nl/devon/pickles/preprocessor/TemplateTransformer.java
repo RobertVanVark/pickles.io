@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Range;
+
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
@@ -20,60 +22,88 @@ import nl.devon.pickles.steps.TimeOffsetDelay;
 
 public class TemplateTransformer {
 
-	private static final String INITIATION_TAG = "@Pickles_Initiation";
-	private static final String VERIFICATION_TAG = "@Pickles_Verification";
+	private static final String INITIATION_TAG = "@PicklesInitiation";
+	private static final String VERIFICATION_TAG = "@PicklesVerification";
 
-	private FeatureTemplate originalFeatureTemplate;
+	private FeatureTemplate originalFeature;
+	private FeatureTemplate transformedFeature;
 	private DelayedVerificationStore store;
 
 	public TemplateTransformer(FeatureTemplate featureTemplate, DelayedVerificationStore store) {
-		originalFeatureTemplate = featureTemplate;
+		originalFeature = featureTemplate;
 		this.store = store;
 	}
 
 	public FeatureTemplate doIt() {
-		FeatureTemplate transformedFeature = new FeatureTemplate();
-		transformedFeature.setFeature(originalFeatureTemplate.getFeature());
+		transformedFeature = new FeatureTemplate();
+		transformedFeature.setFeature(originalFeature.getFeature());
 
-		return transformScenarios(originalFeatureTemplate, transformedFeature);
+		return transformScenarios();
 	}
 
-	private FeatureTemplate transformScenarios(FeatureTemplate originalFeature, FeatureTemplate transformedFeature) {
+	private FeatureTemplate transformScenarios() {
 		for (ScenarioTemplate originalScenario : originalFeature.getScenarios()) {
 
-			ScenarioTemplate transformedScenario = new ScenarioTemplate();
-			transformedScenario.setSCenario(originalScenario.getScenario());
-			transformedFeature.addScenario(transformedScenario);
+			List<Range<Integer>> subscenarioRanges = findSubScenarios(originalScenario);
+			createInitiationScenario(originalScenario, subscenarioRanges.get(0));
 
-			transformSteps(originalScenario, transformedFeature);
-
-			addInitiationTag(transformedScenario);
+			subscenarioRanges.remove(0);
+			for (Range<Integer> range : subscenarioRanges) {
+				List<DelayedVerification> verifications = store.readAllForChecksum("dummy checksum");
+				for (DelayedVerification verification : verifications) {
+					createVerificationScenario(originalScenario, range, verification);
+				}
+			}
 		}
 
 		return transformedFeature;
 	}
 
-	private void transformSteps(ScenarioTemplate originalScenario, FeatureTemplate transformedFeature) {
-		for (Step step : originalScenario.getSteps()) {
-			transformedFeature.getCurrentScenario().addStep(step);
-			if (isThenAfter(step)) {
-				List<DelayedVerification> verifications = store.readAllForChecksum("dummy checksum");
-				for (DelayedVerification verification : verifications) {
-					transformedFeature.addScenario(verificationScenarioFrom(originalScenario, verification));
-					transformedFeature.getCurrentScenario().addStep(verificationGivenStep(verification));
-					transformedFeature.getCurrentScenario().addStep(thenStepFrom(step));
-				}
+	private List<Range<Integer>> findSubScenarios(ScenarioTemplate originalScenario) {
+		List<Range<Integer>> ranges = new ArrayList<>();
+		List<Step> steps = originalScenario.getSteps();
+		Integer start = 0;
+		for (int i = 0; i < steps.size(); i++) {
+			if (isThenAfter(steps.get(i))) {
+				ranges.add(Range.closed(start, i));
+				start = i;
 			}
 		}
-	}
+		ranges.add(Range.closed(start, steps.size() - 1));
 
-	private void addInitiationTag(ScenarioTemplate transformedScenario) {
-		Tag initiationTag = new Tag(INITIATION_TAG, 0);
-		transformedScenario.getScenario().getTags().add(initiationTag);
+		return ranges;
 	}
 
 	private boolean isThenAfter(Step step) {
 		return "Then ".equals(step.getKeyword()) && step.getName().startsWith("after ");
+	}
+
+	private void createInitiationScenario(ScenarioTemplate originalScenario, Range<Integer> range) {
+		ScenarioTemplate transformedScenario = new ScenarioTemplate();
+		transformedScenario.setSCenario(originalScenario.getScenario());
+		transformedScenario.addTag(INITIATION_TAG);
+
+		List<Step> originalSteps = originalScenario.getSteps();
+		for (int i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
+			transformedScenario.addStep(originalSteps.get(i));
+		}
+
+		transformedFeature.addScenario(transformedScenario);
+	}
+
+	private void createVerificationScenario(ScenarioTemplate originalScenario, Range<Integer> range,
+			DelayedVerification verification) {
+		ScenarioTemplate transformedScenario = verificationScenarioFrom(originalScenario, verification);
+
+		Step originalThenAfterStep = originalScenario.getSteps().get(range.lowerEndpoint());
+		transformedScenario.addStep(verificationGivenStep(verification));
+		transformedScenario.addStep(thenStepFrom(originalThenAfterStep));
+
+		for (int i = range.lowerEndpoint() + 1; i <= range.upperEndpoint(); i++) {
+			transformedScenario.addStep(originalScenario.getSteps().get(i));
+		}
+
+		transformedFeature.addScenario(transformedScenario);
 	}
 
 	private ScenarioTemplate verificationScenarioFrom(ScenarioTemplate originalScenario,
@@ -81,7 +111,6 @@ public class TemplateTransformer {
 		Scenario scenario = originalScenario.getScenario();
 		List<Comment> comments = Collections.emptyList();
 		List<Tag> tags = new ArrayList<Tag>(scenario.getTags());
-		tags.add(new Tag(VERIFICATION_TAG, 0));
 		String keyword = scenario.getKeyword();
 		String name = scenario.getName() + " (dvId=" + verification.getId() + ")";
 		String description = "";
@@ -92,6 +121,7 @@ public class TemplateTransformer {
 
 		ScenarioTemplate transformedScenario = new ScenarioTemplate();
 		transformedScenario.setSCenario(copy);
+		transformedScenario.addTag(VERIFICATION_TAG);
 
 		return transformedScenario;
 	}

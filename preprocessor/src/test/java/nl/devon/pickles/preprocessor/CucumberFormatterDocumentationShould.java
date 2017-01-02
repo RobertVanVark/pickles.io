@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,8 +14,8 @@ import org.junit.Test;
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
-import nl.devon.pickles.preprocessor.Preprocessor;
 import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class CucumberFormatterDocumentationShould {
 
@@ -25,14 +24,13 @@ public class CucumberFormatterDocumentationShould {
 	 *
 	 * parse ("path/featurename.featuretemplate") => FeatureTemplate
 	 *
-	 * transform all featuretemplates on the classpath or features setting in
-	 * CucumberOptions into feature files
+	 * transform all featuretemplates on the classpath or features setting in CucumberOptions into feature files
 	 *
 	 */
 
 	@Test
 	public void documentFeatureFields() {
-		FeatureTemplate featureTemplate = new Preprocessor().process(simmpleFeatureTemplate());
+		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Feature feature = featureTemplate.getFeature();
 		// No Comments for Features !
@@ -50,7 +48,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentScenarioFields() {
-		FeatureTemplate featureTemplate = new Preprocessor().process(simmpleFeatureTemplate());
+		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Scenario scenario = featureTemplate.getScenarios().get(0).getScenario();
 		List<String> comments = scenario.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
@@ -69,7 +67,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentGivenStepFields() {
-		FeatureTemplate featureTemplate = new Preprocessor().process(simmpleFeatureTemplate());
+		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Step step = featureTemplate.getScenarios().get(0).getSteps().get(0);
 
@@ -83,28 +81,5 @@ public class CucumberFormatterDocumentationShould {
 		assertThat(step.getName(), is("a step"));
 		assertThat(step.getOutlineArgs(), empty());
 		assertThat(step.getRows(), nullValue());
-	}
-
-	private List<String> simmpleFeatureTemplate() {
-		List<String> template = new ArrayList<>();
-
-		template.add("@FeatureTag1");
-		template.add("@FeatureTag2a @FeatureTag2b");
-		template.add("Feature: feature name");
-		template.add("");
-		template.add("Description");
-		template.add("");
-		template.add("Description");
-		template.add("");
-		template.add("# Scenario comment");
-		template.add("");
-		template.add("@ScenarioTag1");
-		template.add("Scenario: scenario name");
-		template.add("");
-		template.add("#Step comment");
-		template.add("");
-		template.add("Given a step");
-
-		return template;
 	}
 }

@@ -1,6 +1,6 @@
 package nl.devon.pickles.preprocessor.stubs;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.devon.pickles.steps.DelayedVerification;
@@ -8,7 +8,12 @@ import nl.devon.pickles.steps.DelayedVerificationStore;
 
 public class DummyDelayedVerificationStore implements DelayedVerificationStore {
 
+	private int nrDvs;
 	private Integer nextId = 1000;
+
+	public DummyDelayedVerificationStore(int nrDvs) {
+		this.nrDvs = nrDvs;
+	}
 
 	@Override
 	public void create(DelayedVerification verification) {
@@ -28,9 +33,14 @@ public class DummyDelayedVerificationStore implements DelayedVerificationStore {
 
 	@Override
 	public List<DelayedVerification> readAllForChecksum(String checksum) {
-		DelayedVerification verification = new DelayedVerification(nextId.toString(), null, null, null, checksum, null);
-		nextId++;
-		return Arrays.asList(verification);
+		List<DelayedVerification> result = new ArrayList<>();
+		for (int i = 0; i < nrDvs; i++) {
+			DelayedVerification verification = new DelayedVerification(nextId.toString(), null, null, null, checksum,
+					null);
+			result.add(verification);
+			nextId++;
+		}
+		return result;
 	}
 
 	@Override
