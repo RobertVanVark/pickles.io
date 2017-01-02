@@ -13,10 +13,6 @@ import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class TemplateParserShould {
 
-	/*
-	 *
-	 */
-
 	@Test
 	public void parseTemplateFile() {
 		FeatureTemplate featureTemplate = parse("target/test-classes/features/SimpleBankingScenario.feature");

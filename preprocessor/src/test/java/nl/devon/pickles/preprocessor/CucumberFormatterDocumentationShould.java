@@ -19,15 +19,6 @@ import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class CucumberFormatterDocumentationShould {
 
-	/*
-	 * parse (List<String>) => FeatureTemplate
-	 *
-	 * parse ("path/featurename.featuretemplate") => FeatureTemplate
-	 *
-	 * transform all featuretemplates on the classpath or features setting in CucumberOptions into feature files
-	 *
-	 */
-
 	@Test
 	public void documentFeatureFields() {
 		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());

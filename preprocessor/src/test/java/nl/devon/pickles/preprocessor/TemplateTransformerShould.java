@@ -21,16 +21,9 @@ import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 public class TemplateTransformerShould {
 
 	/*
-	 * Every ending Then after should be appended with (dvChecksum=......,dvFeature=featurefilename)
-	 *
-	 * Some tags will not be copied to Verification scenarios (configurable). These tags should be moved from Feature to
-	 * initiation scenario
-	 *
 	 * Construct new id for verification scenarios ?
 	 *
 	 * after should be part of pattern (extensible to other patterns like at ....)
-	 *
-	 * splitted Verification
 	 */
 
 	@Test

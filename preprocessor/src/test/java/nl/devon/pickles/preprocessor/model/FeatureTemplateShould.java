@@ -14,15 +14,6 @@ import gherkin.formatter.model.Tag;
 
 public class FeatureTemplateShould {
 
-	/*
-	 * have a cucumber feature
-	 *
-	 * have a list of scenarios
-	 *
-	 * know the scenario being processed
-	 *
-	 */
-
 	@Test
 	public void haveCucumberFeature() {
 		List<Comment> comments = new ArrayList<>();
