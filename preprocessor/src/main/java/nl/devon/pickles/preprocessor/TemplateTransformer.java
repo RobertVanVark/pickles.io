@@ -1,5 +1,10 @@
 package nl.devon.pickles.preprocessor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,13 +50,15 @@ public class TemplateTransformer {
 		for (ScenarioTemplate originalScenario : originalFeature.getScenarios()) {
 
 			List<Range<Integer>> subscenarioRanges = findSubScenarios(originalScenario);
-			createInitiationScenario(originalScenario, subscenarioRanges.get(0));
+			String checksum = checksum(originalScenario, subscenarioRanges.get(0).upperEndpoint());
+			createInitiationScenario(originalScenario, subscenarioRanges.get(0), checksum);
 
 			subscenarioRanges.remove(0);
 			for (Range<Integer> range : subscenarioRanges) {
-				List<DelayedVerification> verifications = store.readAllForChecksum("dummy checksum");
+				List<DelayedVerification> verifications = store.readAllForChecksum(checksum);
 				for (DelayedVerification verification : verifications) {
-					createVerificationScenario(originalScenario, range, verification);
+					checksum = checksum(originalScenario, range.upperEndpoint());
+					createVerificationScenario(originalScenario, range, verification, checksum);
 				}
 			}
 		}
@@ -78,32 +85,67 @@ public class TemplateTransformer {
 		return "Then ".equals(step.getKeyword()) && step.getName().startsWith("after ");
 	}
 
-	private void createInitiationScenario(ScenarioTemplate originalScenario, Range<Integer> range) {
+	private void createInitiationScenario(ScenarioTemplate originalScenario, Range<Integer> range, String checksum) {
 		ScenarioTemplate transformedScenario = new ScenarioTemplate();
 		transformedScenario.setSCenario(originalScenario.getScenario());
 		transformedScenario.addTag(INITIATION_TAG);
 
-		List<Step> originalSteps = originalScenario.getSteps();
 		for (int i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
-			transformedScenario.addStep(originalSteps.get(i));
+			Step step = originalScenario.getStep(i);
+			if (isThenAfter(step)) {
+				transformedScenario.addStep(thenAfterStepFrom(step, checksum));
+			} else {
+				transformedScenario.addStep(step);
+			}
 		}
 
 		transformedFeature.addScenario(transformedScenario);
 	}
 
 	private void createVerificationScenario(ScenarioTemplate originalScenario, Range<Integer> range,
-			DelayedVerification verification) {
+			DelayedVerification verification, String checksum) {
 		ScenarioTemplate transformedScenario = verificationScenarioFrom(originalScenario, verification);
 
-		Step originalThenAfterStep = originalScenario.getSteps().get(range.lowerEndpoint());
+		Step originalThenAfterStep = originalScenario.getStep(range.lowerEndpoint());
 		transformedScenario.addStep(verificationGivenStep(verification));
 		transformedScenario.addStep(thenStepFrom(originalThenAfterStep));
 
 		for (int i = range.lowerEndpoint() + 1; i <= range.upperEndpoint(); i++) {
-			transformedScenario.addStep(originalScenario.getSteps().get(i));
+			Step step = originalScenario.getStep(i);
+			if (isThenAfter(step)) {
+				transformedScenario.addStep(thenAfterStepFrom(step, checksum));
+			} else {
+				transformedScenario.addStep(step);
+			}
 		}
 
 		transformedFeature.addScenario(transformedScenario);
+	}
+
+	private String checksum(ScenarioTemplate originalScenario, Integer hasThenPosition) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		write(stream, originalFeature.getName());
+		for (int i = 0; i <= hasThenPosition; i++) {
+			write(stream, originalScenario.getStep(i).getKeyword());
+			write(stream, originalScenario.getStep(i).getName());
+		}
+
+		byte[] digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-256").digest(stream.toByteArray());
+		} catch (NoSuchAlgorithmException ex) {
+			throw new TemplateTransformerException(ex.getMessage(), ex);
+		}
+
+		return new BigInteger(1, digest).toString();
+	}
+
+	private void write(ByteArrayOutputStream stream, String value) {
+		try {
+			stream.write(value.getBytes("UTF-8"));
+		} catch (IOException ex) {
+			throw new TemplateTransformerException("Error calculating checksum for " + value, ex);
+		}
 	}
 
 	private ScenarioTemplate verificationScenarioFrom(ScenarioTemplate originalScenario,
@@ -145,4 +187,12 @@ public class TemplateTransformer {
 		return new Step(comments, keyword, name, line, null, null);
 	}
 
+	private Step thenAfterStepFrom(Step thenAfter, String checksum) {
+		List<Comment> comments = Collections.emptyList();
+		String keyword = "Then ";
+		Integer line = thenAfter.getLine();
+		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ")";
+
+		return new Step(comments, keyword, name, line, null, null);
+	}
 }

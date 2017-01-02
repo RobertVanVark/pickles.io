@@ -30,6 +30,14 @@ public class ScenarioTemplate {
 		return steps;
 	}
 
+	public Step getStep(int i) {
+		return steps.get(i);
+	}
+
+	public Step getLastStep() {
+		return steps.get(steps.size() - 1);
+	}
+
 	public void setFeatureTemplate(FeatureTemplate featureTemplate) {
 		this.featureTemplate = featureTemplate;
 	}

@@ -30,6 +30,10 @@ public class FeatureTemplate {
 		return scenarios;
 	}
 
+	public ScenarioTemplate getScenario(int i) {
+		return scenarios.get(i);
+	}
+
 	public ScenarioTemplate getCurrentScenario() {
 		return current;
 	}

@@ -23,8 +23,8 @@ public class TemplateParserShould {
 
 		assertThat(featureTemplate.getFeature(), notNullValue());
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(2));
-		assertThat(featureTemplate.getScenarios().get(0).getSteps(), Matchers.hasSize(8));
-		assertThat(featureTemplate.getScenarios().get(1).getSteps(), Matchers.hasSize(7));
+		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(8));
+		assertThat(featureTemplate.getScenario(1).getSteps(), Matchers.hasSize(7));
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class TemplateParserShould {
 
 		assertThat(featureTemplate.getFeature(), notNullValue());
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(1));
-		assertThat(featureTemplate.getScenarios().get(0).getSteps(), Matchers.hasSize(3));
+		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(3));
 	}
 
 	private FeatureTemplate parse(String path) {

@@ -50,7 +50,7 @@ public class CucumberFormatterDocumentationShould {
 	public void documentScenarioFields() {
 		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
-		Scenario scenario = featureTemplate.getScenarios().get(0).getScenario();
+		Scenario scenario = featureTemplate.getScenario(0).getScenario();
 		List<String> comments = scenario.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
 		assertThat(comments, hasItem("# Scenario comment"));
 		assertThat(scenario.getDescription(), is(""));
@@ -69,7 +69,7 @@ public class CucumberFormatterDocumentationShould {
 	public void documentGivenStepFields() {
 		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
-		Step step = featureTemplate.getScenarios().get(0).getSteps().get(0);
+		Step step = featureTemplate.getScenario(0).getStep(0);
 
 		List<String> comments = step.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
 		assertThat(comments, hasItem("#Step comment"));
