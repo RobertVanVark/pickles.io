@@ -7,8 +7,8 @@ import org.joda.time.DateTime;
 
 public class TimeOffsetDelay extends Delay {
 
-	public static final String EXPRESSION = "\\d?\\d:\\d\\d hr";
-	private static final Pattern PATTERN = Pattern.compile("^([01]?[0-9]|2[0-3]):([0-5][0-9]) hr");
+	public static final String EXPRESSION = "after \\d?\\d:\\d\\d hr";
+	private static final Pattern PATTERN = Pattern.compile("^after ([01]?[0-9]|2[0-3]):([0-5][0-9]) hr");
 
 	public TimeOffsetDelay(String expression) {
 		Matcher matcher = PATTERN.matcher(expression);
@@ -25,7 +25,15 @@ public class TimeOffsetDelay extends Delay {
 			start = executionContext.get().getVerifyAt();
 		}
 
-		return start.plusHours(hours).plusMinutes(minutes);
+		return executionContext.firstBusinessDayOnOrAfter(start.plusHours(hours).plusMinutes(minutes));
+	}
+
+	Integer getHours() {
+		return hours;
+	}
+
+	Integer getMinutes() {
+		return minutes;
 	}
 
 }

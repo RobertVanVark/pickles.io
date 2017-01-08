@@ -9,12 +9,4 @@ public abstract class Delay {
 
 	abstract public DateTime getVerifyAt(TestExecutionContext executionContext);
 
-	Integer getHours() {
-		return hours;
-	}
-
-	Integer getMinutes() {
-		return minutes;
-	}
-
 }

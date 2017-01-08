@@ -180,7 +180,7 @@ public class TemplateTransformer {
 	private Step thenStepFrom(Step thenAfter) {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Then ";
-		String name = thenAfter.getName().substring("after ".length());
+		String name = thenAfter.getName();
 		name = name.replaceAll(TimeOffsetDelay.EXPRESSION + " ", "");
 		Integer line = 2;
 

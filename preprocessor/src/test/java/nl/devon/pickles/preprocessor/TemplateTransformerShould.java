@@ -22,8 +22,6 @@ public class TemplateTransformerShould {
 
 	/*
 	 * Construct new id for verification scenarios ?
-	 *
-	 * after should be part of pattern (extensible to other patterns like at ....)
 	 */
 
 	@Test

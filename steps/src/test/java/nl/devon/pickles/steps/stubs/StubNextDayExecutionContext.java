@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.TestExecutionContext;
 
-public class StubExecutionContext implements TestExecutionContext {
+public class StubNextDayExecutionContext implements TestExecutionContext {
 
 	private DelayedVerification verification;
 
@@ -21,6 +21,6 @@ public class StubExecutionContext implements TestExecutionContext {
 
 	@Override
 	public DateTime firstBusinessDayOnOrAfter(DateTime reference) {
-		return reference;
+		return reference.plusDays(1);
 	}
 }

@@ -74,7 +74,7 @@ public class DelayedVerificationStepsShould {
 
 	@Test
 	public void createDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("02:00 hr", "step expression", "checksum");
+		steps.initiateDelayedVerification("after 02:00 hr", "step expression", "checksum");
 
 		DelayedVerification verification = executionContext.get();
 		assertThat(verification.getScenarioChecksum(), is("checksum"));
@@ -83,13 +83,13 @@ public class DelayedVerificationStepsShould {
 
 	@Test
 	public void saveDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("after 00:00 hr", "", "checksum");
 		assertThat(verificationStore.getNrSavesCalled(), is(1));
 	}
 
 	@Test
 	public void saveTestDataInThenAfter() {
-		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("after 00:00 hr", "", "checksum");
 		assertThat(testData.getNrSavesCalled(), is(1));
 	}
 
