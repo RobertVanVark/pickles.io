@@ -64,4 +64,19 @@ public class TimeOffsetDelayShould extends FixedTimeTest {
 		DateTime time = delay.getVerifyAt(new StubNextDayExecutionContext());
 		assertThat(time, is(tenNextDay().plusHours(2)));
 	}
+
+	@Test
+	public void matchExpression() {
+		assertThat(matchesExpression("23:59 hr"), is(true));
+		assertThat(matchesExpression("0:00 hr"), is(true));
+		assertThat(matchesExpression("10:12 hr"), is(true));
+
+		assertThat(matchesExpression("35:35 hr"), is(false));
+		assertThat(matchesExpression("12 hr"), is(false));
+
+	}
+
+	private boolean matchesExpression(String expression) {
+		return expression.matches(TimeOffsetDelay.EXPRESSION);
+	}
 }

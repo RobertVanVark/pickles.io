@@ -4,12 +4,19 @@ import nl.devon.pickles.steps.PicklesDelayException;
 
 public class DelayFactory {
 
-	public static final String DELAY_EXPRESSION = "[" + //
-			TimeOffsetDelay.EXPRESSION + "|" + //
-			BusinessEventDelay.EXPRESSION + //
-			"]";
+	private static final String SINGLE_DELAY_EXPRESSION = "" //
+			+ "(?:" //
+			+ TimeOffsetDelay.EXPRESSION //
+			+ "|" //
+			+ BusinessEventDelay.EXPRESSION //
+			+ ")";
 
-	public static final String COMBINED_EXPRESSION = DELAY_EXPRESSION + "[ + " + DELAY_EXPRESSION + "]*";
+	public static final String DELAY_EXPRESSION = "" //
+			+ "after " //
+			+ SINGLE_DELAY_EXPRESSION //
+			+ "(?: \\+ " //
+			+ SINGLE_DELAY_EXPRESSION//
+			+ ")*";
 
 	public static Delay create(String expression) {
 

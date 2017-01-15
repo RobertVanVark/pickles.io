@@ -50,4 +50,17 @@ public class BusinessEventDelayShould extends FixedTimeTest {
 		assertThat(verifyAt, is(midnight().withHourOfDay(12)));
 	}
 
+	@Test
+	public void matchExpression() {
+		assertThat(matchesExpression("NOON"), is(true));
+		assertThat(matchesExpression("noon"), is(true));
+		assertThat(matchesExpression("pre-Noon"), is(true));
+
+		assertThat(matchesExpression("NOON MEETING"), is(false));
+		assertThat(matchesExpression("pre-Noon MEETING"), is(false));
+	}
+
+	private boolean matchesExpression(String expression) {
+		return expression.matches(BusinessEventDelay.EXPRESSION);
+	}
 }

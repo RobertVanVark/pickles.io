@@ -14,7 +14,7 @@ import org.junit.Test;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
@@ -26,7 +26,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void splitAtEveryThenAfter() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(3));
 		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(3));
@@ -36,7 +36,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void appendChecksumToEachThenAfter() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), is(
 				"after 02:00 hr a first delayed outcome (dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337)"));
@@ -48,7 +48,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void startEachFollowUpScenarioWithGiven() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		Step firstScenarioStep = featureTemplate.getScenario(1).getStep(0);
 		assertThat(firstScenarioStep.getKeyword(), is("Given "));
@@ -61,7 +61,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void copyEachThenAfterToVerificationScenario() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		Step firstScenarioStep = featureTemplate.getScenario(1).getStep(1);
 		assertThat(firstScenarioStep.getKeyword(), is("Then "));
@@ -74,7 +74,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void createUniqueVerificationScenarios() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		Scenario initiationScenario = featureTemplate.getScenario(0).getScenario();
 		assertThat(initiationScenario.getName(), is("scenario name"));
@@ -88,7 +88,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void copyScenarioNameToVerificationScenarios() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		Scenario firstVerification = featureTemplate.getScenario(0).getScenario();
 		assertThat(firstVerification.getName(), startsWith("scenario name"));
@@ -99,7 +99,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void copyTagsToVerificationScenarios() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		List<Tag> tags = featureTemplate.getScenario(0).getScenario().getTags();
 		List<Tag> firstTags = featureTemplate.getScenario(1).getScenario().getTags();
@@ -114,7 +114,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void addInitiationTagToScenario() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		List<Tag> tags = featureTemplate.getScenario(0).getScenario().getTags();
 		List<String> tagNames = tags.stream().map(t -> t.getName()).collect(Collectors.toList());
@@ -123,7 +123,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void addVerificationTagToScenario() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		List<Tag> firstTags = featureTemplate.getScenario(1).getScenario().getTags();
 		List<String> firstTagNames = firstTags.stream().map(t -> t.getName()).collect(Collectors.toList());
@@ -136,14 +136,14 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void skipVerificationScenarioWithoutDvs() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 0);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 0);
 
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(1));
 		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(3));
 	}
 
-	private FeatureTemplate transform(List<String> templateLines, int nrDvs) {
-		FeatureTemplate featureTemplate = new TemplateParser().parse(templateLines);
+	private FeatureModel transform(List<String> templateLines, int nrDvs) {
+		FeatureModel featureTemplate = new TemplateParser().parse(templateLines);
 		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
 				new DummyDelayedVerificationStore(nrDvs));
 		return transformer.doIt();
@@ -151,7 +151,7 @@ public class TemplateTransformerShould {
 
 	@Test
 	public void addVerificationScenarioForEachDelayedVerification() {
-		FeatureTemplate featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 2);
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 2);
 
 		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(5));
 		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(3));
@@ -169,7 +169,7 @@ public class TemplateTransformerShould {
 		assertThat(firstStepOf(featureTemplate, 4).getName(), is("Test Execution Context is loaded for dvId=1003"));
 	}
 
-	private Step firstStepOf(FeatureTemplate featureTemplate, int scenarioId) {
+	private Step firstStepOf(FeatureModel featureTemplate, int scenarioId) {
 		return featureTemplate.getScenario(scenarioId).getStep(0);
 	}
 

@@ -9,7 +9,7 @@ import nl.devon.pickles.steps.TestExecutionContext;
 
 public class TimeOffsetDelay extends Delay {
 
-	public static final String EXPRESSION = "\\d?\\d:\\d\\d hr";
+	public static final String EXPRESSION = "(?:(?:[01]?[0-9]|2[0-3]):[0-5][0-9] hr)";
 	private static final Pattern PATTERN = Pattern.compile("^([01]?[0-9]|2[0-3]):([0-5][0-9]) hr");
 
 	public TimeOffsetDelay(String expression) {
@@ -30,6 +30,7 @@ public class TimeOffsetDelay extends Delay {
 		return getVerifyAt(executionContext, start);
 	}
 
+	@Override
 	DateTime getVerifyAt(TestExecutionContext executionContext, DateTime start) {
 		return executionContext.firstBusinessDayOnOrAfter(start.plusHours(hours).plusMinutes(minutes));
 	}

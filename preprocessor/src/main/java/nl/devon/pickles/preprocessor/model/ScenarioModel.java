@@ -8,10 +8,10 @@ import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 
-public class ScenarioTemplate {
+public class ScenarioModel {
 
 	private Scenario scenario;
-	private FeatureTemplate featureTemplate;
+	private FeatureModel featureTemplate;
 	private List<Step> steps = new ArrayList<>();
 
 	public Scenario getScenario() {
@@ -38,11 +38,11 @@ public class ScenarioTemplate {
 		return steps.get(steps.size() - 1);
 	}
 
-	public void setFeatureTemplate(FeatureTemplate featureTemplate) {
+	public void setFeatureTemplate(FeatureModel featureTemplate) {
 		this.featureTemplate = featureTemplate;
 	}
 
-	public FeatureTemplate getFeatureTemplate() {
+	public FeatureModel getFeatureTemplate() {
 		return featureTemplate;
 	}
 

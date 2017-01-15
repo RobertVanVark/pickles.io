@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import gherkin.formatter.model.Feature;
 
-public class FeatureTemplate {
+public class FeatureModel {
 
 	private Feature feature;
-	private List<ScenarioTemplate> scenarios = new ArrayList<>();
-	private ScenarioTemplate current;
+	private List<ScenarioModel> scenarios = new ArrayList<>();
+	private ScenarioModel current;
 
 	public void setFeature(Feature feature) {
 		this.feature = feature;
@@ -20,21 +20,21 @@ public class FeatureTemplate {
 		return feature;
 	}
 
-	public void addScenario(ScenarioTemplate scenarioTemplate) {
+	public void addScenario(ScenarioModel scenarioTemplate) {
 		scenarios.add(scenarioTemplate);
 		scenarioTemplate.setFeatureTemplate(this);
 		current = scenarioTemplate;
 	}
 
-	public List<ScenarioTemplate> getScenarios() {
+	public List<ScenarioModel> getScenarios() {
 		return scenarios;
 	}
 
-	public ScenarioTemplate getScenario(int i) {
+	public ScenarioModel getScenario(int i) {
 		return scenarios.get(i);
 	}
 
-	public ScenarioTemplate getCurrentScenario() {
+	public ScenarioModel getCurrentScenario() {
 		return current;
 	}
 

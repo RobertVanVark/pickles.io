@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gherkin.formatter.model.Step;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
-import nl.devon.pickles.preprocessor.model.ScenarioTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
+import nl.devon.pickles.preprocessor.model.ScenarioModel;
 
 public class FeatureWriter {
 
-	private FeatureTemplate featureTemplate;
+	private FeatureModel featureModel;
 	private List<String> content = new ArrayList<>();
 
-	public FeatureWriter(FeatureTemplate featureTemplate) {
-		this.featureTemplate = featureTemplate;
+	public FeatureWriter(FeatureModel featureModel) {
+		this.featureModel = featureModel;
 	}
 
 	public List<String> generate() {
 
 		generateFeature();
-		for (ScenarioTemplate scenarioTemplate : featureTemplate.getScenarios()) {
+		for (ScenarioModel scenarioTemplate : featureModel.getScenarios()) {
 			generateScenario(scenarioTemplate);
 		}
 
@@ -27,13 +27,13 @@ public class FeatureWriter {
 	}
 
 	public void generateFeature() {
-		if (featureTemplate.hasTags()) {
-			content.add(String.join(" ", featureTemplate.getTagNames()));
+		if (featureModel.hasTags()) {
+			content.add(String.join(" ", featureModel.getTagNames()));
 		}
-		content.add("Feature: " + featureTemplate.getName());
+		content.add("Feature: " + featureModel.getName());
 	}
 
-	public void generateScenario(ScenarioTemplate scenarioTemplate) {
+	public void generateScenario(ScenarioModel scenarioTemplate) {
 		content.add("");
 		if (scenarioTemplate.hasTags()) {
 			content.add(String.join(" ", scenarioTemplate.getTagNames()));

@@ -12,7 +12,7 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Tag;
 
-public class FeatureTemplateShould {
+public class FeatureModelShould {
 
 	@Test
 	public void haveCucumberFeature() {
@@ -24,7 +24,7 @@ public class FeatureTemplateShould {
 		String id = "id";
 		List<Tag> tags = new ArrayList<>();
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
-		FeatureTemplate wrapped = new FeatureTemplate();
+		FeatureModel wrapped = new FeatureModel();
 		wrapped.setFeature(feature);
 
 		assertThat(wrapped.getFeature(), is(feature));

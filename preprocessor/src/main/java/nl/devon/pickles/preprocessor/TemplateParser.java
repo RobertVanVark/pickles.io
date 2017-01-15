@@ -8,17 +8,17 @@ import java.util.List;
 
 import gherkin.parser.Parser;
 import gherkin.util.FixJava;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
 
 public class TemplateParser {
 
-	public FeatureTemplate parse(List<String> lines) {
+	public FeatureModel parse(List<String> lines) {
 		String featureUri = "";
 		String gherkin = String.join("\n", lines);
 		return parseGherkin(featureUri, gherkin);
 	}
 
-	public FeatureTemplate parse(String path) {
+	public FeatureModel parse(String path) {
 		String gherkin;
 		try {
 			gherkin = FixJava.readReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
@@ -29,9 +29,9 @@ public class TemplateParser {
 		return parseGherkin(path, gherkin);
 	}
 
-	private FeatureTemplate parseGherkin(String featureUri, String gherkin) {
+	private FeatureModel parseGherkin(String featureUri, String gherkin) {
 		StringBuilder output = new StringBuilder();
-		FeatureTemplate featureTemplate = new FeatureTemplate();
+		FeatureModel featureTemplate = new FeatureModel();
 		TemplateFormatter formatter = new TemplateFormatter(output, featureTemplate);
 		Parser parser = new Parser(formatter);
 		parser.parse(gherkin, featureUri, 0);

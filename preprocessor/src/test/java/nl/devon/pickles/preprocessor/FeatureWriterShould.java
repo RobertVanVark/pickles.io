@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class FeatureWriterShould {
@@ -25,7 +25,7 @@ public class FeatureWriterShould {
 	}
 
 	private List<String> generateFor(List<String> scenario) {
-		FeatureTemplate featureTemplate = new TemplateParser().parse(scenario);
+		FeatureModel featureTemplate = new TemplateParser().parse(scenario);
 		FeatureWriter writer = new FeatureWriter(featureTemplate);
 		return writer.generate();
 	}

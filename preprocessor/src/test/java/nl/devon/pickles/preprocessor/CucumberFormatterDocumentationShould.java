@@ -14,14 +14,14 @@ import org.junit.Test;
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentFeatureFields() {
-		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Feature feature = featureTemplate.getFeature();
 		// No Comments for Features !
@@ -39,7 +39,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentScenarioFields() {
-		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Scenario scenario = featureTemplate.getScenario(0).getScenario();
 		List<String> comments = scenario.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
@@ -58,7 +58,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentGivenStepFields() {
-		FeatureTemplate featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Step step = featureTemplate.getScenario(0).getStep(0);
 

@@ -11,7 +11,7 @@ public class BusinessEventDelay extends Delay {
 
 	private String event;
 
-	public static final String EXPRESSION = "\\S+";
+	public static final String EXPRESSION = "(?:\\S+)";
 	private static final Pattern PATTERN = Pattern.compile("^(\\S+)");
 
 	public BusinessEventDelay(String expression) {

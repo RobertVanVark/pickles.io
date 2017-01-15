@@ -9,15 +9,15 @@ import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.ScenarioOutline;
 import gherkin.formatter.model.Step;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
-import nl.devon.pickles.preprocessor.model.ScenarioTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
+import nl.devon.pickles.preprocessor.model.ScenarioModel;
 
 public class TemplateFormatter implements Formatter {
 
-	private FeatureTemplate featureTemplate;
+	private FeatureModel featureModel;
 
-	public TemplateFormatter(Appendable appendable, FeatureTemplate featureTemplate) {
-		this.featureTemplate = featureTemplate;
+	public TemplateFormatter(Appendable appendable, FeatureModel featureModel) {
+		this.featureModel = featureModel;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class TemplateFormatter implements Formatter {
 
 	@Override
 	public void feature(Feature feature) {
-		featureTemplate.setFeature(feature);
+		featureModel.setFeature(feature);
 	}
 
 	@Override
@@ -57,14 +57,14 @@ public class TemplateFormatter implements Formatter {
 
 	@Override
 	public void scenario(Scenario scenario) {
-		ScenarioTemplate template = new ScenarioTemplate();
+		ScenarioModel template = new ScenarioModel();
 		template.setSCenario(scenario);
-		featureTemplate.addScenario(template);
+		featureModel.addScenario(template);
 	}
 
 	@Override
 	public void step(Step step) {
-		ScenarioTemplate scenario = featureTemplate.getCurrentScenario();
+		ScenarioModel scenario = featureModel.getCurrentScenario();
 		scenario.addStep(step);
 	}
 

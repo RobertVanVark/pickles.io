@@ -15,11 +15,11 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
-import nl.devon.pickles.preprocessor.model.ScenarioTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
+import nl.devon.pickles.preprocessor.model.ScenarioModel;
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.DelayedVerificationStore;
-import nl.devon.pickles.steps.delays.TimeOffsetDelay;
+import nl.devon.pickles.steps.delays.DelayFactory;
 
 /*
  * MethodObject pattern as we're constantly passing around templateSCenario, templateFeature, etc.
@@ -30,24 +30,24 @@ public class TemplateTransformer {
 	private static final String INITIATION_TAG = "@PicklesInitiation";
 	private static final String VERIFICATION_TAG = "@PicklesVerification";
 
-	private FeatureTemplate originalFeature;
-	private FeatureTemplate transformedFeature;
+	private FeatureModel originalFeature;
+	private FeatureModel transformedFeature;
 	private DelayedVerificationStore store;
 
-	public TemplateTransformer(FeatureTemplate featureTemplate, DelayedVerificationStore store) {
+	public TemplateTransformer(FeatureModel featureTemplate, DelayedVerificationStore store) {
 		originalFeature = featureTemplate;
 		this.store = store;
 	}
 
-	public FeatureTemplate doIt() {
-		transformedFeature = new FeatureTemplate();
+	public FeatureModel doIt() {
+		transformedFeature = new FeatureModel();
 		transformedFeature.setFeature(originalFeature.getFeature());
 
 		return transformScenarios();
 	}
 
-	private FeatureTemplate transformScenarios() {
-		for (ScenarioTemplate originalScenario : originalFeature.getScenarios()) {
+	private FeatureModel transformScenarios() {
+		for (ScenarioModel originalScenario : originalFeature.getScenarios()) {
 
 			List<Range<Integer>> subscenarioRanges = findSubScenarios(originalScenario);
 			String checksum = checksum(originalScenario, subscenarioRanges.get(0).upperEndpoint());
@@ -66,7 +66,7 @@ public class TemplateTransformer {
 		return transformedFeature;
 	}
 
-	private List<Range<Integer>> findSubScenarios(ScenarioTemplate originalScenario) {
+	private List<Range<Integer>> findSubScenarios(ScenarioModel originalScenario) {
 		List<Range<Integer>> ranges = new ArrayList<>();
 		List<Step> steps = originalScenario.getSteps();
 		Integer start = 0;
@@ -85,8 +85,8 @@ public class TemplateTransformer {
 		return "Then ".equals(step.getKeyword()) && step.getName().startsWith("after ");
 	}
 
-	private void createInitiationScenario(ScenarioTemplate originalScenario, Range<Integer> range, String checksum) {
-		ScenarioTemplate transformedScenario = new ScenarioTemplate();
+	private void createInitiationScenario(ScenarioModel originalScenario, Range<Integer> range, String checksum) {
+		ScenarioModel transformedScenario = new ScenarioModel();
 		transformedScenario.setSCenario(originalScenario.getScenario());
 		transformedScenario.addTag(INITIATION_TAG);
 
@@ -102,9 +102,9 @@ public class TemplateTransformer {
 		transformedFeature.addScenario(transformedScenario);
 	}
 
-	private void createVerificationScenario(ScenarioTemplate originalScenario, Range<Integer> range,
+	private void createVerificationScenario(ScenarioModel originalScenario, Range<Integer> range,
 			DelayedVerification verification, String checksum) {
-		ScenarioTemplate transformedScenario = verificationScenarioFrom(originalScenario, verification);
+		ScenarioModel transformedScenario = verificationScenarioFrom(originalScenario, verification);
 
 		Step originalThenAfterStep = originalScenario.getStep(range.lowerEndpoint());
 		transformedScenario.addStep(verificationGivenStep(verification));
@@ -122,7 +122,7 @@ public class TemplateTransformer {
 		transformedFeature.addScenario(transformedScenario);
 	}
 
-	private String checksum(ScenarioTemplate originalScenario, Integer hasThenPosition) {
+	private String checksum(ScenarioModel originalScenario, Integer hasThenPosition) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		write(stream, originalFeature.getName());
 		for (int i = 0; i <= hasThenPosition; i++) {
@@ -148,8 +148,7 @@ public class TemplateTransformer {
 		}
 	}
 
-	private ScenarioTemplate verificationScenarioFrom(ScenarioTemplate originalScenario,
-			DelayedVerification verification) {
+	private ScenarioModel verificationScenarioFrom(ScenarioModel originalScenario, DelayedVerification verification) {
 		Scenario scenario = originalScenario.getScenario();
 		List<Comment> comments = Collections.emptyList();
 		List<Tag> tags = new ArrayList<Tag>(scenario.getTags());
@@ -161,7 +160,7 @@ public class TemplateTransformer {
 
 		Scenario copy = new Scenario(comments, tags, keyword, name, description, line, id);
 
-		ScenarioTemplate transformedScenario = new ScenarioTemplate();
+		ScenarioModel transformedScenario = new ScenarioModel();
 		transformedScenario.setSCenario(copy);
 		transformedScenario.addTag(VERIFICATION_TAG);
 
@@ -181,7 +180,7 @@ public class TemplateTransformer {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Then ";
 		String name = thenAfter.getName();
-		name = name.replaceAll(TimeOffsetDelay.EXPRESSION + " ", "");
+		name = name.replaceAll(DelayFactory.DELAY_EXPRESSION + " ", "");
 		Integer line = 2;
 
 		return new Step(comments, keyword, name, line, null, null);

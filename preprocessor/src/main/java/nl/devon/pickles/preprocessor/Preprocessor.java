@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import nl.devon.pickles.preprocessor.model.FeatureTemplate;
+import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.steps.DelayedVerificationStore;
 
 public class Preprocessor {
@@ -18,8 +18,8 @@ public class Preprocessor {
 	}
 
 	public List<String> process(List<String> lines) {
-		FeatureTemplate original = new TemplateParser().parse(lines);
-		FeatureTemplate transformed = new TemplateTransformer(original, store).doIt();
+		FeatureModel original = new TemplateParser().parse(lines);
+		FeatureModel transformed = new TemplateTransformer(original, store).doIt();
 		return new FeatureWriter(transformed).generate();
 	}
 
