@@ -9,4 +9,6 @@ public interface TestExecutionContext {
 	DelayedVerification get();
 
 	DateTime firstBusinessDayOnOrAfter(DateTime reference);
+
+	DateTime verifyTimeFor(String eventName, DateTime startingFrom);
 }

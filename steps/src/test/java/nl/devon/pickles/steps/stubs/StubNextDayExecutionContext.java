@@ -23,4 +23,17 @@ public class StubNextDayExecutionContext implements TestExecutionContext {
 	public DateTime firstBusinessDayOnOrAfter(DateTime reference) {
 		return reference.plusDays(1);
 	}
+
+	@Override
+	public DateTime verifyTimeFor(String eventName, DateTime startingFrom) {
+		if ("noon".equalsIgnoreCase(eventName)) {
+			return midnight().withHourOfDay(12);
+		}
+		return midnight();
+	}
+
+	private DateTime midnight() {
+		return DateTime.now().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+	}
+
 }

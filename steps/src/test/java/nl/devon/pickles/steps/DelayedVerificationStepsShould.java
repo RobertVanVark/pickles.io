@@ -6,9 +6,6 @@ import static org.junit.Assert.assertThat;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reflections.Reflections;
@@ -19,11 +16,12 @@ import org.reflections.util.FilterBuilder;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import nl.devon.pickles.steps.delays.DelayFactory;
 import nl.devon.pickles.steps.stubs.StubDelayedVerificationStore;
 import nl.devon.pickles.steps.stubs.StubExecutionContext;
 import nl.devon.pickles.steps.stubs.StubTestData;
 
-public class DelayedVerificationStepsShould {
+public class DelayedVerificationStepsShould extends FixedTimeTest {
 
 	/*
 	 * match Then after Business-Event .*
@@ -51,45 +49,44 @@ public class DelayedVerificationStepsShould {
 		steps.setPersistableTestData(testData);
 	}
 
-	@Before
-	public void givenTimeFixedAtTwelve() {
-		DateTimeUtils.setCurrentMillisFixed(twelve().getMillis());
-	}
-
-	@After
-	public void givenDateTimeReset() {
-		DateTimeUtils.setCurrentMillisSystem();
-	}
-
 	@Test
 	public void matchThenAfterExpression() {
 		Set<Method> methods = reflections().getMethodsAnnotatedWith(Then.class);
 		Object[] result = methods.stream()
-				.filter(m -> m.getAnnotation(Then.class).value().equals(
-						"^after (" + DelayedVerificationSteps.DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$"))
+				.filter(m -> m.getAnnotation(Then.class).value()
+						.equals("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$"))
 				.toArray();
 
 		assertThat(result.length, is(1));
 	}
 
 	@Test
-	public void createDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("after 02:00 hr", "step expression", "checksum");
+	public void createTimeOffsetDelayedVerificationInThenAfter() {
+		steps.initiateDelayedVerification("02:00 hr", "step expression", "checksum");
 
 		DelayedVerification verification = executionContext.get();
 		assertThat(verification.getScenarioChecksum(), is("checksum"));
-		assertThat(verification.getVerifyAt(), is(fourteen()));
+		assertThat(verification.getVerifyAt(), is(twelve()));
+	}
+
+	@Test
+	public void createBusinessEventDelayedVerificationInThenAfter() {
+		steps.initiateDelayedVerification("Noon", "step expression", "checksum");
+
+		DelayedVerification verification = executionContext.get();
+		assertThat(verification.getScenarioChecksum(), is("checksum"));
+		assertThat(verification.getVerifyAt(), is(twelve()));
 	}
 
 	@Test
 	public void saveDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("after 00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
 		assertThat(verificationStore.getNrSavesCalled(), is(1));
 	}
 
 	@Test
 	public void saveTestDataInThenAfter() {
-		steps.initiateDelayedVerification("after 00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
 		assertThat(testData.getNrSavesCalled(), is(1));
 	}
 
@@ -123,18 +120,6 @@ public class DelayedVerificationStepsShould {
 	public void loadTestDataInGiven() {
 		steps.testExecutionContextIsLoadedForDvId("dvId");
 		assertThat(testData.getNrLoadsCalled(), is(1));
-	}
-
-	private DateTime twelve() {
-		return midnight().withHourOfDay(12);
-	}
-
-	private DateTime fourteen() {
-		return midnight().withHourOfDay(14);
-	}
-
-	private DateTime midnight() {
-		return DateTime.now().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
 	}
 
 	private Reflections reflections() {

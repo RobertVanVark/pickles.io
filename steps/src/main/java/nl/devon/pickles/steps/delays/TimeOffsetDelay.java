@@ -1,14 +1,16 @@
-package nl.devon.pickles.steps;
+package nl.devon.pickles.steps.delays;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 
+import nl.devon.pickles.steps.TestExecutionContext;
+
 public class TimeOffsetDelay extends Delay {
 
-	public static final String EXPRESSION = "after \\d?\\d:\\d\\d hr";
-	private static final Pattern PATTERN = Pattern.compile("^after ([01]?[0-9]|2[0-3]):([0-5][0-9]) hr");
+	public static final String EXPRESSION = "\\d?\\d:\\d\\d hr";
+	private static final Pattern PATTERN = Pattern.compile("^([01]?[0-9]|2[0-3]):([0-5][0-9]) hr");
 
 	public TimeOffsetDelay(String expression) {
 		Matcher matcher = PATTERN.matcher(expression);
@@ -25,6 +27,10 @@ public class TimeOffsetDelay extends Delay {
 			start = executionContext.get().getVerifyAt();
 		}
 
+		return getVerifyAt(executionContext, start);
+	}
+
+	DateTime getVerifyAt(TestExecutionContext executionContext, DateTime start) {
 		return executionContext.firstBusinessDayOnOrAfter(start.plusHours(hours).plusMinutes(minutes));
 	}
 

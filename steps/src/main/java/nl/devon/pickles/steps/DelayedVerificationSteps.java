@@ -4,10 +4,10 @@ import org.joda.time.DateTime;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import nl.devon.pickles.steps.delays.Delay;
+import nl.devon.pickles.steps.delays.DelayFactory;
 
 public class DelayedVerificationSteps {
-
-	static final String DELAY_EXPRESSION = TimeOffsetDelay.EXPRESSION;
 
 	private DelayedVerification verification;
 	private DelayedVerificationStore verificationStore;
@@ -26,10 +26,10 @@ public class DelayedVerificationSteps {
 		verificationStore = delayedVerificationStore;
 	}
 
-	@Then("^after (" + DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$")
+	@Then("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$")
 	public void initiateDelayedVerification(String expression, String stepdef, String checksum) {
 
-		Delay delay = new TimeOffsetDelay(expression);
+		Delay delay = DelayFactory.create(expression);
 		DateTime verifyAt = delay.getVerifyAt(context);
 
 		verification = new DelayedVerification(verifyAt, checksum, "");

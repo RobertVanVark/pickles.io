@@ -19,7 +19,7 @@ import nl.devon.pickles.preprocessor.model.FeatureTemplate;
 import nl.devon.pickles.preprocessor.model.ScenarioTemplate;
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.DelayedVerificationStore;
-import nl.devon.pickles.steps.TimeOffsetDelay;
+import nl.devon.pickles.steps.delays.TimeOffsetDelay;
 
 /*
  * MethodObject pattern as we're constantly passing around templateSCenario, templateFeature, etc.
