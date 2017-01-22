@@ -2,8 +2,6 @@ package nl.devon.pickles.preprocessor;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
@@ -15,7 +13,6 @@ public class FeatureWriterShould {
 	 * ScenarioTemplate.toGherkinContent() ? ScenariotTemplate.toReporterJson() ?
 	 */
 
-	@Test
 	public void generateContent() {
 		List<String> featureFile = generateFor(SampleFeatureTemplates.twoThenAfterScenario());
 

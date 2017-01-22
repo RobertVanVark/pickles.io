@@ -49,4 +49,14 @@ public class FeatureModel {
 	public String getName() {
 		return feature.getName();
 	}
+
+	public String toFeatureString() {
+		StringBuffer buffer = new StringBuffer(64);
+		buffer.append(String.join(" ", getTagNames()));
+		buffer.append(System.getProperty("line.separator"));
+		buffer.append(feature.getKeyword()).append(": ").append(getName());
+		buffer.append(System.getProperty("line.separator"));
+		buffer.append(System.getProperty("line.separator"));
+		return buffer.toString();
+	}
 }

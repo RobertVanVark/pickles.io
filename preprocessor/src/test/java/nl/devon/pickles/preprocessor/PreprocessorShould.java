@@ -2,8 +2,6 @@ package nl.devon.pickles.preprocessor;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import nl.devon.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
@@ -13,7 +11,6 @@ public class PreprocessorShould {
 	 * transform all featuretemplates on the classpath or features setting in CucumberOptions into feature files
 	 */
 
-	@Test
 	public void parseTransformWrite() {
 		List<String> featureContent = preprocess(SampleFeatureTemplates.twoThenAfterScenario());
 		for (String line : featureContent) {
