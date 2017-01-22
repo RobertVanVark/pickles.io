@@ -20,10 +20,10 @@ public class FeatureModel {
 		return feature;
 	}
 
-	public void addScenario(ScenarioModel scenarioTemplate) {
-		scenarios.add(scenarioTemplate);
-		scenarioTemplate.setFeatureTemplate(this);
-		current = scenarioTemplate;
+	public void addScenario(ScenarioModel scenarioModel) {
+		scenarios.add(scenarioModel);
+		scenarioModel.setFeatureModel(this);
+		current = scenarioModel;
 	}
 
 	public List<ScenarioModel> getScenarios() {
