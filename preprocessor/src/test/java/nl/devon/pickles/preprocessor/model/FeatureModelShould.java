@@ -94,7 +94,9 @@ public class FeatureModelShould {
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
 		FeatureModel model = modelWith(feature);
 
-		assertThat(model.toFeatureString(), is("@tag1 @tag2\r\nFeature: Cucumber feature\r\n\r\n"));
+		String[] lines = model.toFeatureString().split(System.getProperty("line.separator"));
+		assertThat(lines[0], is("@tag1 @tag2"));
+		assertThat(lines[1], is("Feature: Cucumber feature"));
 	}
 
 	private FeatureModel modelWithTags(List<Tag> tags) {
