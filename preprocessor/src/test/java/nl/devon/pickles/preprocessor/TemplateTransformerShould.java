@@ -12,9 +12,9 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 import nl.devon.pickles.preprocessor.model.FeatureModel;
+import nl.devon.pickles.preprocessor.model.StepModel;
 import nl.devon.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
@@ -50,11 +50,11 @@ public class TemplateTransformerShould {
 	public void startEachFollowUpScenarioWithGiven() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
-		Step firstScenarioStep = featureTemplate.getScenario(1).getStep(0);
+		StepModel firstScenarioStep = featureTemplate.getScenario(1).getStep(0);
 		assertThat(firstScenarioStep.getKeyword(), is("Given "));
 		assertThat(firstScenarioStep.getName(), is("Test Execution Context is loaded for dvId=1000"));
 
-		Step secondScenarioStep = featureTemplate.getScenario(2).getStep(0);
+		StepModel secondScenarioStep = featureTemplate.getScenario(2).getStep(0);
 		assertThat(secondScenarioStep.getKeyword(), is("Given "));
 		assertThat(secondScenarioStep.getName(), is("Test Execution Context is loaded for dvId=1001"));
 	}
@@ -63,11 +63,11 @@ public class TemplateTransformerShould {
 	public void copyEachThenAfterToVerificationScenario() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
-		Step firstScenarioStep = featureTemplate.getScenario(1).getStep(1);
+		StepModel firstScenarioStep = featureTemplate.getScenario(1).getStep(1);
 		assertThat(firstScenarioStep.getKeyword(), is("Then "));
 		assertThat(firstScenarioStep.getName(), is("a first delayed outcome"));
 
-		Step secondScenarioStep = featureTemplate.getScenario(2).getStep(1);
+		StepModel secondScenarioStep = featureTemplate.getScenario(2).getStep(1);
 		assertThat(secondScenarioStep.getKeyword(), is("Then "));
 		assertThat(secondScenarioStep.getName(), is("a second delayed outcome"));
 	}
@@ -169,7 +169,7 @@ public class TemplateTransformerShould {
 		assertThat(firstStepOf(featureTemplate, 4).getName(), is("Test Execution Context is loaded for dvId=1003"));
 	}
 
-	private Step firstStepOf(FeatureModel featureTemplate, int scenarioId) {
+	private StepModel firstStepOf(FeatureModel featureTemplate, int scenarioId) {
 		return featureTemplate.getScenario(scenarioId).getStep(0);
 	}
 

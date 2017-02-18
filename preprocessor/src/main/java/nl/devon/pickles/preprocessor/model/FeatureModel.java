@@ -9,7 +9,7 @@ import gherkin.formatter.model.Feature;
 public class FeatureModel {
 
 	private Feature feature;
-	private List<ScenarioModel> scenarios = new ArrayList<>();
+	private List<ScenarioModel> scenarioModels = new ArrayList<>();
 	private ScenarioModel current;
 
 	public void setFeature(Feature feature) {
@@ -20,21 +20,21 @@ public class FeatureModel {
 		return feature;
 	}
 
-	public void addScenario(ScenarioModel scenarioModel) {
-		scenarios.add(scenarioModel);
+	public void addScenarioModel(ScenarioModel scenarioModel) {
+		scenarioModels.add(scenarioModel);
 		scenarioModel.setFeatureModel(this);
 		current = scenarioModel;
 	}
 
 	public List<ScenarioModel> getScenarios() {
-		return scenarios;
+		return scenarioModels;
 	}
 
 	public ScenarioModel getScenario(int i) {
-		return scenarios.get(i);
+		return scenarioModels.get(i);
 	}
 
-	public ScenarioModel getCurrentScenario() {
+	public ScenarioModel getCurrentScenarioModel() {
 		return current;
 	}
 
@@ -50,13 +50,16 @@ public class FeatureModel {
 		return feature.getName();
 	}
 
-	public String toFeatureString() {
+	public String toGherkin() {
 		StringBuffer buffer = new StringBuffer(64);
 		buffer.append(String.join(" ", getTagNames()));
 		buffer.append(System.getProperty("line.separator"));
 		buffer.append(feature.getKeyword()).append(": ").append(getName());
 		buffer.append(System.getProperty("line.separator"));
 		buffer.append(System.getProperty("line.separator"));
+		for (ScenarioModel scenario : getScenarios()) {
+			buffer.append(scenario.toGherkin());
+		}
 		return buffer.toString();
 	}
 }

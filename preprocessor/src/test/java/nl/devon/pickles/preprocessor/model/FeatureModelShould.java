@@ -65,8 +65,8 @@ public class FeatureModelShould {
 		ScenarioModel scenarioModel2 = new ScenarioModel();
 
 		FeatureModel model = modelWithName("feature");
-		model.addScenario(scenarioModel1);
-		model.addScenario(scenarioModel2);
+		model.addScenarioModel(scenarioModel1);
+		model.addScenarioModel(scenarioModel2);
 
 		assertThat(model.getScenarios(), Matchers.hasSize(2));
 		assertThat(model.getScenario(0), is(scenarioModel1));
@@ -75,11 +75,11 @@ public class FeatureModelShould {
 	@Test
 	public void haveLastAddedScenarioAsCurrentScenario() {
 		FeatureModel model = modelWithName("feature");
-		assertThat(model.getCurrentScenario(), nullValue());
+		assertThat(model.getCurrentScenarioModel(), nullValue());
 
 		ScenarioModel scenarioModel = new ScenarioModel();
-		model.addScenario(scenarioModel);
-		assertThat(model.getCurrentScenario(), is(scenarioModel));
+		model.addScenarioModel(scenarioModel);
+		assertThat(model.getCurrentScenarioModel(), is(scenarioModel));
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class FeatureModelShould {
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
 		FeatureModel model = modelWith(feature);
 
-		String[] lines = model.toFeatureString().split(System.getProperty("line.separator"));
+		String[] lines = model.toGherkin().split(System.getProperty("line.separator"));
 		assertThat(lines[0], is("@tag1 @tag2"));
 		assertThat(lines[1], is("Feature: Cucumber feature"));
 	}

@@ -13,8 +13,8 @@ import org.junit.Test;
 
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.Step;
 import nl.devon.pickles.preprocessor.model.FeatureModel;
+import nl.devon.pickles.preprocessor.model.StepModel;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class CucumberFormatterDocumentationShould {
@@ -60,7 +60,7 @@ public class CucumberFormatterDocumentationShould {
 	public void documentGivenStepFields() {
 		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
 
-		Step step = featureTemplate.getScenario(0).getStep(0);
+		StepModel step = featureTemplate.getScenario(0).getStep(0);
 
 		List<String> comments = step.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
 		assertThat(comments, hasItem("#Step comment"));

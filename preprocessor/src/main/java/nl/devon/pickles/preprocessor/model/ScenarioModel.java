@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 
 public class ScenarioModel {
 
 	private Scenario scenario;
 	private FeatureModel featureModel;
-	private List<Step> steps = new ArrayList<>();
+	private List<StepModel> stepModels = new ArrayList<>();
 
 	public Scenario getScenario() {
 		return scenario;
@@ -22,20 +21,20 @@ public class ScenarioModel {
 		this.scenario = scenario;
 	}
 
-	public void addStep(Step step) {
-		steps.add(step);
+	public void addStep(StepModel step) {
+		stepModels.add(step);
 	}
 
-	public List<Step> getSteps() {
-		return steps;
+	public List<StepModel> getSteps() {
+		return stepModels;
 	}
 
-	public Step getStep(int i) {
-		return steps.get(i);
+	public StepModel getStep(int i) {
+		return stepModels.get(i);
 	}
 
-	public Step getLastStep() {
-		return steps.get(steps.size() - 1);
+	public StepModel getLastStep() {
+		return stepModels.get(stepModels.size() - 1);
 	}
 
 	public void setFeatureModel(FeatureModel featureModel) {
@@ -65,7 +64,7 @@ public class ScenarioModel {
 		return scenario.getName();
 	}
 
-	public String toFeatureString() {
+	public String toGherkin() {
 		StringBuffer buffer = new StringBuffer(64);
 		buffer.append(String.join(" ", getTagNames()));
 		buffer.append(System.getProperty("line.separator"));

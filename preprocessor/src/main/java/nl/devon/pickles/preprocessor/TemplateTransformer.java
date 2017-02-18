@@ -17,6 +17,7 @@ import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.model.ScenarioModel;
+import nl.devon.pickles.preprocessor.model.StepModel;
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.DelayedVerificationStore;
 import nl.devon.pickles.steps.delays.DelayFactory;
@@ -68,7 +69,7 @@ public class TemplateTransformer {
 
 	private List<Range<Integer>> findSubScenarios(ScenarioModel originalScenario) {
 		List<Range<Integer>> ranges = new ArrayList<>();
-		List<Step> steps = originalScenario.getSteps();
+		List<StepModel> steps = originalScenario.getSteps();
 		Integer start = 0;
 		for (int i = 0; i < steps.size(); i++) {
 			if (isThenAfter(steps.get(i))) {
@@ -81,7 +82,7 @@ public class TemplateTransformer {
 		return ranges;
 	}
 
-	private boolean isThenAfter(Step step) {
+	private boolean isThenAfter(StepModel step) {
 		return "Then ".equals(step.getKeyword()) && step.getName().startsWith("after ");
 	}
 
@@ -91,7 +92,7 @@ public class TemplateTransformer {
 		transformedScenario.addTag(INITIATION_TAG);
 
 		for (int i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
-			Step step = originalScenario.getStep(i);
+			StepModel step = originalScenario.getStep(i);
 			if (isThenAfter(step)) {
 				transformedScenario.addStep(thenAfterStepFrom(step, checksum));
 			} else {
@@ -99,19 +100,19 @@ public class TemplateTransformer {
 			}
 		}
 
-		transformedFeature.addScenario(transformedScenario);
+		transformedFeature.addScenarioModel(transformedScenario);
 	}
 
 	private void createVerificationScenario(ScenarioModel originalScenario, Range<Integer> range,
 			DelayedVerification verification, String checksum) {
 		ScenarioModel transformedScenario = verificationScenarioFrom(originalScenario, verification);
 
-		Step originalThenAfterStep = originalScenario.getStep(range.lowerEndpoint());
+		StepModel originalThenAfterStep = originalScenario.getStep(range.lowerEndpoint());
 		transformedScenario.addStep(verificationGivenStep(verification));
 		transformedScenario.addStep(thenStepFrom(originalThenAfterStep));
 
 		for (int i = range.lowerEndpoint() + 1; i <= range.upperEndpoint(); i++) {
-			Step step = originalScenario.getStep(i);
+			StepModel step = originalScenario.getStep(i);
 			if (isThenAfter(step)) {
 				transformedScenario.addStep(thenAfterStepFrom(step, checksum));
 			} else {
@@ -119,7 +120,7 @@ public class TemplateTransformer {
 			}
 		}
 
-		transformedFeature.addScenario(transformedScenario);
+		transformedFeature.addScenarioModel(transformedScenario);
 	}
 
 	private String checksum(ScenarioModel originalScenario, Integer hasThenPosition) {
@@ -167,31 +168,34 @@ public class TemplateTransformer {
 		return transformedScenario;
 	}
 
-	private Step verificationGivenStep(DelayedVerification verification) {
+	private StepModel verificationGivenStep(DelayedVerification verification) {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Given ";
 		String name = "Test Execution Context is loaded for dvId=" + verification.getId();
 		Integer line = 1;
 
-		return new Step(comments, keyword, name, line, null, null);
+		Step step = new Step(comments, keyword, name, line, null, null);
+		return new StepModel(step);
 	}
 
-	private Step thenStepFrom(Step thenAfter) {
+	private StepModel thenStepFrom(StepModel thenAfter) {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Then ";
 		String name = thenAfter.getName();
 		name = name.replaceAll(DelayFactory.DELAY_EXPRESSION + " ", "");
 		Integer line = 2;
 
-		return new Step(comments, keyword, name, line, null, null);
+		Step step = new Step(comments, keyword, name, line, null, null);
+		return new StepModel(step);
 	}
 
-	private Step thenAfterStepFrom(Step thenAfter, String checksum) {
+	private StepModel thenAfterStepFrom(StepModel thenAfter, String checksum) {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Then ";
 		Integer line = thenAfter.getLine();
 		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ")";
 
-		return new Step(comments, keyword, name, line, null, null);
+		Step step = new Step(comments, keyword, name, line, null, null);
+		return new StepModel(step);
 	}
 }

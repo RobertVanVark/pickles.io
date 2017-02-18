@@ -73,8 +73,10 @@ public class ScenarioModelShould {
 		ScenarioModel model = modelWithName("scenario name");
 		assertThat(model.getSteps(), Matchers.hasSize(0));
 
-		Step step1 = new Step(Collections.emptyList(), "", "step 1", -1, Collections.emptyList(), null);
-		Step step2 = new Step(Collections.emptyList(), "", "step 2", -1, Collections.emptyList(), null);
+		StepModel step1 = new StepModel(
+				new Step(Collections.emptyList(), "", "step 1", -1, Collections.emptyList(), null));
+		StepModel step2 = new StepModel(
+				new Step(Collections.emptyList(), "", "step 2", -1, Collections.emptyList(), null));
 		model.addStep(step1);
 		model.addStep(step2);
 
@@ -95,7 +97,7 @@ public class ScenarioModelShould {
 		Scenario scenario = new Scenario(comments, tags, keyword, name, description, line, id);
 		ScenarioModel model = modelWith(scenario);
 
-		String[] lines = model.toFeatureString().split(System.getProperty("line.separator"));
+		String[] lines = model.toGherkin().split(System.getProperty("line.separator"));
 		assertThat(lines[0], is("@tag3 @tag222222"));
 		assertThat(lines[1], is("Scenario: Cucumber scenario"));
 	}

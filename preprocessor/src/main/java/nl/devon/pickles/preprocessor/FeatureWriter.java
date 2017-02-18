@@ -3,9 +3,9 @@ package nl.devon.pickles.preprocessor;
 import java.util.ArrayList;
 import java.util.List;
 
-import gherkin.formatter.model.Step;
 import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.model.ScenarioModel;
+import nl.devon.pickles.preprocessor.model.StepModel;
 
 public class FeatureWriter {
 
@@ -39,7 +39,7 @@ public class FeatureWriter {
 			content.add(String.join(" ", scenarioTemplate.getTagNames()));
 		}
 		content.add("Scenario: " + scenarioTemplate.getName());
-		for (Step step : scenarioTemplate.getSteps()) {
+		for (StepModel step : scenarioTemplate.getSteps()) {
 			content.add("    " + step.getKeyword() + step.getName());
 		}
 	}
