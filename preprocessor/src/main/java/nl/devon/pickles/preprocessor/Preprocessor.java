@@ -20,7 +20,7 @@ public class Preprocessor {
 	public List<String> process(List<String> lines) {
 		FeatureModel original = new TemplateParser().parse(lines);
 		FeatureModel transformed = new TemplateTransformer(original, store).doIt();
-		return new FeatureWriter(transformed).generate();
+		return transformed.toGherkinList();
 	}
 
 	public List<String> process(String path) throws IOException {

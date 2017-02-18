@@ -87,8 +87,7 @@ public class TemplateTransformer {
 	}
 
 	private void createInitiationScenario(ScenarioModel originalScenario, Range<Integer> range, String checksum) {
-		ScenarioModel transformedScenario = new ScenarioModel();
-		transformedScenario.setSCenario(originalScenario.getScenario());
+		ScenarioModel transformedScenario = new ScenarioModel(originalScenario.getScenario());
 		transformedScenario.addTag(INITIATION_TAG);
 
 		for (int i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
@@ -100,7 +99,7 @@ public class TemplateTransformer {
 			}
 		}
 
-		transformedFeature.addScenarioModel(transformedScenario);
+		transformedFeature.addScenario(transformedScenario);
 	}
 
 	private void createVerificationScenario(ScenarioModel originalScenario, Range<Integer> range,
@@ -120,7 +119,7 @@ public class TemplateTransformer {
 			}
 		}
 
-		transformedFeature.addScenarioModel(transformedScenario);
+		transformedFeature.addScenario(transformedScenario);
 	}
 
 	private String checksum(ScenarioModel originalScenario, Integer hasThenPosition) {
@@ -161,8 +160,7 @@ public class TemplateTransformer {
 
 		Scenario copy = new Scenario(comments, tags, keyword, name, description, line, id);
 
-		ScenarioModel transformedScenario = new ScenarioModel();
-		transformedScenario.setSCenario(copy);
+		ScenarioModel transformedScenario = new ScenarioModel(copy);
 		transformedScenario.addTag(VERIFICATION_TAG);
 
 		return transformedScenario;

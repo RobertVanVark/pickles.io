@@ -20,10 +20,10 @@ public class FeatureModel {
 		return feature;
 	}
 
-	public void addScenarioModel(ScenarioModel scenarioModel) {
-		scenarioModels.add(scenarioModel);
-		scenarioModel.setFeatureModel(this);
-		current = scenarioModel;
+	public void addScenario(ScenarioModel scenario) {
+		scenarioModels.add(scenario);
+		scenario.setFeature(this);
+		current = scenario;
 	}
 
 	public List<ScenarioModel> getScenarios() {
@@ -34,7 +34,7 @@ public class FeatureModel {
 		return scenarioModels.get(i);
 	}
 
-	public ScenarioModel getCurrentScenarioModel() {
+	public ScenarioModel getCurrentScenario() {
 		return current;
 	}
 
@@ -46,20 +46,32 @@ public class FeatureModel {
 		return feature.getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
 	}
 
+	public String getKeyword() {
+		return feature.getKeyword();
+	}
+
 	public String getName() {
 		return feature.getName();
 	}
 
 	public String toGherkin() {
-		StringBuffer buffer = new StringBuffer(64);
-		buffer.append(String.join(" ", getTagNames()));
-		buffer.append(System.getProperty("line.separator"));
-		buffer.append(feature.getKeyword()).append(": ").append(getName());
-		buffer.append(System.getProperty("line.separator"));
-		buffer.append(System.getProperty("line.separator"));
-		for (ScenarioModel scenario : getScenarios()) {
-			buffer.append(scenario.toGherkin());
+		return String.join(System.getProperty("line.separator"), toGherkinList());
+	}
+
+	public List<String> toGherkinList() {
+		List<String> gherkinList = new ArrayList<>();
+
+		if (hasTags()) {
+			gherkinList.add(String.join(" ", getTagNames()));
 		}
-		return buffer.toString();
+
+		gherkinList.add(getKeyword() + ": " + getName());
+
+		for (ScenarioModel scenario : getScenarios()) {
+			gherkinList.add("");
+			gherkinList.addAll(scenario.toGherkinList());
+		}
+
+		return gherkinList;
 	}
 }

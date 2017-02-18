@@ -3,6 +3,9 @@ package nl.devon.pickles.preprocessor.model;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -10,11 +13,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
 
 public class FeatureModelShould {
@@ -29,89 +32,99 @@ public class FeatureModelShould {
 		String id = "id";
 		List<Tag> tags = new ArrayList<>();
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
-		FeatureModel model = modelWith(feature);
+		FeatureModel featureModel = modelWith(feature);
 
-		assertThat(model.getFeature(), is(feature));
+		assertThat(featureModel.getFeature(), is(feature));
 	}
 
 	@Test
 	public void haveSameNameAsCucumberFeature() {
-		FeatureModel model = modelWithName("feature name");
+		FeatureModel featureModel = modelWithName("feature name");
 
-		assertThat(model.getName(), is("feature name"));
+		assertThat(featureModel.getName(), is("feature name"));
 
 	}
 
 	@Test
 	public void haveTagsIfCucumberFeatureHasTags() {
-		FeatureModel model = modelWithTags(Arrays.asList(new Tag("tag", 1)));
-		assertThat(model.hasTags(), is(true));
+		FeatureModel featureModel = modelWithTags(Arrays.asList(new Tag("tag", 1)));
+		assertThat(featureModel.hasTags(), is(true));
 
-		model = modelWithTags(Collections.emptyList());
-		assertThat(model.hasTags(), is(false));
+		featureModel = modelWithTags(Collections.emptyList());
+		assertThat(featureModel.hasTags(), is(false));
 	}
 
 	@Test
 	public void haveSameTagsAsCucumberFeature() {
 		List<Tag> tags = Arrays.asList(new Tag("tag", 1), new Tag("another tag", 2));
-		FeatureModel model = modelWithTags(tags);
+		FeatureModel featureModel = modelWithTags(tags);
 
-		assertThat(model.getTagNames(), contains("tag", "another tag"));
+		assertThat(featureModel.getTagNames(), contains("tag", "another tag"));
 	}
 
 	@Test
 	public void haveScenarios() {
-		ScenarioModel scenarioModel1 = new ScenarioModel();
-		ScenarioModel scenarioModel2 = new ScenarioModel();
+		ScenarioModel scenarioModel1 = new ScenarioModel(null);
+		ScenarioModel scenarioModel2 = new ScenarioModel(null);
 
 		FeatureModel model = modelWithName("feature");
-		model.addScenarioModel(scenarioModel1);
-		model.addScenarioModel(scenarioModel2);
+		model.addScenario(scenarioModel1);
+		model.addScenario(scenarioModel2);
 
-		assertThat(model.getScenarios(), Matchers.hasSize(2));
+		assertThat(model.getScenarios(), hasSize(2));
 		assertThat(model.getScenario(0), is(scenarioModel1));
 	}
 
 	@Test
 	public void haveLastAddedScenarioAsCurrentScenario() {
-		FeatureModel model = modelWithName("feature");
-		assertThat(model.getCurrentScenarioModel(), nullValue());
+		FeatureModel featureModel = modelWithName("feature");
+		assertThat(featureModel.getCurrentScenario(), nullValue());
 
-		ScenarioModel scenarioModel = new ScenarioModel();
-		model.addScenarioModel(scenarioModel);
-		assertThat(model.getCurrentScenarioModel(), is(scenarioModel));
+		ScenarioModel scenarioModel = new ScenarioModel(null);
+		featureModel.addScenario(scenarioModel);
+		assertThat(featureModel.getCurrentScenario(), is(scenarioModel));
 	}
 
 	@Test
-	public void convertToCondensedFeatureFileFormat() {
-		List<Comment> comments = Arrays.asList(new Comment("Comment line", 1), new Comment("Another comment", 2));
-		String keyword = "Feature";
-		String name = "Cucumber feature";
-		String description = "description";
-		Integer line = 1;
-		String id = "id";
+	public void convertToGherkin() {
 		List<Tag> tags = Arrays.asList(new Tag("@tag1", 4), new Tag("@tag2", 5));
-		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
-		FeatureModel model = modelWith(feature);
+		FeatureModel featureModel = modelWith("Cucumber feature", tags);
 
-		String[] lines = model.toGherkin().split(System.getProperty("line.separator"));
+		String[] lines = featureModel.toGherkin().split(System.getProperty("line.separator"));
 		assertThat(lines[0], is("@tag1 @tag2"));
 		assertThat(lines[1], is("Feature: Cucumber feature"));
 	}
 
+	@Test
+	public void convertToGherkinList() {
+		FeatureModel featureModel = modelWithName("Cucumber feature");
+		Scenario scenario = new Scenario(Collections.emptyList(), Collections.emptyList(), "Scenario", "first scenario",
+				"", -1, "");
+		featureModel.addScenario(new ScenarioModel(scenario));
+
+		List<String> lines = featureModel.toGherkinList();
+		assertThat(lines, hasSize(3));
+		assertThat(lines.get(0), equalTo("Feature: Cucumber feature"));
+		assertThat(lines.get(1), isEmptyString());
+		assertThat(lines.get(2), equalTo("Scenario: first scenario"));
+	}
+
 	private FeatureModel modelWithTags(List<Tag> tags) {
-		Feature feature = new Feature(Collections.emptyList(), tags, "", "", "", -1, "");
-		return modelWith(feature);
+		return modelWith("", tags);
 	}
 
 	private FeatureModel modelWithName(String name) {
-		Feature feature = new Feature(Collections.emptyList(), Collections.emptyList(), "", name, "", -1, "");
+		return modelWith(name, Collections.emptyList());
+	}
+
+	private FeatureModel modelWith(String name, List<Tag> tags) {
+		Feature feature = new Feature(Collections.emptyList(), tags, "Feature", name, "", -1, "");
 		return modelWith(feature);
 	}
 
 	private FeatureModel modelWith(Feature feature) {
-		FeatureModel model = new FeatureModel();
-		model.setFeature(feature);
-		return model;
+		FeatureModel featureModel = new FeatureModel();
+		featureModel.setFeature(feature);
+		return featureModel;
 	}
 }

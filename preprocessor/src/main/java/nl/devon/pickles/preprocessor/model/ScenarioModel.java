@@ -10,39 +10,39 @@ import gherkin.formatter.model.Tag;
 public class ScenarioModel {
 
 	private Scenario scenario;
-	private FeatureModel featureModel;
-	private List<StepModel> stepModels = new ArrayList<>();
+	private FeatureModel feature;
+	private List<StepModel> steps = new ArrayList<>();
+
+	public ScenarioModel(Scenario scenario) {
+		this.scenario = scenario;
+	}
 
 	public Scenario getScenario() {
 		return scenario;
 	}
 
-	public void setSCenario(Scenario scenario) {
-		this.scenario = scenario;
-	}
-
 	public void addStep(StepModel step) {
-		stepModels.add(step);
+		steps.add(step);
 	}
 
 	public List<StepModel> getSteps() {
-		return stepModels;
+		return steps;
 	}
 
 	public StepModel getStep(int i) {
-		return stepModels.get(i);
+		return steps.get(i);
 	}
 
 	public StepModel getLastStep() {
-		return stepModels.get(stepModels.size() - 1);
+		return steps.get(steps.size() - 1);
 	}
 
-	public void setFeatureModel(FeatureModel featureModel) {
-		this.featureModel = featureModel;
+	public void setFeature(FeatureModel feature) {
+		this.feature = feature;
 	}
 
-	public FeatureModel getFeatureModel() {
-		return featureModel;
+	public FeatureModel getFeature() {
+		return feature;
 	}
 
 	public boolean hasTags() {
@@ -65,12 +65,25 @@ public class ScenarioModel {
 	}
 
 	public String toGherkin() {
-		StringBuffer buffer = new StringBuffer(64);
-		buffer.append(String.join(" ", getTagNames()));
-		buffer.append(System.getProperty("line.separator"));
-		buffer.append(scenario.getKeyword()).append(": ").append(getName());
-		buffer.append(System.getProperty("line.separator"));
-		buffer.append(System.getProperty("line.separator"));
-		return buffer.toString();
+		return String.join(System.getProperty("line.separator"), toGherkinList());
+	}
+
+	public List<String> toGherkinList() {
+		List<String> gherkinList = new ArrayList<>();
+
+		if (hasTags()) {
+			gherkinList.add(String.join(" ", getTagNames()));
+		}
+
+		gherkinList.add(scenario.getKeyword() + ": " + getName());
+
+		for (StepModel step : steps) {
+			for (String stepGherkin : step.toGherkinList()) {
+				gherkinList.add("    " + stepGherkin);
+			}
+		}
+
+		return gherkinList;
+
 	}
 }

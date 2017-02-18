@@ -58,14 +58,13 @@ public class TemplateFormatter implements Formatter {
 
 	@Override
 	public void scenario(Scenario scenario) {
-		ScenarioModel template = new ScenarioModel();
-		template.setSCenario(scenario);
-		featureModel.addScenarioModel(template);
+		ScenarioModel model = new ScenarioModel(scenario);
+		featureModel.addScenario(model);
 	}
 
 	@Override
 	public void step(Step step) {
-		ScenarioModel scenario = featureModel.getCurrentScenarioModel();
+		ScenarioModel scenario = featureModel.getCurrentScenario();
 		scenario.addStep(new StepModel(step));
 	}
 

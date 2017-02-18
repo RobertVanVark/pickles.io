@@ -1,5 +1,6 @@
 package nl.devon.pickles.preprocessor.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,17 +13,22 @@ import gherkin.formatter.model.Step;
 public class StepModel {
 
 	private Step step;
+	private ScenarioModel scenario;
 
 	public StepModel(Step step) {
 		this.step = step;
 	}
 
-	public void setStep(Step step) {
-		this.step = step;
-	}
-
 	public Step getStep() {
 		return step;
+	}
+
+	public void setScenario(ScenarioModel scenario) {
+		this.scenario = scenario;
+	}
+
+	public ScenarioModel getScenario() {
+		return scenario;
 	}
 
 	public String getKeyword() {
@@ -51,5 +57,17 @@ public class StepModel {
 
 	public List<DataTableRow> getRows() {
 		return step.getRows();
+	}
+
+	public String toGherkin() {
+		return String.join(System.getProperty("line.separator"), toGherkinList());
+	}
+
+	public List<String> toGherkinList() {
+		List<String> gherkinList = new ArrayList<>();
+
+		gherkinList.add(getKeyword() + getName());
+
+		return gherkinList;
 	}
 }
