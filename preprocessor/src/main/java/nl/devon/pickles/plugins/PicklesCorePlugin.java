@@ -1,14 +1,19 @@
 package nl.devon.pickles.plugins;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gherkin.formatter.Reporter;
 import gherkin.formatter.model.Match;
 import gherkin.formatter.model.Result;
 import nl.devon.pickles.preprocessor.TemplateFormatter;
 import nl.devon.pickles.preprocessor.model.StepModel;
 
-public class PicklesPlugin extends TemplateFormatter implements Reporter {
+public abstract class PicklesCorePlugin extends TemplateFormatter implements Reporter {
 
-	public PicklesPlugin(Appendable out) {
+	private static final Logger LOGGER = LoggerFactory.getLogger("nl.devon.pickles.plugin.PicklesCorePlugin");
+
+	public PicklesCorePlugin(Appendable out) {
 		super(out);
 	}
 
@@ -33,7 +38,7 @@ public class PicklesPlugin extends TemplateFormatter implements Reporter {
 
 	@Override
 	public void match(Match match) {
-		log("match " + match.toString());
+		log("match ");
 		StepModel unmatchedStep = lastFeature().getFirstUnmatchedStep();
 		unmatchedStep.setMatch(match);
 	}
@@ -50,7 +55,7 @@ public class PicklesPlugin extends TemplateFormatter implements Reporter {
 		log("write");
 	}
 
-	public void log(String msg) {
-		// out.println("*** PicklesPlugin : " + msg);
+	private void log(String msg) {
+		LOGGER.info(msg);
 	}
 }

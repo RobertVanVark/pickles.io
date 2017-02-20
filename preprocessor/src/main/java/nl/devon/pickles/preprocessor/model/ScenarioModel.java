@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
 
@@ -45,6 +49,10 @@ public class ScenarioModel {
 		return feature;
 	}
 
+	public boolean hasComments() {
+		return getComments() != null && !getComments().isEmpty();
+	}
+
 	public boolean hasTags() {
 		return !scenario.getTags().isEmpty();
 	}
@@ -56,12 +64,35 @@ public class ScenarioModel {
 	public void addTag(String name) {
 		List<Tag> tags = new ArrayList<>(scenario.getTags());
 		tags.add(new Tag(name, 0));
-		scenario = new Scenario(scenario.getComments(), tags, scenario.getKeyword(), scenario.getName(),
-				scenario.getDescription(), scenario.getLine(), scenario.getId());
+		scenario = new Scenario(getComments(), tags, getKeyword(), getName(), getDescription(), getLine(), getId());
+	}
+
+	public List<Comment> getComments() {
+		return scenario.getComments();
+	}
+
+	public String getDescription() {
+		return scenario.getDescription();
+	}
+
+	public String getId() {
+		return scenario.getId();
+	}
+
+	public String getKeyword() {
+		return scenario.getKeyword();
+	}
+
+	public Integer getLine() {
+		return scenario.getLine();
 	}
 
 	public String getName() {
 		return scenario.getName();
+	}
+
+	public List<Tag> getTags() {
+		return scenario.getTags();
 	}
 
 	public String toGherkin() {
@@ -71,11 +102,17 @@ public class ScenarioModel {
 	public List<String> toGherkinList() {
 		List<String> gherkinList = new ArrayList<>();
 
+		if (hasComments()) {
+			for (Comment comment : getComments()) {
+				gherkinList.add(comment.getValue());
+			}
+		}
+
 		if (hasTags()) {
 			gherkinList.add(String.join(" ", getTagNames()));
 		}
 
-		gherkinList.add(scenario.getKeyword() + ": " + getName());
+		gherkinList.add(getKeyword() + ": " + getName());
 
 		for (StepModel step : steps) {
 			for (String stepGherkin : step.toGherkinList()) {
@@ -84,6 +121,56 @@ public class ScenarioModel {
 		}
 
 		return gherkinList;
+	}
 
+	public JSONObject toJSON() {
+		JSONObject scenarioJSON = new JSONObject();
+
+		scenarioJSON.put("id", getId());
+		scenarioJSON.put("description", getDescription());
+
+		if (hasTags()) {
+			scenarioJSON.put("tags", tagsJSON());
+		}
+
+		if (hasComments()) {
+			scenarioJSON.put("comments", commentsJSON());
+		}
+
+		scenarioJSON.put("name", getName());
+		scenarioJSON.put("keyword", getKeyword());
+		scenarioJSON.put("line", getLine());
+
+		scenarioJSON.put("type", getKeyword().toLowerCase());
+
+		JSONArray stepsJSON = new JSONArray();
+		for (StepModel step : getSteps()) {
+			stepsJSON.put(step.toJSON());
+		}
+		scenarioJSON.put("steps", stepsJSON);
+
+		return scenarioJSON;
+	}
+
+	private JSONArray tagsJSON() {
+		JSONArray tagsJSON = new JSONArray();
+		for (Tag tag : getTags()) {
+			JSONObject tagJSON = new JSONObject();
+			tagJSON.put("name", tag.getName());
+			tagJSON.put("line", tag.getLine());
+			tagsJSON.put(tagJSON);
+		}
+		return tagsJSON;
+	}
+
+	private JSONArray commentsJSON() {
+		JSONArray commentsJSON = new JSONArray();
+		for (Comment comment : getComments()) {
+			JSONObject commentJSON = new JSONObject();
+			commentJSON.put("value", comment.getValue());
+			commentJSON.put("line", comment.getLine());
+			commentsJSON.put(commentJSON);
+		}
+		return commentsJSON;
 	}
 }

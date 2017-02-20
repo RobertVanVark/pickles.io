@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Tag;
 
 public class FeatureModel {
 
@@ -38,12 +43,16 @@ public class FeatureModel {
 		return current;
 	}
 
+	public boolean hasComments() {
+		return feature.getComments() != null && !getComments().isEmpty();
+	}
+
 	public boolean hasTags() {
 		return !feature.getTags().isEmpty();
 	}
 
-	public List<String> getTagNames() {
-		return feature.getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+	public List<Comment> getComments() {
+		return feature.getComments();
 	}
 
 	public String getKeyword() {
@@ -54,12 +63,22 @@ public class FeatureModel {
 		return feature.getName();
 	}
 
+	public List<String> getTagNames() {
+		return feature.getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+	}
+
 	public String toGherkin() {
 		return String.join(System.getProperty("line.separator"), toGherkinList());
 	}
 
 	public List<String> toGherkinList() {
 		List<String> gherkinList = new ArrayList<>();
+
+		if (hasComments()) {
+			for (Comment comment : getComments()) {
+				gherkinList.add(comment.getValue());
+			}
+		}
 
 		if (hasTags()) {
 			gherkinList.add(String.join(" ", getTagNames()));
@@ -73,6 +92,55 @@ public class FeatureModel {
 		}
 
 		return gherkinList;
+	}
+
+	public JSONObject toJSON() {
+		JSONObject featureJSON = new JSONObject();
+
+		featureJSON.put("id", feature.getId());
+		featureJSON.put("description", feature.getDescription());
+
+		if (hasComments()) {
+			featureJSON.put("comments", commentsJSON());
+		}
+
+		if (hasTags()) {
+			featureJSON.put("tags", tagsJSON());
+		}
+
+		featureJSON.put("name", getName());
+		featureJSON.put("keyword", getKeyword());
+		featureJSON.put("line", feature.getLine());
+
+		JSONArray scenariosJSON = new JSONArray();
+		for (ScenarioModel scenario : getScenarios()) {
+			scenariosJSON.put(scenario.toJSON());
+		}
+		featureJSON.put("elements", scenariosJSON);
+
+		return featureJSON;
+	}
+
+	private JSONArray commentsJSON() {
+		JSONArray commentsJSON = new JSONArray();
+		for (Comment comment : getComments()) {
+			JSONObject commentJSON = new JSONObject();
+			commentJSON.put("value", comment.getValue());
+			commentJSON.put("line", comment.getLine());
+			commentsJSON.put(commentJSON);
+		}
+		return commentsJSON;
+	}
+
+	private JSONArray tagsJSON() {
+		JSONArray tagsJSON = new JSONArray();
+		for (Tag tag : feature.getTags()) {
+			JSONObject tagJSON = new JSONObject();
+			tagJSON.put("name", tag.getName());
+			tagJSON.put("line", tag.getLine());
+			tagsJSON.put(tagJSON);
+		}
+		return tagsJSON;
 	}
 
 	public StepModel getFirstUnmatchedStep() {

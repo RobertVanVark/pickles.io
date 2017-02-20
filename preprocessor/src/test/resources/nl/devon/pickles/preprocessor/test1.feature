@@ -1,5 +1,5 @@
 @FeatureTag
-Feature: Simple banking scenario
+Feature: Simple banking feature
 	Background information
 
 	@ScenarioTag1

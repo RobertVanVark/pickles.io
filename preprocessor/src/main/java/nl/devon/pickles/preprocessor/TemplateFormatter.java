@@ -3,6 +3,9 @@ package nl.devon.pickles.preprocessor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gherkin.formatter.Formatter;
 import gherkin.formatter.NiceAppendable;
 import gherkin.formatter.model.Background;
@@ -16,6 +19,8 @@ import nl.devon.pickles.preprocessor.model.ScenarioModel;
 import nl.devon.pickles.preprocessor.model.StepModel;
 
 public class TemplateFormatter implements Formatter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("nl.devon.pickles.plugin.TemplateFormatter");
 
 	private List<FeatureModel> features;
 	protected NiceAppendable out;
@@ -117,6 +122,6 @@ public class TemplateFormatter implements Formatter {
 	}
 
 	private void log(String msg) {
-		// out.println("*** TemplateFormatter : " + msg);
+		LOGGER.info(msg);
 	}
 }

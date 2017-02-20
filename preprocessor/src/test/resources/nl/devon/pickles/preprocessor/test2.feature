@@ -1,12 +1,14 @@
-@FeatureTag
-Feature: Simple banking scenario
+#Feature comment
+Feature: More elaborate banking feature
 	Background information
 
+	#Scenario Comment
 	@ScenarioTag2a @ScenarioTag2b
 	@ScenarioTag3
 	Scenario: Transfer extra money with delayed verifications
 	
-	#Comment
+	#Line comment 1
+	#Line comment 2
 	Given a creditor account
 	And a debtor account
 	When I transfer EUR 2.00
