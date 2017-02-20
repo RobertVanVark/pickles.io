@@ -7,16 +7,26 @@ import java.util.List;
 import gherkin.formatter.Argument;
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
+import gherkin.formatter.model.Match;
 import gherkin.formatter.model.Range;
+import gherkin.formatter.model.Result;
 import gherkin.formatter.model.Step;
 
 public class StepModel {
 
 	private Step step;
+	private Match match;
+	private Result result;
 	private ScenarioModel scenario;
 
 	public StepModel(Step step) {
 		this.step = step;
+	}
+
+	protected StepModel(Step step, Match match, Result result) {
+		this.step = step;
+		this.match = match;
+		this.result = result;
 	}
 
 	public Step getStep() {
@@ -69,5 +79,21 @@ public class StepModel {
 		gherkinList.add(getKeyword() + getName());
 
 		return gherkinList;
+	}
+
+	public void setMatch(Match match) {
+		this.match = match;
+	}
+
+	public boolean hasMatch() {
+		return match != null;
+	}
+
+	public void setResult(Result result) {
+		this.result = result;
+	}
+
+	public boolean hasResult() {
+		return result != null;
 	}
 }

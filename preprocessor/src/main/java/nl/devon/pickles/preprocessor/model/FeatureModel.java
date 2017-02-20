@@ -74,4 +74,17 @@ public class FeatureModel {
 
 		return gherkinList;
 	}
+
+	public StepModel getFirstUnmatchedStep() {
+		return scenarioModels.stream().flatMap(s -> s.getSteps().stream()).filter(s -> {
+			return !s.hasMatch();
+		}).findFirst().get();
+	}
+
+	public StepModel getFirstStepWithoutResult() {
+		return scenarioModels.stream().flatMap(s -> s.getSteps().stream()).filter(s -> {
+			return !s.hasResult();
+		}).findFirst().get();
+	}
+
 }

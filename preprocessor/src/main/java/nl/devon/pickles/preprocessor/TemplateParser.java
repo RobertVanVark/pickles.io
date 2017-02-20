@@ -36,6 +36,6 @@ public class TemplateParser {
 		Parser parser = new Parser(formatter);
 		parser.parse(gherkin, featureUri, 0);
 
-		return featureTemplate;
+		return formatter.getFeatures().get(0);
 	}
 }

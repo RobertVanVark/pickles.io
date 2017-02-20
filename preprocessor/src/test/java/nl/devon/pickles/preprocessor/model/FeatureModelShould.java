@@ -17,7 +17,10 @@ import org.junit.Test;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Match;
+import gherkin.formatter.model.Result;
 import gherkin.formatter.model.Scenario;
+import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 
 public class FeatureModelShould {
@@ -109,6 +112,24 @@ public class FeatureModelShould {
 		assertThat(lines.get(2), equalTo("Scenario: first scenario"));
 	}
 
+	@Test
+	public void findFirstUnmatchedStep() {
+		StepModel firstUnmatchedStep = twoUnmatchedScenarios().getFirstUnmatchedStep();
+		assertThat(firstUnmatchedStep.getName(), equalTo("first scenario - first"));
+
+		firstUnmatchedStep = lastStepUnmatched().getFirstUnmatchedStep();
+		assertThat(firstUnmatchedStep.getName(), equalTo("second scenario - last"));
+	}
+
+	@Test
+	public void findFirstStepWithoutResult() {
+		StepModel firstUnmatchedStep = twoUnmatchedScenarios().getFirstUnmatchedStep();
+		assertThat(firstUnmatchedStep.getName(), equalTo("first scenario - first"));
+
+		firstUnmatchedStep = lastStepUnmatched().getFirstUnmatchedStep();
+		assertThat(firstUnmatchedStep.getName(), equalTo("second scenario - last"));
+	}
+
 	private FeatureModel modelWithTags(List<Tag> tags) {
 		return modelWith("", tags);
 	}
@@ -126,5 +147,54 @@ public class FeatureModelShould {
 		FeatureModel featureModel = new FeatureModel();
 		featureModel.setFeature(feature);
 		return featureModel;
+	}
+
+	private FeatureModel twoUnmatchedScenarios() {
+		FeatureModel feature = modelWithName("feature");
+
+		ScenarioModel scenario = new ScenarioModel(new Scenario(Collections.emptyList(), Collections.emptyList(),
+				"Scenario", "first scenario", "", 3, ""));
+		feature.addScenario(scenario);
+		Step step = new Step(Collections.emptyList(), "Given ", "first scenario - first", 4, Collections.emptyList(),
+				null);
+		scenario.addStep(new StepModel(step));
+		step = new Step(Collections.emptyList(), "Then ", "first scenario - second", 5, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step));
+
+		scenario = new ScenarioModel(new Scenario(Collections.emptyList(), Collections.emptyList(), "Scenario",
+				"second scenario", "", 7, ""));
+		feature.addScenario(scenario);
+		step = new Step(Collections.emptyList(), "Given ", "second scenario - first", 8, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step));
+		step = new Step(Collections.emptyList(), "Then ", "second scenario - second", 9, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step));
+
+		return feature;
+	}
+
+	private FeatureModel lastStepUnmatched() {
+		FeatureModel feature = modelWithName("feature");
+
+		Match match = new Match(Collections.emptyList(), "location");
+		Result result = new Result("Pending", 10L, null, null);
+
+		ScenarioModel scenario = new ScenarioModel(new Scenario(Collections.emptyList(), Collections.emptyList(),
+				"Scenario", "first scenario", "", 3, ""));
+		feature.addScenario(scenario);
+		Step step = new Step(Collections.emptyList(), "Given ", "first scenario - first", 4, Collections.emptyList(),
+				null);
+		scenario.addStep(new StepModel(step, match, result));
+		step = new Step(Collections.emptyList(), "Then ", "first scenario - last", 5, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step, match, result));
+
+		scenario = new ScenarioModel(new Scenario(Collections.emptyList(), Collections.emptyList(), "Scenario",
+				"second scenario", "", 7, ""));
+		feature.addScenario(scenario);
+		step = new Step(Collections.emptyList(), "Given ", "second scenario - first", 8, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step, match, result));
+		step = new Step(Collections.emptyList(), "Then ", "second scenario - last", 9, Collections.emptyList(), null);
+		scenario.addStep(new StepModel(step));
+
+		return feature;
 	}
 }
