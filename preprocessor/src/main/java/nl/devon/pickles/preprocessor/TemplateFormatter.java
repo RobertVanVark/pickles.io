@@ -20,7 +20,7 @@ public class TemplateFormatter implements Formatter {
 	private List<FeatureModel> features;
 	protected NiceAppendable out;
 
-	public TemplateFormatter(Appendable out, FeatureModel featureModel) {
+	public TemplateFormatter(Appendable out) {
 		this.out = new NiceAppendable(out);
 		features = new ArrayList<>();
 	}

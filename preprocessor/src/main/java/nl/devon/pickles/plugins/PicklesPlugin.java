@@ -4,13 +4,12 @@ import gherkin.formatter.Reporter;
 import gherkin.formatter.model.Match;
 import gherkin.formatter.model.Result;
 import nl.devon.pickles.preprocessor.TemplateFormatter;
-import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.model.StepModel;
 
 public class PicklesPlugin extends TemplateFormatter implements Reporter {
 
 	public PicklesPlugin(Appendable out) {
-		super(out, new FeatureModel());
+		super(out);
 	}
 
 	@Override

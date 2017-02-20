@@ -30,9 +30,7 @@ public class TemplateParser {
 	}
 
 	private FeatureModel parseGherkin(String featureUri, String gherkin) {
-		StringBuilder output = new StringBuilder();
-		FeatureModel featureTemplate = new FeatureModel();
-		TemplateFormatter formatter = new TemplateFormatter(output, featureTemplate);
+		TemplateFormatter formatter = new TemplateFormatter(new StringBuilder());
 		Parser parser = new Parser(formatter);
 		parser.parse(gherkin, featureUri, 0);
 
