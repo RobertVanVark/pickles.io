@@ -14,7 +14,9 @@ import gherkin.formatter.model.Tag;
 public class FeatureModel {
 
 	private Feature feature;
+	private String uri;
 	private List<ScenarioModel> scenarioModels = new ArrayList<>();
+
 	private ScenarioModel current;
 
 	public void setFeature(Feature feature) {
@@ -65,6 +67,14 @@ public class FeatureModel {
 
 	public List<String> getTagNames() {
 		return feature.getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	public String toGherkin() {

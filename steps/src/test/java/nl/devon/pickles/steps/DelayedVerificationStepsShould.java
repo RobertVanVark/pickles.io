@@ -1,7 +1,6 @@
 package nl.devon.pickles.steps;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -13,6 +12,8 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+
+import static org.junit.Assert.assertThat;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -52,9 +53,9 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 	@Test
 	public void matchThenAfterExpression() {
 		Set<Method> methods = reflections().getMethodsAnnotatedWith(Then.class);
-		Object[] result = methods.stream()
-				.filter(m -> m.getAnnotation(Then.class).value()
-						.equals("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$"))
+		Object[] result = methods.stream().filter(
+				m -> m.getAnnotation(Then.class).value().equals("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) " //
+						+ "\\(dvChecksum=(\\w+), dvId=(.+), dvFeatureUri=(.+)\\)$"))
 				.toArray();
 
 		assertThat(result.length, is(1));
@@ -62,7 +63,7 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 
 	@Test
 	public void createTimeOffsetDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("02:00 hr", "step expression", "checksum");
+		steps.initiateDelayedVerification("02:00 hr", "step expression", "checksum", "id", "features/bdd.feature");
 
 		DelayedVerification verification = executionContext.get();
 		assertThat(verification.getScenarioChecksum(), is("checksum"));
@@ -71,7 +72,7 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 
 	@Test
 	public void createBusinessEventDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("Noon", "step expression", "checksum");
+		steps.initiateDelayedVerification("Noon", "step expression", "checksum", "id", "features/bdd.feature");
 
 		DelayedVerification verification = executionContext.get();
 		assertThat(verification.getScenarioChecksum(), is("checksum"));
@@ -80,13 +81,31 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 
 	@Test
 	public void saveDelayedVerificationInThenAfter() {
-		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum", "id", "features/bdd.feature");
 		assertThat(verificationStore.getNrSavesCalled(), is(1));
 	}
 
 	@Test
+	public void useProvidedChecksumInThenAfter() {
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum to be saved", "id", "features/bdd.feature");
+		assertThat(verificationStore.getDvSaved().getScenarioChecksum(), is("checksum to be saved"));
+	}
+
+	@Test
+	public void useProvidedIdInThenAfter() {
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum", "id to be saved", "features/bdd.feature");
+		assertThat(verificationStore.getDvSaved().getId(), is("id to be saved"));
+	}
+
+	@Test
+	public void useProvidedFeatureUriInThenAfter() {
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum", "id", "uri to be saved");
+		assertThat(verificationStore.getDvSaved().getFeatureUri(), is("uri to be saved"));
+	}
+
+	@Test
 	public void saveTestDataInThenAfter() {
-		steps.initiateDelayedVerification("00:00 hr", "", "checksum");
+		steps.initiateDelayedVerification("00:00 hr", "", "checksum", "id", "features/bdd.feature");
 		assertThat(testData.getNrSavesCalled(), is(1));
 	}
 

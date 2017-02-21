@@ -17,14 +17,14 @@ public class Preprocessor {
 		this.store = store;
 	}
 
-	public List<String> process(List<String> lines) {
-		FeatureModel original = new TemplateParser().parse(lines);
+	public List<String> process(String uri, List<String> lines) {
+		FeatureModel original = new TemplateParser().parse(uri, lines);
 		FeatureModel transformed = new TemplateTransformer(original, store).doIt();
 		return transformed.toGherkinList();
 	}
 
 	public List<String> process(String path) throws IOException {
 		List<String> templateLines = Files.readAllLines(Paths.get(URI.create(path)));
-		return process(templateLines);
+		return process(path, templateLines);
 	}
 }

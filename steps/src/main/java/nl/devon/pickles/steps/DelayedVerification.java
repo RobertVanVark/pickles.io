@@ -1,7 +1,5 @@
 package nl.devon.pickles.steps;
 
-import java.util.UUID;
-
 import org.joda.time.DateTime;
 
 public class DelayedVerification {
@@ -11,20 +9,20 @@ public class DelayedVerification {
 	private final DateTime verifyAt;
 	private final DateTime processedAt;
 	private final String scenarioChecksum;
-	private final String feature;
+	private final String featureUri;
 
-	public DelayedVerification(DateTime verifyAt, String scenarioChecksum, String feature) {
-		this(UUID.randomUUID().toString(), DateTime.now(), verifyAt, null, scenarioChecksum, feature);
+	public DelayedVerification(String id, DateTime verifyAt, String scenarioChecksum, String featureUri) {
+		this(id, DateTime.now(), verifyAt, null, scenarioChecksum, featureUri);
 	}
 
 	public DelayedVerification(String id, DateTime createdAt, DateTime verifyAt, DateTime processedAt,
-			String scenarioChecksum, String feature) {
+			String scenarioChecksum, String featureUri) {
 		this.id = id;
 		this.createdAt = createdAt;
 		this.verifyAt = verifyAt;
 		this.processedAt = processedAt;
 		this.scenarioChecksum = scenarioChecksum;
-		this.feature = feature;
+		this.featureUri = featureUri;
 	}
 
 	public String getId() {
@@ -47,7 +45,7 @@ public class DelayedVerification {
 		return scenarioChecksum;
 	}
 
-	public String getFeature() {
-		return feature;
+	public String getFeatureUri() {
+		return featureUri;
 	}
 }

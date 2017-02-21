@@ -26,13 +26,14 @@ public class DelayedVerificationSteps {
 		verificationStore = delayedVerificationStore;
 	}
 
-	@Then("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dv-checksum=(\\w{32})\\)$")
-	public void initiateDelayedVerification(String expression, String stepdef, String checksum) {
+	@Then("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dvChecksum=(\\w+), dvId=(.+), dvFeatureUri=(.+)\\)$")
+	public void initiateDelayedVerification(String expression, String stepdef, String checksum, String id,
+			String featureUri) {
 
 		Delay delay = DelayFactory.create(expression);
 		DateTime verifyAt = delay.getVerifyAt(context);
 
-		verification = new DelayedVerification(verifyAt, checksum, "");
+		verification = new DelayedVerification(id, verifyAt, checksum, featureUri);
 		verificationStore.create(verification);
 
 		context.set(verification);

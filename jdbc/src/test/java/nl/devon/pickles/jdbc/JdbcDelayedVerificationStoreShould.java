@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +16,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertThat;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -68,7 +69,7 @@ public class JdbcDelayedVerificationStoreShould {
 
 		assertThat(aVerification.getId(), is(validId));
 		assertThat(aVerification.getScenarioChecksum(), is("checksum for scenario 2"));
-		assertThat(aVerification.getFeature(), is("Test feature 1"));
+		assertThat(aVerification.getFeatureUri(), is("features/1.feature"));
 		assertThat(aVerification.getCreatedAt(), is(DateTime.parse("2016-12-26T00:00:00")));
 		assertThat(aVerification.getVerifyAt(), is(DateTime.parse("2016-12-26T00:00:00")));
 		assertThat(aVerification.getProcessedAt(), is(DateTime.parse("2016-12-26T12:00:00")));
@@ -105,11 +106,12 @@ public class JdbcDelayedVerificationStoreShould {
 
 	@Test
 	public void saveDelayedVerification() {
-		DelayedVerification aVerification = new DelayedVerification(DateTime.parse("2016-12-26T00:00:00"),
+		String dvId = "a fake dvId";
+		DelayedVerification aVerification = new DelayedVerification(dvId, DateTime.parse("2016-12-26T00:00:00"),
 				"save checksum", "save feature");
 		save(aVerification);
 
-		DelayedVerification verificationFromDb = getBy(aVerification.getId());
+		DelayedVerification verificationFromDb = getBy(dvId);
 		assertThat(verificationFromDb, notNullValue());
 	}
 
@@ -118,7 +120,7 @@ public class JdbcDelayedVerificationStoreShould {
 		String validId = "b4d08bf9-cb55-497d-b39e-5ada14462107";
 		DelayedVerification original = getBy(validId);
 		DelayedVerification verification = new DelayedVerification(validId, DateTime.now().minusHours(1),
-				DateTime.now(), DateTime.now().plusHours(1), "updated checksum", "updated feature");
+				DateTime.now(), DateTime.now().plusHours(1), "updated checksum", "features/updated.feature");
 		update(verification);
 
 		DelayedVerification updated = getBy(validId);

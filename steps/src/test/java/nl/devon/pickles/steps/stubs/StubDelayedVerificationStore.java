@@ -11,6 +11,7 @@ public class StubDelayedVerificationStore implements DelayedVerificationStore {
 
 	int nrLoads = 0;
 	int nrSaves = 0;
+	private DelayedVerification lastStored;
 
 	public int getNrLoadsCalled() {
 		return nrLoads;
@@ -20,9 +21,14 @@ public class StubDelayedVerificationStore implements DelayedVerificationStore {
 		return nrSaves;
 	}
 
+	public DelayedVerification getDvSaved() {
+		return lastStored;
+	}
+
 	@Override
 	public void create(DelayedVerification verification) {
 		nrSaves++;
+		lastStored = verification;
 	}
 
 	@Override

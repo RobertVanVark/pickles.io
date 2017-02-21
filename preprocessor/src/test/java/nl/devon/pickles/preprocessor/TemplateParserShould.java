@@ -1,12 +1,13 @@
 package nl.devon.pickles.preprocessor;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import nl.devon.pickles.preprocessor.model.FeatureModel;
 import nl.devon.pickles.preprocessor.stubs.SampleFeatureTemplates;
@@ -39,6 +40,6 @@ public class TemplateParserShould {
 
 	private FeatureModel parse(List<String> oneScenarioFeature) {
 		TemplateParser parser = new TemplateParser();
-		return parser.parse(oneScenarioFeature);
+		return parser.parse("", oneScenarioFeature);
 	}
 }

@@ -12,10 +12,9 @@ import nl.devon.pickles.preprocessor.model.FeatureModel;
 
 public class TemplateParser {
 
-	public FeatureModel parse(List<String> lines) {
-		String featureUri = "";
+	public FeatureModel parse(String uri, List<String> lines) {
 		String gherkin = String.join("\n", lines);
-		return parseGherkin(featureUri, gherkin);
+		return parseGherkin(uri, gherkin);
 	}
 
 	public FeatureModel parse(String path) {

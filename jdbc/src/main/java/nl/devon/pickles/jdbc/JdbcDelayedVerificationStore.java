@@ -50,7 +50,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
-					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE FROM DELAYED_VERIFICATION WHERE ID = ?");
+					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE_URI FROM DELAYED_VERIFICATION WHERE ID = ?");
 			statement.setString(1, id);
 			results = delayedVerificationsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -68,7 +68,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
-					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE FROM DELAYED_VERIFICATION WHERE CHECKSUM = ?");
+					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE_URI FROM DELAYED_VERIFICATION WHERE CHECKSUM = ?");
 			statement.setString(1, checksum);
 			results = delayedVerificationsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -84,7 +84,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 		List<DelayedVerification> results;
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
-					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE FROM DELAYED_VERIFICATION WHERE CHECKSUM = ? AND PROCESSED_AT IS NULL");
+					"SELECT ID, CREATED_AT, VERIFY_AT, PROCESSED_AT, CHECKSUM, FEATURE_URI FROM DELAYED_VERIFICATION WHERE CHECKSUM = ? AND PROCESSED_AT IS NULL");
 			statement.setString(1, checksum);
 			results = delayedVerificationsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -135,7 +135,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 				statement.setTimestamp(4, null);
 			}
 			statement.setString(5, verification.getScenarioChecksum());
-			statement.setString(6, verification.getFeature());
+			statement.setString(6, verification.getFeatureUri());
 
 			statement.execute();
 		} catch (SQLException ex) {
@@ -148,7 +148,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 	public void update(DelayedVerification verification) {
 		try {
 			PreparedStatement statement = setupConnection().prepareStatement(
-					"UPDATE DELAYED_VERIFICATION SET CREATED_AT=?,VERIFY_AT=?,PROCESSED_AT=?,CHECKSUM=?,FEATURE=? WHERE ID=?");
+					"UPDATE DELAYED_VERIFICATION SET CREATED_AT=?,VERIFY_AT=?,PROCESSED_AT=?,CHECKSUM=?,FEATURE_URI=? WHERE ID=?");
 			statement.setTimestamp(1, new Timestamp(verification.getCreatedAt().getMillis()));
 			statement.setTimestamp(2, new Timestamp(verification.getVerifyAt().getMillis()));
 			if (verification.getProcessedAt() != null) {
@@ -157,7 +157,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 				statement.setTimestamp(3, null);
 			}
 			statement.setString(4, verification.getScenarioChecksum());
-			statement.setString(5, verification.getFeature());
+			statement.setString(5, verification.getFeatureUri());
 			statement.setString(6, verification.getId());
 
 			statement.execute();

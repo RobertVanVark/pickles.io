@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.common.collect.Range;
 
@@ -151,7 +152,7 @@ public class TemplateTransformer {
 	private ScenarioModel verificationScenarioFrom(ScenarioModel originalScenario, DelayedVerification verification) {
 		Scenario scenario = originalScenario.getScenario();
 		List<Comment> comments = Collections.emptyList();
-		List<Tag> tags = new ArrayList<Tag>(scenario.getTags());
+		List<Tag> tags = new ArrayList<>(scenario.getTags());
 		String keyword = scenario.getKeyword();
 		String name = scenario.getName() + " (dvId=" + verification.getId() + ")";
 		String description = "";
@@ -191,7 +192,9 @@ public class TemplateTransformer {
 		List<Comment> comments = Collections.emptyList();
 		String keyword = "Then ";
 		Integer line = thenAfter.getLine();
-		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ")";
+		String dvId = UUID.randomUUID().toString();
+		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ", dvId=" + dvId + ", dvUri="
+				+ originalFeature.getUri() + ")";
 
 		Step step = new Step(comments, keyword, name, line, null, null);
 		return new StepModel(step);

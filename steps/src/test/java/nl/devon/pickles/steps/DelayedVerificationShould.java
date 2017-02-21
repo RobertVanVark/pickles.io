@@ -1,15 +1,13 @@
 package nl.devon.pickles.steps;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import nl.devon.pickles.steps.DelayedVerification;
+import static org.junit.Assert.assertTrue;
 
 public class DelayedVerificationShould {
 
@@ -35,38 +33,34 @@ public class DelayedVerificationShould {
 	}
 
 	@Test
+	public void beUniquelyIdentifiable() {
+		String id = "dvId";
+		DelayedVerification verification = new DelayedVerification(id, DateTime.now(), "12345",
+				"features/name.feature");
+		assertThat(verification.getId(), is(id));
+	}
+
+	@Test
 	public void identifyCreatingScenario() {
 		String scenarioChecksum = "12345";
-		DelayedVerification verification = new DelayedVerification(DateTime.now(), scenarioChecksum, "feature name");
+		DelayedVerification verification = new DelayedVerification("id", DateTime.now(), scenarioChecksum,
+				"features/name.feature");
 		assertThat(verification.getScenarioChecksum(), is(scenarioChecksum));
 	}
 
 	@Test
 	public void identifyFeature() {
-		String feature = "feature name";
-		DelayedVerification verification = new DelayedVerification(DateTime.now(), "checksum", feature);
-		assertThat(verification.getFeature(), is(feature));
-	}
-
-	@Test
-	public void generateUniqueId() {
-		DelayedVerification first = delayedVerification(DateTime.now());
-		System.out.println(first.getId());
-		assertThat(first.getId(), notNullValue());
-
-		DelayedVerification second = delayedVerification(DateTime.now());
-		assertThat(second.getId(), notNullValue());
-		System.out.println(second.getId());
-
-		assertThat(first.getId(), not(second.getId()));
+		String feature = "features/name.feature";
+		DelayedVerification verification = new DelayedVerification("id", DateTime.now(), "checksum", feature);
+		assertThat(verification.getFeatureUri(), is(feature));
 	}
 
 	private DelayedVerification delayedVerification(DateTime verifyAt) {
-		return new DelayedVerification(verifyAt, "dummy checksum", "dummy feature");
+		return new DelayedVerification("id", verifyAt, "dummy checksum", "features/dummy.feature");
 	}
 
 	private DelayedVerification restoredDelayedVerification() {
 		return new DelayedVerification("fake id", DateTime.now().minusHours(2), DateTime.now().minusHours(1),
-				DateTime.now(), "dummy checksum", "dummy feature");
+				DateTime.now(), "dummy checksum", "features/dummy.feature");
 	}
 }

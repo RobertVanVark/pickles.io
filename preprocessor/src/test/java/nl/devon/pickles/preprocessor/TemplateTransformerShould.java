@@ -3,13 +3,18 @@ package nl.devon.pickles.preprocessor;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
@@ -38,12 +43,41 @@ public class TemplateTransformerShould {
 	public void appendChecksumToEachThenAfter() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
-		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), is(
-				"after 02:00 hr a first delayed outcome (dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337)"));
+		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), startsWith(
+				"after 02:00 hr a first delayed outcome (dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337"));
 
-		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), is(
-				"after 01:00 hr a second delayed outcome (dvChecksum=46358382589510680607637515553784553654583731010741977208799246255849153888211)"));
+		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), startsWith(
+				"after 01:00 hr a second delayed outcome (dvChecksum=46358382589510680607637515553784553654583731010741977208799246255849153888211"));
+	}
 
+	@Test
+	public void appendDvIdToEachThenAfter() {
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+
+		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), containsString(
+				"(dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337, dvId="));
+
+		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), containsString(
+				"dvChecksum=46358382589510680607637515553784553654583731010741977208799246255849153888211, dvId="));
+	}
+
+	@Test
+	public void appendUriToEachThenAfter() {
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+
+		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
+				endsWith(", dvUri=src/test/resources/featuretemplate)"));
+
+		assertThat(featureTemplate.getScenario(1).getLastStep().getName(),
+				endsWith(", dvUri=src/test/resources/featuretemplate)"));
+	}
+
+	@Test
+	public void appendChecksumIdUriToEachThenAfter() {
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+
+		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
+				stringContainsInOrder(Arrays.asList("(dvChecksum=", ", dvId=", ", dvUri=")));
 	}
 
 	@Test
@@ -143,7 +177,7 @@ public class TemplateTransformerShould {
 	}
 
 	private FeatureModel transform(List<String> templateLines, int nrDvs) {
-		FeatureModel featureTemplate = new TemplateParser().parse(templateLines);
+		FeatureModel featureTemplate = new TemplateParser().parse("src/test/resources/featuretemplate", templateLines);
 		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
 				new DummyDelayedVerificationStore(nrDvs));
 		return transformer.doIt();

@@ -4,12 +4,13 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
@@ -21,7 +22,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentFeatureFields() {
-		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse("", SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Feature feature = featureTemplate.getFeature();
 		// No Comments for Features !
@@ -39,7 +40,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentScenarioFields() {
-		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse("", SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		Scenario scenario = featureTemplate.getScenario(0).getScenario();
 		List<String> comments = scenario.getComments().stream().map(s -> s.getValue()).collect(Collectors.toList());
@@ -58,7 +59,7 @@ public class CucumberFormatterDocumentationShould {
 
 	@Test
 	public void documentGivenStepFields() {
-		FeatureModel featureTemplate = new TemplateParser().parse(SampleFeatureTemplates.simmpleFeatureTemplate());
+		FeatureModel featureTemplate = new TemplateParser().parse("", SampleFeatureTemplates.simmpleFeatureTemplate());
 
 		StepModel step = featureTemplate.getScenario(0).getStep(0);
 

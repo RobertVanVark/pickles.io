@@ -48,9 +48,11 @@ public class TemplateFormatter implements Formatter {
 	}
 
 	@Override
-	public void uri(String s) {
+	public void uri(String uri) {
 		log("uri");
-		features.add(new FeatureModel());
+		FeatureModel feature = new FeatureModel();
+		feature.setUri(uri);
+		features.add(feature);
 	}
 
 	@Override

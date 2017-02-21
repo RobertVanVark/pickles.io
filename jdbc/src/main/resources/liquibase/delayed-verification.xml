@@ -10,7 +10,7 @@
     	<column name="VERIFY_AT" type="datetime"/>
     	<column name="PROCESSED_AT" type="datetime"/>
     	<column name="CHECKSUM" type="varchar(32)"/>
-    	<column name="FEATURE" type="varchar(255)"/>
+    	<column name="FEATURE_URI" type="varchar(255)"/>
     </createTable>
     </changeSet>
 </databaseChangeLog>

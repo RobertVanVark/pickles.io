@@ -2,10 +2,11 @@ package nl.devon.pickles.steps.delays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import nl.devon.pickles.steps.DelayedVerification;
 import nl.devon.pickles.steps.FixedTimeTest;
@@ -49,7 +50,7 @@ public class TimeOffsetDelayShould extends FixedTimeTest {
 
 	@Test
 	public void addOffsetToPreviousDvsIfAvailable() {
-		DelayedVerification verification = new DelayedVerification(ten(), "checksum", "feature");
+		DelayedVerification verification = new DelayedVerification("id", ten(), "checksum", "feature");
 		TestExecutionContext executionContext = new StubExecutionContext();
 		executionContext.set(verification);
 
