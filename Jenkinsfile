@@ -16,4 +16,5 @@ try {
   slackSend color: 'good', message: "Build success: ${env.JOB_NAME}!"
 } catch (e) {
   slackSend color: 'danger', message: "Build failed: ${env.JOB_NAME}!"
+  throw e
 }
