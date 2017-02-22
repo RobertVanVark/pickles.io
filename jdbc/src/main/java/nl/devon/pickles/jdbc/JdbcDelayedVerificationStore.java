@@ -38,7 +38,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 			properties.load(stream);
 		} catch (IOException e) {
 			throw new DelayedVerificationStoreException(
-					"JdbcDelayedVerificationStore cannot be inititaed. 'delayed-verification-store.properties' is ill-formated");
+					"JdbcDelayedVerificationStore cannot be inititaed. 'delayed-verification-store.properties' is ill-formated",e);
 		}
 		url = properties.getProperty("url");
 		username = properties.getProperty("username");
@@ -115,7 +115,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 		try {
 			connection = DriverManager.getConnection(url);
 		} catch (SQLException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 
 		return connection;
