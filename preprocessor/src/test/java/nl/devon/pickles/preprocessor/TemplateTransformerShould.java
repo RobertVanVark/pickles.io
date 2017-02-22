@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Scenario;
@@ -44,10 +45,10 @@ public class TemplateTransformerShould {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), startsWith(
-				"after 02:00 hr a first delayed outcome (dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337"));
+				"after 02:00 hr a first delayed outcome: (dvChecksum=51496814382697918777763546205902190458132421958037690351349586919008849388683"));
 
 		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), startsWith(
-				"after 01:00 hr a second delayed outcome (dvChecksum=46358382589510680607637515553784553654583731010741977208799246255849153888211"));
+				"after 01:00 hr a second delayed outcome (dvChecksum=28689529752417372157209393638731288334397142686961947502620568881217480631817"));
 	}
 
 	@Test
@@ -55,10 +56,10 @@ public class TemplateTransformerShould {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), containsString(
-				"(dvChecksum=5763855420898474544005950582865379151478164379053680340472962992051329764337, dvId="));
+				"(dvChecksum=51496814382697918777763546205902190458132421958037690351349586919008849388683, dvId="));
 
 		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), containsString(
-				"dvChecksum=46358382589510680607637515553784553654583731010741977208799246255849153888211, dvId="));
+				"dvChecksum=28689529752417372157209393638731288334397142686961947502620568881217480631817, dvId="));
 	}
 
 	@Test
@@ -99,11 +100,24 @@ public class TemplateTransformerShould {
 
 		StepModel firstScenarioStep = featureTemplate.getScenario(1).getStep(1);
 		assertThat(firstScenarioStep.getKeyword(), is("Then "));
-		assertThat(firstScenarioStep.getName(), is("a first delayed outcome"));
+		assertThat(firstScenarioStep.getName(), is("a first delayed outcome:"));
 
 		StepModel secondScenarioStep = featureTemplate.getScenario(2).getStep(1);
 		assertThat(secondScenarioStep.getKeyword(), is("Then "));
 		assertThat(secondScenarioStep.getName(), is("a second delayed outcome"));
+	}
+
+	@Test
+	public void moveDataTableFromThenAfterToVerificationScenario() {
+		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
+
+		StepModel originalStep = featureTemplate.getScenario(0).getLastStep();
+		assertFalse(originalStep.hasRows());
+
+		StepModel firstScenarioStep = featureTemplate.getScenario(1).getStep(1);
+		assertThat(firstScenarioStep.getKeyword(), is("Then "));
+		assertThat(firstScenarioStep.getName(), is("a first delayed outcome:"));
+		assertThat(firstScenarioStep.getRows().size(), is(3));
 	}
 
 	@Test

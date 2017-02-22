@@ -48,8 +48,16 @@ public class StepModel {
 		return getComments() != null && !getComments().isEmpty();
 	}
 
+	public boolean hasRows() {
+		return getRows() != null && !getRows().isEmpty();
+	}
+
 	public Collection<Comment> getComments() {
 		return step.getComments();
+	}
+
+	public List<DataTableRow> getDatatable() {
+		return step.getRows();
 	}
 
 	public String getKeyword() {
@@ -90,6 +98,11 @@ public class StepModel {
 		}
 
 		gherkinList.add(getKeyword() + getName());
+		if (hasRows()) {
+			for (DataTableRow row : getRows()) {
+				gherkinList.add("| " + String.join(" | ", row.getCells()) + " |");
+			}
+		}
 
 		return gherkinList;
 	}
@@ -106,9 +119,28 @@ public class StepModel {
 		}
 
 		stepJSON.put("match", matchJSON());
+
+		if (hasRows()) {
+			stepJSON.put("rows", rowsJSON());
+		}
+
 		stepJSON.put("result", resultJSON());
 
 		return stepJSON;
+	}
+
+	private JSONArray rowsJSON() {
+		JSONArray rowsJSON = new JSONArray();
+		for (DataTableRow row : getRows()) {
+			JSONObject rowJSON = new JSONObject();
+			JSONArray cellsJSON = new JSONArray();
+			for (String cell : row.getCells()) {
+				cellsJSON.put(cell);
+			}
+			rowJSON.put("cells", cellsJSON);
+			rowsJSON.put(rowJSON);
+		}
+		return rowsJSON;
 	}
 
 	private JSONArray commentsJSON() {

@@ -13,6 +13,7 @@ import java.util.UUID;
 import com.google.common.collect.Range;
 
 import gherkin.formatter.model.Comment;
+import gherkin.formatter.model.DataTableRow;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
@@ -183,8 +184,9 @@ public class TemplateTransformer {
 		String name = thenAfter.getName();
 		name = name.replaceAll(DelayFactory.DELAY_EXPRESSION + " ", "");
 		Integer line = 2;
+		List<DataTableRow> rows = thenAfter.getRows();
 
-		Step step = new Step(comments, keyword, name, line, null, null);
+		Step step = new Step(comments, keyword, name, line, rows, null);
 		return new StepModel(step);
 	}
 
