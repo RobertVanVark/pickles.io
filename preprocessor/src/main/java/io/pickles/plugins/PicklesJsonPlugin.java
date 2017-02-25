@@ -8,7 +8,7 @@ import io.pickles.preprocessor.model.FeatureModel;
 
 public class PicklesJsonPlugin extends PicklesCorePlugin {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("nl.devon.pickles.plugin.PicklesJsonPlugin");
+	private static final Logger LOGGER = LoggerFactory.getLogger(PicklesJsonPlugin.class);
 
 	public PicklesJsonPlugin(Appendable out) {
 		super(out);

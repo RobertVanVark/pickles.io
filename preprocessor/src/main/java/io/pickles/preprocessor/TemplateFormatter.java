@@ -20,7 +20,7 @@ import io.pickles.preprocessor.model.StepModel;
 
 public class TemplateFormatter implements Formatter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("nl.devon.pickles.plugin.TemplateFormatter");
+	private static final Logger LOGGER = LoggerFactory.getLogger(TemplateFormatter.class);
 
 	private List<FeatureModel> features;
 	protected NiceAppendable out;

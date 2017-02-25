@@ -20,9 +20,9 @@ import gherkin.formatter.model.Tag;
 import io.pickles.preprocessor.model.FeatureModel;
 import io.pickles.preprocessor.model.ScenarioModel;
 import io.pickles.preprocessor.model.StepModel;
-import nl.devon.pickles.steps.DelayedVerification;
-import nl.devon.pickles.steps.DelayedVerificationStore;
-import nl.devon.pickles.steps.delays.DelayFactory;
+import io.pickles.steps.DelayedVerification;
+import io.pickles.steps.DelayedVerificationStore;
+import io.pickles.steps.delays.DelayFactory;
 
 /*
  * MethodObject pattern as we're constantly passing around templateSCenario, templateFeature, etc.

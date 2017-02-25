@@ -3,8 +3,8 @@ package io.pickles.preprocessor.stubs;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.devon.pickles.steps.DelayedVerification;
-import nl.devon.pickles.steps.DelayedVerificationStore;
+import io.pickles.steps.DelayedVerification;
+import io.pickles.steps.DelayedVerificationStore;
 
 public class DummyDelayedVerificationStore implements DelayedVerificationStore {
 

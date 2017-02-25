@@ -11,7 +11,7 @@ import io.pickles.preprocessor.model.StepModel;
 
 public abstract class PicklesCorePlugin extends TemplateFormatter implements Reporter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("nl.devon.pickles.plugin.PicklesCorePlugin");
+	private static final Logger LOGGER = LoggerFactory.getLogger(PicklesCorePlugin.class);
 
 	public PicklesCorePlugin(Appendable out) {
 		super(out);
