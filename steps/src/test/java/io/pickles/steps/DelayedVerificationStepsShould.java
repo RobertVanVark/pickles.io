@@ -4,7 +4,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +56,9 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 	@Test
 	public void matchThenAfterExpression() {
 		Set<Method> methods = reflections().getMethodsAnnotatedWith(Then.class);
-		Object[] result = methods.stream().filter(
-				m -> m.getAnnotation(Then.class).value().equals("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) " //
-						+ "\\(dvChecksum=(\\w+), dvId=(.+), dvFeatureUri=(.+)\\)$"))
+		Object[] result = methods.stream()
+				.filter(m -> m.getAnnotation(Then.class).value().equals("^(" + DelayFactory.DELAY_EXPRESSION + ") (.*) " //
+						+ "\\(dvChecksum=(.+), dvId=(.+), dvFeatureUri=(.+)\\)$"))
 				.toArray();
 
 		assertThat(result.length, is(1));
@@ -112,7 +116,7 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 	public void matchGivenExpression() {
 		Set<Method> methods = reflections().getMethodsAnnotatedWith(Given.class);
 		Object[] result = methods.stream().filter(
-				m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded with dv-id=(.+)$"))
+				m -> m.getAnnotation(Given.class).value().equals("^Test Execution Context is loaded for dvId=(.+)$"))
 				.toArray();
 
 		assertThat(result.length, is(1));
@@ -145,6 +149,25 @@ public class DelayedVerificationStepsShould extends FixedTimeTest {
 				new ConfigurationBuilder().filterInputsBy(new FilterBuilder().includePackage("io.pickles"))
 						.setUrls(ClasspathHelper.forPackage("io.pickles")).setScanners(new MethodAnnotationsScanner()));
 		return reflections;
+	}
+
+	@Test
+	public void matchThenAfterExamples() {
+		Set<Method> methods = reflections().getMethodsAnnotatedWith(Then.class);
+		List<String> expressions = methods.stream().map(m -> m.getAnnotation(Then.class).value())
+				.collect(Collectors.toList());
+
+		int matches = 0;
+		for (String expression : expressions) {
+			Pattern pattern = Pattern.compile(expression);
+			Matcher matcher = pattern.matcher(
+					"after 2:00 hr billing information is generated (dvChecksum=28689529752417372157209393638731288334397142686961947502620568881217480631817, dvId=1, dvFeatureUri=features/SimpleBankingScenario.feature)");
+			if (matcher.matches()) {
+				matches++;
+			}
+		}
+
+		assertThat(matches, is(1));
 	}
 
 }

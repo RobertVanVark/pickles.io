@@ -20,6 +20,8 @@ public class DelayFactory {
 
 	public static Delay create(String expression) {
 
+		expression = expression.replace("after ", "");
+
 		if (expression.contains(" + ")) {
 			int index = expression.indexOf(" + ");
 			Delay first = create(expression.substring(0, index));

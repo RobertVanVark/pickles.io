@@ -6,6 +6,8 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +16,8 @@ import java.util.stream.Collectors;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
-import io.pickles.preprocessor.TemplateParser;
-import io.pickles.preprocessor.TemplateTransformer;
 import io.pickles.preprocessor.model.FeatureModel;
 import io.pickles.preprocessor.model.StepModel;
 import io.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
@@ -69,10 +66,10 @@ public class TemplateTransformerShould {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
-				endsWith(", dvUri=src/test/resources/featuretemplate)"));
+				endsWith(", dvFeatureUri=src/test/resources/featuretemplate)"));
 
 		assertThat(featureTemplate.getScenario(1).getLastStep().getName(),
-				endsWith(", dvUri=src/test/resources/featuretemplate)"));
+				endsWith(", dvFeatureUri=src/test/resources/featuretemplate)"));
 	}
 
 	@Test
@@ -80,7 +77,7 @@ public class TemplateTransformerShould {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
-				stringContainsInOrder(Arrays.asList("(dvChecksum=", ", dvId=", ", dvUri=")));
+				stringContainsInOrder(Arrays.asList("(dvChecksum=", ", dvId=", ", dvFeatureUri=")));
 	}
 
 	@Test

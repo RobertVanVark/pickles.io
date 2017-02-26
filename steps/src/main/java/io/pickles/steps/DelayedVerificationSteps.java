@@ -26,7 +26,7 @@ public class DelayedVerificationSteps {
 		verificationStore = delayedVerificationStore;
 	}
 
-	@Then("^after (" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dvChecksum=(\\w+), dvId=(.+), dvFeatureUri=(.+)\\)$")
+	@Then("^(" + DelayFactory.DELAY_EXPRESSION + ") (.*) \\(dvChecksum=(.+), dvId=(.+), dvFeatureUri=(.+)\\)$")
 	public void initiateDelayedVerification(String expression, String stepdef, String checksum, String id,
 			String featureUri) {
 
@@ -43,7 +43,7 @@ public class DelayedVerificationSteps {
 		}
 	}
 
-	@Given("^Test Execution Context is loaded with dv-id=(.+)$")
+	@Given("^Test Execution Context is loaded for dvId=(.+)$")
 	public void testExecutionContextIsLoadedForDvId(String dvId) {
 		verification = verificationStore.read(dvId);
 

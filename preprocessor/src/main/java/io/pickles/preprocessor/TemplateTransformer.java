@@ -195,7 +195,7 @@ public class TemplateTransformer {
 		String keyword = "Then ";
 		Integer line = thenAfter.getLine();
 		String dvId = UUID.randomUUID().toString();
-		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ", dvId=" + dvId + ", dvUri="
+		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ", dvId=" + dvId + ", dvFeatureUri="
 				+ originalFeature.getUri() + ")";
 
 		Step step = new Step(comments, keyword, name, line, null, null);
