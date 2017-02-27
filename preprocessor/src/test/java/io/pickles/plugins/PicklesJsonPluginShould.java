@@ -19,8 +19,8 @@ public class PicklesJsonPluginShould {
 	public void runCucumberWithPlugin() throws IOException {
 		ArrayList<String> commandlineParams = new ArrayList<>();
 		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.plugins.PicklesJsonPlugin"));
-		commandlineParams.addAll(Arrays.asList("-g", "classpath:io.pickles.plugins.stubsteps"));
-		commandlineParams.addAll(Arrays.asList("classpath:nl/devon/pickles/preprocessor"));
+		commandlineParams.addAll(Arrays.asList("-g", "classpath:io.pickles"));
+		commandlineParams.addAll(Arrays.asList("classpath:io/pickles/preprocessor"));
 
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		ResourceLoader resourceLoader = new MultiLoader(contextClassLoader);
