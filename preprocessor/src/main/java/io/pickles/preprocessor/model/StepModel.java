@@ -156,14 +156,20 @@ public class StepModel {
 
 	private JSONObject resultJSON() {
 		JSONObject resultJSON = new JSONObject();
-		resultJSON.put("status", result.getStatus());
-		resultJSON.putOpt("duration", result.getDuration());
+		if (hasResult()) {
+			resultJSON.put("status", result.getStatus());
+			resultJSON.putOpt("duration", result.getDuration());
+		} else {
+			resultJSON.put("status", "undefined");
+		}
 		return resultJSON;
 	}
 
 	private JSONObject matchJSON() {
 		JSONObject matchJSON = new JSONObject();
-		matchJSON.put("location", match.getLocation());
+		if (hasMatch()) {
+			matchJSON.put("location", match.getLocation());
+		}
 		return matchJSON;
 	}
 
