@@ -43,10 +43,10 @@ public class BusinessEventDelayShould extends FixedTimeTest {
 	public void determineVerifyAtThroughTestExecutionTime() {
 		BusinessEventDelay delay = new BusinessEventDelay("Noon");
 
-		DateTime verifyAt = delay.getVerifyAt(new StubExecutionContext());
+		DateTime verifyAt = delay.getVerificationTime(new StubExecutionContext());
 		assertThat(verifyAt, is(twelve()));
 
-		verifyAt = delay.getVerifyAt(new StubNextDayExecutionContext());
+		verifyAt = delay.getVerificationTime(new StubNextDayExecutionContext());
 		assertThat(verifyAt, is(midnight().withHourOfDay(12)));
 	}
 

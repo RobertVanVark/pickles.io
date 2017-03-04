@@ -14,7 +14,7 @@ public class CombinedDelayShould extends FixedTimeTest {
 	@Test
 	public void addDelays() {
 		CombinedDelay combined = (CombinedDelay) DelayFactory.create("Noon + 1:00 hr");
-		assertThat(combined.getVerifyAt(new StubExecutionContext()), is(thirteen()));
+		assertThat(combined.getVerificationTime(new StubExecutionContext()), is(thirteen()));
 	}
 
 	private DateTime thirteen() {

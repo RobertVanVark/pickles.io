@@ -8,7 +8,7 @@ public interface TestExecutionContext {
 
 	DelayedVerification get();
 
-	DateTime firstBusinessDayOnOrAfter(DateTime reference);
+	DateTime firstBusinessDay(DateTime onOrAfter);
 
-	DateTime verifyTimeFor(String eventName, DateTime startingFrom);
+	DateTime firstVerificationTimeFor(String eventName, DateTime atOrAfter);
 }

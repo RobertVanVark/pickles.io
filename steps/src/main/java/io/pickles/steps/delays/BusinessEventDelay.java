@@ -22,8 +22,9 @@ public class BusinessEventDelay extends Delay {
 	}
 
 	@Override
-	DateTime getVerifyAt(TestExecutionContext executionContext, DateTime startingFrom) {
-		return executionContext.verifyTimeFor(event, startingFrom);
+	DateTime getVerificationTime(TestExecutionContext testExecutionContext, DateTime atOrAfter) {
+		DateTime firstVerificationTimeFor = testExecutionContext.firstVerificationTimeFor(event, atOrAfter);
+		return testExecutionContext.firstBusinessDay(firstVerificationTimeFor);
 	}
 
 	public String getEvent() {

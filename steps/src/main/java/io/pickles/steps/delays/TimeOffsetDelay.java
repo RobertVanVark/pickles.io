@@ -21,18 +21,18 @@ public class TimeOffsetDelay extends Delay {
 	}
 
 	@Override
-	public DateTime getVerifyAt(TestExecutionContext executionContext) {
+	public DateTime getVerificationTime(TestExecutionContext testExecutionContext) {
 		DateTime start = DateTime.now();
-		if (executionContext.get() != null) {
-			start = executionContext.get().getVerifyAt();
+		if (testExecutionContext.get() != null) {
+			start = testExecutionContext.get().getVerifyAt();
 		}
 
-		return getVerifyAt(executionContext, start);
+		return getVerificationTime(testExecutionContext, start);
 	}
 
 	@Override
-	DateTime getVerifyAt(TestExecutionContext executionContext, DateTime start) {
-		return executionContext.firstBusinessDayOnOrAfter(start.plusHours(hours).plusMinutes(minutes));
+	DateTime getVerificationTime(TestExecutionContext testExecutionContext, DateTime atOrAfter) {
+		return testExecutionContext.firstBusinessDay(atOrAfter.plusHours(hours).plusMinutes(minutes));
 	}
 
 	Integer getHours() {

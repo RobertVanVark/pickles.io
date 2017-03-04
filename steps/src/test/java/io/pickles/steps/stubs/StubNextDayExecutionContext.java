@@ -20,12 +20,12 @@ public class StubNextDayExecutionContext implements TestExecutionContext {
 	}
 
 	@Override
-	public DateTime firstBusinessDayOnOrAfter(DateTime reference) {
-		return reference.plusDays(1);
+	public DateTime firstBusinessDay(DateTime onOrAfter) {
+		return onOrAfter.plusDays(1);
 	}
 
 	@Override
-	public DateTime verifyTimeFor(String eventName, DateTime startingFrom) {
+	public DateTime firstVerificationTimeFor(String eventName, DateTime atOrAfter) {
 		if ("noon".equalsIgnoreCase(eventName)) {
 			return midnight().withHourOfDay(12);
 		}

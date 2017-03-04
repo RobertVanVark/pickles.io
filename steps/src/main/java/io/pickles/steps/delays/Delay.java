@@ -9,14 +9,14 @@ public abstract class Delay {
 	protected Integer hours;
 	protected Integer minutes;
 
-	public DateTime getVerifyAt(TestExecutionContext executionContext) {
+	public DateTime getVerificationTime(TestExecutionContext testExecutionContext) {
 		DateTime startingFrom = DateTime.now();
-		if (executionContext.get() != null) {
-			startingFrom = executionContext.get().getVerifyAt();
+		if (testExecutionContext.get() != null) {
+			startingFrom = testExecutionContext.get().getVerifyAt();
 		}
 
-		return getVerifyAt(executionContext, startingFrom);
+		return getVerificationTime(testExecutionContext, startingFrom);
 	}
 
-	abstract DateTime getVerifyAt(TestExecutionContext executionContext, DateTime startingFrom);
+	abstract DateTime getVerificationTime(TestExecutionContext testExecutionContext, DateTime atOrAfter);
 }

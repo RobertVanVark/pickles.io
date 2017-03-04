@@ -71,7 +71,7 @@ public class DelayedVerificationSteps {
 			String featureUri) {
 
 		Delay delay = DelayFactory.create(expression);
-		DateTime verifyAt = delay.getVerifyAt(context);
+		DateTime verifyAt = delay.getVerificationTime(context);
 
 		verification = new DelayedVerification(id, verifyAt, checksum, featureUri);
 		verificationStore.create(verification);

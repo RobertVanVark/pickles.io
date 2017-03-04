@@ -15,10 +15,10 @@ public class CombinedDelay extends Delay {
 	}
 
 	@Override
-	public DateTime getVerifyAt(TestExecutionContext executionContext, DateTime startingFrom) {
+	public DateTime getVerificationTime(TestExecutionContext testEecutionContext, DateTime onOrAfter) {
 
-		DateTime firstVerifyAt = firstDelay.getVerifyAt(executionContext, startingFrom);
-		DateTime secondVerifyAt = secondDelay.getVerifyAt(executionContext, firstVerifyAt);
+		DateTime firstVerifyAt = firstDelay.getVerificationTime(testEecutionContext, onOrAfter);
+		DateTime secondVerifyAt = secondDelay.getVerificationTime(testEecutionContext, firstVerifyAt);
 
 		return secondVerifyAt;
 	}

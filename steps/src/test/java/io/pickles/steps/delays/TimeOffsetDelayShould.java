@@ -43,7 +43,7 @@ public class TimeOffsetDelayShould extends FixedTimeTest {
 	@Test
 	public void addOffsetToCurrentTime() {
 		Delay delay = new TimeOffsetDelay("2:00 hr");
-		DateTime time = delay.getVerifyAt(new StubExecutionContext());
+		DateTime time = delay.getVerificationTime(new StubExecutionContext());
 		assertThat(time, is(ten().plusHours(2)));
 	}
 
@@ -54,14 +54,14 @@ public class TimeOffsetDelayShould extends FixedTimeTest {
 		executionContext.set(verification);
 
 		Delay delay = new TimeOffsetDelay("2:00 hr");
-		DateTime time = delay.getVerifyAt(executionContext);
+		DateTime time = delay.getVerificationTime(executionContext);
 		assertThat(time, is(twelve()));
 	}
 
 	@Test
 	public void scheduleVerificationOnBusinessDaysOnly() {
 		Delay delay = new TimeOffsetDelay("2:00 hr");
-		DateTime time = delay.getVerifyAt(new StubNextDayExecutionContext());
+		DateTime time = delay.getVerificationTime(new StubNextDayExecutionContext());
 		assertThat(time, is(tenNextDay().plusHours(2)));
 	}
 
