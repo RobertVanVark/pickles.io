@@ -40,14 +40,14 @@ public class BusinessEventDelayShould extends FixedTimeTest {
 	}
 
 	@Test
-	public void determineVerifyAtThroughTestExecutionTime() {
+	public void determineVerificationTimeThroughTestExecutionTime() {
 		BusinessEventDelay delay = new BusinessEventDelay("Noon");
 
 		DateTime verifyAt = delay.getVerificationTime(new StubExecutionContext());
 		assertThat(verifyAt, is(twelve()));
 
 		verifyAt = delay.getVerificationTime(new StubNextDayExecutionContext());
-		assertThat(verifyAt, is(midnight().withHourOfDay(12)));
+		assertThat(verifyAt, is(midnight().withDayOfMonth(2).withHourOfDay(12)));
 	}
 
 	@Test
