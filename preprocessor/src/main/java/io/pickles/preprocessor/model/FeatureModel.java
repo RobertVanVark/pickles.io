@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
@@ -18,6 +19,11 @@ public class FeatureModel {
 	private List<ScenarioModel> scenarioModels = new ArrayList<>();
 
 	private ScenarioModel current;
+
+	public static FeatureModel fromJson(String json) {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.fromJson(json, FeatureModel.class);
+	}
 
 	public void setFeature(Feature feature) {
 		this.feature = feature;
@@ -57,8 +63,20 @@ public class FeatureModel {
 		return feature.getComments();
 	}
 
+	public String getDescription() {
+		return feature.getDescription();
+	}
+
 	public String getKeyword() {
 		return feature.getKeyword();
+	}
+
+	public String getId() {
+		return feature.getId();
+	}
+
+	public Integer getLine() {
+		return feature.getLine();
 	}
 
 	public String getName() {
@@ -67,6 +85,10 @@ public class FeatureModel {
 
 	public List<String> getTagNames() {
 		return feature.getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+	}
+
+	public List<Tag> getTags() {
+		return feature.getTags();
 	}
 
 	public String getUri() {
@@ -104,53 +126,24 @@ public class FeatureModel {
 		return gherkinList;
 	}
 
-	public JSONObject toJSON() {
-		JSONObject featureJSON = new JSONObject();
-
-		featureJSON.put("id", feature.getId());
-		featureJSON.put("description", feature.getDescription());
-
-		if (hasComments()) {
-			featureJSON.put("comments", commentsJSON());
-		}
-
-		if (hasTags()) {
-			featureJSON.put("tags", tagsJSON());
-		}
-
-		featureJSON.put("name", getName());
-		featureJSON.put("keyword", getKeyword());
-		featureJSON.put("line", feature.getLine());
-
-		JSONArray scenariosJSON = new JSONArray();
-		for (ScenarioModel scenario : getScenarios()) {
-			scenariosJSON.put(scenario.toJSON());
-		}
-		featureJSON.put("elements", scenariosJSON);
-
-		return featureJSON;
+	public String toPrettyJson() {
+		Gson gson = ModelGsonBuilder.builder().setPrettyPrinting().create();
+		return gson.toJson(this);
 	}
 
-	private JSONArray commentsJSON() {
-		JSONArray commentsJSON = new JSONArray();
-		for (Comment comment : getComments()) {
-			JSONObject commentJSON = new JSONObject();
-			commentJSON.put("value", comment.getValue());
-			commentJSON.put("line", comment.getLine());
-			commentsJSON.put(commentJSON);
+	public JsonObject toDeepJsonObject() {
+		JsonObject featureJson = toJsonObject();
+		JsonArray scenariosJson = new JsonArray();
+		for (ScenarioModel scenarioModel : scenarioModels) {
+			scenariosJson.add(scenarioModel.toDeepJsonObject());
 		}
-		return commentsJSON;
+		featureJson.add("elements", scenariosJson);
+		return featureJson;
 	}
 
-	private JSONArray tagsJSON() {
-		JSONArray tagsJSON = new JSONArray();
-		for (Tag tag : feature.getTags()) {
-			JSONObject tagJSON = new JSONObject();
-			tagJSON.put("name", tag.getName());
-			tagJSON.put("line", tag.getLine());
-			tagsJSON.put(tagJSON);
-		}
-		return tagsJSON;
+	public JsonObject toJsonObject() {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.toJsonTree(this).getAsJsonObject();
 	}
 
 	public StepModel getFirstUnmatchedStep() {
@@ -164,5 +157,4 @@ public class FeatureModel {
 			return !s.hasResult();
 		}).findFirst().get();
 	}
-
 }

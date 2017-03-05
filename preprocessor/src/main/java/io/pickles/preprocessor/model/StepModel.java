@@ -1,11 +1,13 @@
 package io.pickles.preprocessor.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import gherkin.formatter.Argument;
 import gherkin.formatter.model.Comment;
@@ -26,10 +28,15 @@ public class StepModel {
 		this.step = step;
 	}
 
-	protected StepModel(Step step, Match match, Result result) {
+	StepModel(Step step, Match match, Result result) {
 		this.step = step;
 		this.match = match;
 		this.result = result;
+	}
+
+	public static StepModel fromJson(String json) {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.fromJson(json, StepModel.class);
 	}
 
 	public Step getStep() {
@@ -52,7 +59,7 @@ public class StepModel {
 		return getRows() != null && !getRows().isEmpty();
 	}
 
-	public Collection<Comment> getComments() {
+	public List<Comment> getComments() {
 		return step.getComments();
 	}
 
@@ -72,12 +79,20 @@ public class StepModel {
 		return step.getLineRange();
 	}
 
+	Match getMatch() {
+		return match;
+	}
+
 	public String getName() {
 		return step.getName();
 	}
 
 	public List<Argument> getOutlineArgs() {
 		return step.getOutlineArgs();
+	}
+
+	Result getResult() {
+		return result;
 	}
 
 	public List<DataTableRow> getRows() {
@@ -105,6 +120,15 @@ public class StepModel {
 		}
 
 		return gherkinList;
+	}
+
+	public JsonObject toDeepJsonObject() {
+		return toJsonObject();
+	}
+
+	public JsonObject toJsonObject() {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.toJsonTree(this).getAsJsonObject();
 	}
 
 	public JSONObject toJSON() {

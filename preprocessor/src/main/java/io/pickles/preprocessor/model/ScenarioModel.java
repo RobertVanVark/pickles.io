@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
@@ -15,10 +16,15 @@ public class ScenarioModel {
 
 	private Scenario scenario;
 	private FeatureModel feature;
-	private List<StepModel> steps = new ArrayList<>();
+	private List<StepModel> stepModels = new ArrayList<>();
 
 	public ScenarioModel(Scenario scenario) {
 		this.scenario = scenario;
+	}
+
+	public static ScenarioModel fromJson(String json) {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.fromJson(json, ScenarioModel.class);
 	}
 
 	public Scenario getScenario() {
@@ -26,19 +32,19 @@ public class ScenarioModel {
 	}
 
 	public void addStep(StepModel step) {
-		steps.add(step);
+		stepModels.add(step);
 	}
 
 	public List<StepModel> getSteps() {
-		return steps;
+		return stepModels;
 	}
 
 	public StepModel getStep(int i) {
-		return steps.get(i);
+		return stepModels.get(i);
 	}
 
 	public StepModel getLastStep() {
-		return steps.get(steps.size() - 1);
+		return stepModels.get(stepModels.size() - 1);
 	}
 
 	public void setFeature(FeatureModel feature) {
@@ -114,7 +120,7 @@ public class ScenarioModel {
 
 		gherkinList.add(getKeyword() + ": " + getName());
 
-		for (StepModel step : steps) {
+		for (StepModel step : stepModels) {
 			for (String stepGherkin : step.toGherkinList()) {
 				gherkinList.add("    " + stepGherkin);
 			}
@@ -123,54 +129,23 @@ public class ScenarioModel {
 		return gherkinList;
 	}
 
-	public JSONObject toJSON() {
-		JSONObject scenarioJSON = new JSONObject();
-
-		scenarioJSON.put("id", getId());
-		scenarioJSON.put("description", getDescription());
-
-		if (hasTags()) {
-			scenarioJSON.put("tags", tagsJSON());
-		}
-
-		if (hasComments()) {
-			scenarioJSON.put("comments", commentsJSON());
-		}
-
-		scenarioJSON.put("name", getName());
-		scenarioJSON.put("keyword", getKeyword());
-		scenarioJSON.put("line", getLine());
-
-		scenarioJSON.put("type", getKeyword().toLowerCase());
-
-		JSONArray stepsJSON = new JSONArray();
-		for (StepModel step : getSteps()) {
-			stepsJSON.put(step.toJSON());
-		}
-		scenarioJSON.put("steps", stepsJSON);
-
-		return scenarioJSON;
+	public String toPrettyGson() {
+		Gson gson = ModelGsonBuilder.builder().setPrettyPrinting().create();
+		return gson.toJson(this);
 	}
 
-	private JSONArray tagsJSON() {
-		JSONArray tagsJSON = new JSONArray();
-		for (Tag tag : getTags()) {
-			JSONObject tagJSON = new JSONObject();
-			tagJSON.put("name", tag.getName());
-			tagJSON.put("line", tag.getLine());
-			tagsJSON.put(tagJSON);
+	public JsonObject toDeepJsonObject() {
+		JsonObject scenarioJson = toJsonObject();
+		JsonArray stepsJson = new JsonArray();
+		for (StepModel stepModel : stepModels) {
+			stepsJson.add(stepModel.toDeepJsonObject());
 		}
-		return tagsJSON;
+		scenarioJson.add("steps", stepsJson);
+		return scenarioJson;
 	}
 
-	private JSONArray commentsJSON() {
-		JSONArray commentsJSON = new JSONArray();
-		for (Comment comment : getComments()) {
-			JSONObject commentJSON = new JSONObject();
-			commentJSON.put("value", comment.getValue());
-			commentJSON.put("line", comment.getLine());
-			commentsJSON.put(commentJSON);
-		}
-		return commentsJSON;
+	public JsonObject toJsonObject() {
+		Gson gson = ModelGsonBuilder.gson();
+		return gson.toJsonTree(this).getAsJsonObject();
 	}
 }

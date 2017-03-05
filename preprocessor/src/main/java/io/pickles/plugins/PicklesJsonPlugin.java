@@ -19,7 +19,7 @@ public class PicklesJsonPlugin extends PicklesCorePlugin {
 		log("done");
 		JSONArray featuresJSON = new JSONArray();
 		for (FeatureModel feature : getFeatures()) {
-			featuresJSON.put(feature.toJSON());
+			featuresJSON.put(feature.toJsonObject().toString());
 			// featuresJSON.addAll((feature.toJSON());
 		}
 

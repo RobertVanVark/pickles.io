@@ -1,6 +1,5 @@
 package io.pickles.preprocessor.model;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,9 +21,6 @@ import gherkin.formatter.model.Result;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.ScenarioModel;
-import io.pickles.preprocessor.model.StepModel;
 
 public class FeatureModelShould {
 
@@ -40,24 +36,24 @@ public class FeatureModelShould {
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
 		FeatureModel featureModel = modelWith(feature);
 
-		assertThat(featureModel.getFeature(), is(feature));
+		assertThat(featureModel.getFeature(), equalTo(feature));
 	}
 
 	@Test
 	public void haveSameNameAsCucumberFeature() {
 		FeatureModel featureModel = modelWithName("feature name");
 
-		assertThat(featureModel.getName(), is("feature name"));
+		assertThat(featureModel.getName(), equalTo("feature name"));
 
 	}
 
 	@Test
 	public void haveTagsIfCucumberFeatureHasTags() {
 		FeatureModel featureModel = modelWithTags(Arrays.asList(new Tag("tag", 1)));
-		assertThat(featureModel.hasTags(), is(true));
+		assertThat(featureModel.hasTags(), equalTo(true));
 
 		featureModel = modelWithTags(Collections.emptyList());
-		assertThat(featureModel.hasTags(), is(false));
+		assertThat(featureModel.hasTags(), equalTo(false));
 	}
 
 	@Test
@@ -66,6 +62,23 @@ public class FeatureModelShould {
 		FeatureModel featureModel = modelWithTags(tags);
 
 		assertThat(featureModel.getTagNames(), contains("tag", "another tag"));
+	}
+
+	@Test
+	public void haveCommentsIfCucumberFeatureHasComments() {
+		FeatureModel featureModel = modelWithComments(Arrays.asList(new Comment("comment", 1)));
+		assertThat(featureModel.hasComments(), equalTo(true));
+
+		featureModel = modelWithComments(Collections.emptyList());
+		assertThat(featureModel.hasComments(), equalTo(false));
+	}
+
+	@Test
+	public void haveSameCommentsAsCucumberFeature() {
+		List<Comment> comments = Arrays.asList(new Comment("comment", 1), new Comment("another comment", 2));
+		FeatureModel featureModel = modelWithComments(comments);
+
+		assertThat(featureModel.getComments(), contains(comments.get(0), comments.get(1)));
 	}
 
 	@Test
@@ -78,7 +91,7 @@ public class FeatureModelShould {
 		model.addScenario(scenarioModel2);
 
 		assertThat(model.getScenarios(), hasSize(2));
-		assertThat(model.getScenario(0), is(scenarioModel1));
+		assertThat(model.getScenario(0), equalTo(scenarioModel1));
 	}
 
 	@Test
@@ -88,17 +101,17 @@ public class FeatureModelShould {
 
 		ScenarioModel scenarioModel = new ScenarioModel(null);
 		featureModel.addScenario(scenarioModel);
-		assertThat(featureModel.getCurrentScenario(), is(scenarioModel));
+		assertThat(featureModel.getCurrentScenario(), equalTo(scenarioModel));
 	}
 
 	@Test
 	public void convertToGherkin() {
 		List<Tag> tags = Arrays.asList(new Tag("@tag1", 4), new Tag("@tag2", 5));
-		FeatureModel featureModel = modelWith("Cucumber feature", tags);
+		FeatureModel featureModel = modelWith("Cucumber feature", tags, Collections.emptyList());
 
 		String[] lines = featureModel.toGherkin().split(System.getProperty("line.separator"));
-		assertThat(lines[0], is("@tag1 @tag2"));
-		assertThat(lines[1], is("Feature: Cucumber feature"));
+		assertThat(lines[0], equalTo("@tag1 @tag2"));
+		assertThat(lines[1], equalTo("Feature: Cucumber feature"));
 	}
 
 	@Test
@@ -126,30 +139,11 @@ public class FeatureModelShould {
 
 	@Test
 	public void findFirstStepWithoutResult() {
-		StepModel firstUnmatchedStep = twoUnmatchedScenarios().getFirstUnmatchedStep();
+		StepModel firstUnmatchedStep = twoUnmatchedScenarios().getFirstStepWithoutResult();
 		assertThat(firstUnmatchedStep.getName(), equalTo("first scenario - first"));
 
-		firstUnmatchedStep = lastStepUnmatched().getFirstUnmatchedStep();
+		firstUnmatchedStep = lastStepUnmatched().getFirstStepWithoutResult();
 		assertThat(firstUnmatchedStep.getName(), equalTo("second scenario - last"));
-	}
-
-	private FeatureModel modelWithTags(List<Tag> tags) {
-		return modelWith("", tags);
-	}
-
-	private FeatureModel modelWithName(String name) {
-		return modelWith(name, Collections.emptyList());
-	}
-
-	private FeatureModel modelWith(String name, List<Tag> tags) {
-		Feature feature = new Feature(Collections.emptyList(), tags, "Feature", name, "", -1, "");
-		return modelWith(feature);
-	}
-
-	private FeatureModel modelWith(Feature feature) {
-		FeatureModel featureModel = new FeatureModel();
-		featureModel.setFeature(feature);
-		return featureModel;
 	}
 
 	private FeatureModel twoUnmatchedScenarios() {
@@ -199,5 +193,28 @@ public class FeatureModelShould {
 		scenario.addStep(new StepModel(step));
 
 		return feature;
+	}
+
+	static FeatureModel modelWithTags(List<Tag> tags) {
+		return modelWith("", tags, Collections.emptyList());
+	}
+
+	static FeatureModel modelWithComments(List<Comment> comments) {
+		return modelWith("", Collections.emptyList(), comments);
+	}
+
+	static FeatureModel modelWithName(String name) {
+		return modelWith(name, Collections.emptyList(), Collections.emptyList());
+	}
+
+	static FeatureModel modelWith(String name, List<Tag> tags, List<Comment> comments) {
+		Feature feature = new Feature(comments, tags, "Feature", name, "", -1, "");
+		return modelWith(feature);
+	}
+
+	static FeatureModel modelWith(Feature feature) {
+		FeatureModel featureModel = new FeatureModel();
+		featureModel.setFeature(feature);
+		return featureModel;
 	}
 }
