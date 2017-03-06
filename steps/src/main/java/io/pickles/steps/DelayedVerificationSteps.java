@@ -79,7 +79,7 @@ public class DelayedVerificationSteps {
 		context.set(verification);
 
 		if (testData != null) {
-			testData.save(verification);
+			testData.saveFor(verification);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class DelayedVerificationSteps {
 		context.set(verification);
 
 		if (testData != null) {
-			testData.load(verification);
+			testData.loadFor(verification);
 		}
 	}
 }

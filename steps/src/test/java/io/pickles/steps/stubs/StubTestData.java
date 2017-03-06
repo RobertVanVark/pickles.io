@@ -9,12 +9,12 @@ public class StubTestData implements PersistableTestData {
 	private int nrLoads = 0;
 
 	@Override
-	public void save(DelayedVerification delayedVerification) {
+	public void saveFor(DelayedVerification delayedVerification) {
 		nrSaves++;
 	}
 
 	@Override
-	public void load(DelayedVerification delayedVerification) {
+	public void loadFor(DelayedVerification delayedVerification) {
 		nrLoads++;
 	}
 
