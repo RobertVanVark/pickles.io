@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,6 +17,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertThat;
+
 import io.pickles.steps.DelayedVerification;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -26,7 +27,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
-public class JdbcDelayedVerificationStoreShould {
+public class PropertiesDelayedVerificationStoreShould {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -35,7 +36,7 @@ public class JdbcDelayedVerificationStoreShould {
 
 	@Before
 	public void givenInMemoryDatabase() throws SQLException, LiquibaseException {
-		connection = DriverManager.getConnection("jdbc:h2:mem:delayed_verification");
+		connection = DriverManager.getConnection("jdbc:h2:mem:pickles_delayed_verification");
 		Database database = DatabaseFactory.getInstance()
 				.findCorrectDatabaseImplementation(new JdbcConnection(connection));
 		Liquibase liquibase = new Liquibase("liquibase/delayed-verification.xml", new ClassLoaderResourceAccessor(),
@@ -134,27 +135,27 @@ public class JdbcDelayedVerificationStoreShould {
 	}
 
 	private DelayedVerification getBy(String id) {
-		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		PropertiesDelayedVerificationStore store = new PropertiesDelayedVerificationStore();
 		return store.read(id);
 	}
 
 	private List<DelayedVerification> getAllForChecksum(String checksum) {
-		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		PropertiesDelayedVerificationStore store = new PropertiesDelayedVerificationStore();
 		return store.readAllForChecksum(checksum);
 	}
 
 	private List<DelayedVerification> getAllToVerify(String checksum) {
-		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		PropertiesDelayedVerificationStore store = new PropertiesDelayedVerificationStore();
 		return store.readAllToVerify(checksum);
 	}
 
 	private void save(DelayedVerification verification) {
-		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		PropertiesDelayedVerificationStore store = new PropertiesDelayedVerificationStore();
 		store.create(verification);
 	}
 
 	private void update(DelayedVerification verification) {
-		JdbcDelayedVerificationStore store = new JdbcDelayedVerificationStore();
+		PropertiesDelayedVerificationStore store = new PropertiesDelayedVerificationStore();
 		store.update(verification);
 	}
 }

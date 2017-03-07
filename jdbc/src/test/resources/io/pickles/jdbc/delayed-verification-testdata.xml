@@ -4,28 +4,28 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 	<changeSet author="Robert van Vark" id="Delayed Verification test data for unit tests">
-		<insert tableName="DELAYED_VERIFICATION">
+		<insert tableName="PICKLES_DELAYED_VERIFICATION">
 			<column name="ID">2a5b82fd-6436-429b-8793-3cdc28d47600</column>
 			<column name="CREATED_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="VERIFY_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="CHECKSUM">checksum for scenario 1</column>
 			<column name="FEATURE_URI">features/1.feature</column>
 		</insert>
-		<insert tableName="DELAYED_VERIFICATION">
+		<insert tableName="PICKLES_DELAYED_VERIFICATION">
 			<column name="ID">f794592b-b53e-4705-ae46-60b41a3ee47d</column>
 			<column name="CREATED_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="VERIFY_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="CHECKSUM">checksum for scenario 2</column>
 			<column name="FEATURE_URI">features/1.feature</column>
 		</insert>
-		<insert tableName="DELAYED_VERIFICATION">
+		<insert tableName="PICKLES_DELAYED_VERIFICATION">
 			<column name="ID">f794592b-b53e-4705-ae46-60b41a3ee47d</column>
 			<column name="CREATED_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="VERIFY_AT" valueDate="2999-12-21T23:59:59"/>
 			<column name="CHECKSUM">checksum for scenario 2</column>
 			<column name="FEATURE_URI">features/1.feature</column>
 		</insert>
-		<insert tableName="DELAYED_VERIFICATION">
+		<insert tableName="PICKLES_DELAYED_VERIFICATION">
 			<column name="ID">73dd7faa-8685-4e81-8f26-6e8757a2ada1</column>
 			<column name="CREATED_AT" valueDate="2016-12-26T00:00:00"/>
 			<column name="VERIFY_AT" valueDate="2016-12-26T00:00:00"/>
@@ -33,7 +33,7 @@
 			<column name="CHECKSUM">checksum for scenario 2</column>
 			<column name="FEATURE_URI">features/1.feature</column>
 		</insert>
-		<insert tableName="DELAYED_VERIFICATION">
+		<insert tableName="PICKLES_DELAYED_VERIFICATION">
 			<column name="ID">b4d08bf9-cb55-497d-b39e-5ada14462107</column>
 			<column name="CREATED_AT" valueDate="2016-12-27T00:00:00"/>
 			<column name="VERIFY_AT" valueDate="2016-12-27T00:00:00"/>

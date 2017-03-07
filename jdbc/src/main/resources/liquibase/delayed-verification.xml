@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     
     <changeSet author="Robert van Vark" id="Delayed Verification table">
-    <createTable tableName="DELAYED_VERIFICATION">
+    <createTable tableName="PICKLES_DELAYED_VERIFICATION">
     	<column name="ID" type="varchar(36)"/>
     	<column name="CREATED_AT" type="datetime"/>
     	<column name="VERIFY_AT" type="datetime"/>
