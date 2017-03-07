@@ -6,8 +6,6 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.stringContainsInOrder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +13,9 @@ import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
@@ -44,21 +45,21 @@ public class TemplateTransformerShould {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), startsWith(
-				"after 02:00 hr a first delayed outcome: (dvChecksum=51496814382697918777763546205902190458132421958037690351349586919008849388683"));
+				"after 02:00 hr a first delayed outcome: (dvChecksum=106084499569256314170543076944774437567981246571"));
 
 		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), startsWith(
-				"after 01:00 hr a second delayed outcome (dvChecksum=28689529752417372157209393638731288334397142686961947502620568881217480631817"));
+				"after 01:00 hr a second delayed outcome (dvChecksum=42332228350323766774525159778045514925142644006"));
 	}
 
 	@Test
 	public void appendDvIdToEachThenAfter() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
-		assertThat(featureTemplate.getScenario(0).getLastStep().getName(), containsString(
-				"(dvChecksum=51496814382697918777763546205902190458132421958037690351349586919008849388683, dvId="));
+		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
+				containsString("(dvChecksum=106084499569256314170543076944774437567981246571, dvId="));
 
-		assertThat(featureTemplate.getScenario(1).getLastStep().getName(), containsString(
-				"dvChecksum=28689529752417372157209393638731288334397142686961947502620568881217480631817, dvId="));
+		assertThat(featureTemplate.getScenario(1).getLastStep().getName(),
+				containsString("dvChecksum=42332228350323766774525159778045514925142644006, dvId="));
 	}
 
 	@Test

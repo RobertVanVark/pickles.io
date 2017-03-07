@@ -134,7 +134,7 @@ public class TemplateTransformer {
 
 		byte[] digest;
 		try {
-			digest = MessageDigest.getInstance("SHA-256").digest(stream.toByteArray());
+			digest = MessageDigest.getInstance("SHA-1").digest(stream.toByteArray());
 		} catch (NoSuchAlgorithmException ex) {
 			throw new TemplateTransformerException(ex.getMessage(), ex);
 		}
