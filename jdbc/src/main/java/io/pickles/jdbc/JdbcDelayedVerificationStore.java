@@ -18,17 +18,21 @@ import io.pickles.steps.DelayedVerificationStore;
 public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 
 	private DataSource dataSource;
+	private Connection connection;
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	Connection getConnection() {
+	Connection getConnection() throws SQLException {
 		try {
-			return dataSource.getConnection();
+			if (connection == null || connection.isClosed()) {
+				connection = dataSource.getConnection();
+			}
 		} catch (SQLException e) {
 			throw new DelayedVerificationStoreException("Unable to get a connection for DelayedVerificationStore", e);
 		}
+		return connection;
 	}
 
 	@Override
