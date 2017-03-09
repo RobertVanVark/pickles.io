@@ -22,7 +22,7 @@ public class TemplateParser {
 		try {
 			gherkin = FixJava.readReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
 		} catch (UnsupportedEncodingException | FileNotFoundException | RuntimeException ex) {
-			throw new PicklesPreprocessorException("Could not read feature template file: " + path, ex);
+			throw new PreprocessorException("Could not read feature template file: " + path, ex);
 		}
 
 		return parseGherkin(path, gherkin);

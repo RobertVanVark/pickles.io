@@ -18,8 +18,8 @@ import cucumber.runtime.RuntimeOptionsFactory;
 import cucumber.runtime.io.MultiLoader;
 import cucumber.runtime.io.Resource;
 import cucumber.runtime.io.ResourceLoader;
-import io.pickles.preprocessor.PicklesPreprocessorException;
 import io.pickles.preprocessor.Preprocessor;
+import io.pickles.preprocessor.PreprocessorException;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class PicklesCucumberRunner extends Runner {
@@ -52,9 +52,7 @@ public class PicklesCucumberRunner extends Runner {
 		preprocessor.setDelayedVerificationStore(store);
 
 		for (File featureTemplate : getFeatureTemplateFiles()) {
-			for (String line : preprocessor.process(featureTemplate)) {
-				System.out.println(line);
-			}
+			preprocessor.process(featureTemplate);
 		}
 
 		System.out.println("Done in " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds.");
@@ -62,7 +60,7 @@ public class PicklesCucumberRunner extends Runner {
 		try {
 			cucumber = new Cucumber(clazz);
 		} catch (InitializationError | IOException e) {
-			throw new PicklesPreprocessorException("", e);
+			throw new PreprocessorException("", e);
 		}
 
 		cucumber.run(notifier);

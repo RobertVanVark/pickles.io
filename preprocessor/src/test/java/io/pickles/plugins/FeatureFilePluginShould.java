@@ -13,12 +13,12 @@ import cucumber.runtime.io.MultiLoader;
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
 
-public class PicklesFeatureFilePluginShould {
+public class FeatureFilePluginShould {
 
 	@Test
 	public void runCucumberWithPlugin() throws IOException {
 		ArrayList<String> commandlineParams = new ArrayList<>();
-		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.plugins.PicklesFeatureFilePlugin"));
+		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.plugins.FeatureFilePlugin"));
 		commandlineParams.addAll(Arrays.asList("-g", "classpath:io.pickles"));
 		commandlineParams.addAll(Arrays.asList("classpath:io/pickles/preprocessor"));
 

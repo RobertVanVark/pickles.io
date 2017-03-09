@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 
 import io.pickles.preprocessor.model.FeatureModel;
 
-public class PicklesJsonPlugin extends PicklesCorePlugin {
+public class JsonPlugin extends CorePlugin {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PicklesJsonPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonPlugin.class);
 
-	public PicklesJsonPlugin(Appendable out) {
+	public JsonPlugin(Appendable out) {
 		super(out);
 	}
 
@@ -26,7 +26,8 @@ public class PicklesJsonPlugin extends PicklesCorePlugin {
 		System.out.println(featuresJSON.toString(4));
 	}
 
-	private void log(String msg) {
-		LOGGER.info(msg);
+	@Override
+	protected void log(String msg) {
+		LOGGER.debug(msg);
 	}
 }

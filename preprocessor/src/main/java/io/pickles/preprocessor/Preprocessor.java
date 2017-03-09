@@ -22,7 +22,6 @@ public class Preprocessor {
 
 	List<String> process(String uri, List<String> lines) {
 		FeatureModel original = new TemplateParser().parse(uri, lines);
-		System.out.println(original.toGherkin());
 		FeatureModel transformed = new TemplateTransformer(original, store).doIt();
 		return transformed.toGherkinList();
 	}
@@ -39,7 +38,7 @@ public class Preprocessor {
 		try {
 			templateLines = Files.readAllLines(path, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			throw new PicklesPreprocessorException("Could not read feature template file : " + path.toString(), e);
+			throw new PreprocessorException("Could not read feature template file : " + path.toString(), e);
 		}
 		return templateLines;
 	}
@@ -52,8 +51,7 @@ public class Preprocessor {
 		try {
 			Files.write(featurePath, linesToFile, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			throw new PicklesPreprocessorException("Could not write feature file : " + featureFile.getAbsolutePath(),
-					e);
+			throw new PreprocessorException("Could not write feature file : " + featureFile.getAbsolutePath(), e);
 		}
 	}
 

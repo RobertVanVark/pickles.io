@@ -1,6 +1,6 @@
 package io.pickles.steps.delays;
 
-import io.pickles.steps.PicklesDelayException;
+import io.pickles.steps.DelayException;
 
 public class DelayFactory {
 
@@ -36,6 +36,6 @@ public class DelayFactory {
 			return new BusinessEventDelay(expression);
 		}
 
-		throw new PicklesDelayException("No delay for expression : " + expression);
+		throw new DelayException("No delay for expression : " + expression);
 	}
 }

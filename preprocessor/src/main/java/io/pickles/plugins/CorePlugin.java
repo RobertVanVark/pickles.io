@@ -9,11 +9,11 @@ import gherkin.formatter.model.Result;
 import io.pickles.preprocessor.TemplateFormatter;
 import io.pickles.preprocessor.model.StepModel;
 
-public abstract class PicklesCorePlugin extends TemplateFormatter implements Reporter {
+public abstract class CorePlugin extends TemplateFormatter implements Reporter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PicklesCorePlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CorePlugin.class);
 
-	public PicklesCorePlugin(Appendable out) {
+	public CorePlugin(Appendable out) {
 		super(out);
 	}
 
@@ -55,7 +55,7 @@ public abstract class PicklesCorePlugin extends TemplateFormatter implements Rep
 		log("write");
 	}
 
-	private void log(String msg) {
-		LOGGER.info(msg);
+	protected void log(String msg) {
+		LOGGER.debug(msg);
 	}
 }

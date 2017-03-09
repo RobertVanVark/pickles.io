@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import io.pickles.preprocessor.model.FeatureModel;
 
-public class PicklesFeatureFilePlugin extends PicklesCorePlugin {
+public class FeatureFilePlugin extends CorePlugin {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(PicklesFeatureFilePlugin.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(FeatureFilePlugin.class);
 
-	public PicklesFeatureFilePlugin(Appendable out) {
+	public FeatureFilePlugin(Appendable out) {
 		super(out);
 	}
 
@@ -23,8 +23,8 @@ public class PicklesFeatureFilePlugin extends PicklesCorePlugin {
 		}
 	}
 
-	private void log(String msg) {
-		LOGGER.info(msg);
+	@Override
+	protected void log(String msg) {
+		LOGGER.debug(msg);
 	}
-
 }

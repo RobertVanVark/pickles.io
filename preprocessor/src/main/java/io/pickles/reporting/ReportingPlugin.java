@@ -1,17 +1,21 @@
-package io.pickles.plugins;
+package io.pickles.reporting;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gherkin.formatter.model.Feature;
+import io.pickles.plugins.CorePlugin;
 import io.pickles.preprocessor.model.TestRun;
-import io.pickles.reporting.ReportingStore;
 
-public class PicklesReportingPlugin extends PicklesCorePlugin {
+public class ReportingPlugin extends CorePlugin {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReportingPlugin.class);
 
 	private ReportingStore store;
 	private TestRun testRun;
 
-	public PicklesReportingPlugin(Appendable out) {
+	public ReportingPlugin(Appendable out) {
 		super(out);
 	}
 
@@ -32,4 +36,8 @@ public class PicklesReportingPlugin extends PicklesCorePlugin {
 		}
 	}
 
+	@Override
+	protected void log(String msg) {
+		LOGGER.debug(msg);
+	}
 }
