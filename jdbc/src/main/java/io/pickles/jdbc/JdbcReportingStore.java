@@ -79,7 +79,7 @@ public class JdbcReportingStore implements ReportingStore {
 
 			statement.execute();
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not save Test Run for name =" + run.getName(), ex);
+			throw new ReportingStoreException("Could not save Test Run for name = " + run.getName(), ex);
 		}
 
 	}
