@@ -1,0 +1,16 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="Robert van Vark" id="Delayed Verification test data for unit tests">
+		<insert tableName="PICKLES_TEST_RUN">
+			<column name="ID">1</column>
+			<column name="NAME">ROBERT</column>
+			<column name="DESCRIPTION">Robert's Unit Test Run</column>
+			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00"/>
+			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00"/>
+		</insert>
+		
+	</changeSet>
+</databaseChangeLog>

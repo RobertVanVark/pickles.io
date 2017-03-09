@@ -7,16 +7,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import io.pickles.steps.DelayedVerificationStore;
-
-public class PropertiesDelayedVerificationStore extends JdbcDelayedVerificationStore
-		implements DelayedVerificationStore {
+public class PropertiesReportingStore extends JdbcReportingStore {
 
 	private String url;
 	private String username;
 	private String password;
 
-	public PropertiesDelayedVerificationStore() {
+	public PropertiesReportingStore() {
 		InputStream stream = ClassLoader.getSystemResourceAsStream("delayed-verification-store.properties");
 		if (stream == null) {
 			throw new DelayedVerificationStoreException(

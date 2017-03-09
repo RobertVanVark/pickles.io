@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 import io.pickles.steps.DelayedVerification;
 import io.pickles.steps.DelayedVerificationStore;
 
-public class PicklesDelayedVerificationStore implements DelayedVerificationStore {
+public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 
 	private DataSource dataSource;
 
