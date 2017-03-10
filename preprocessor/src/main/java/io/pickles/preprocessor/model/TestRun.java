@@ -10,6 +10,10 @@ public class TestRun {
 	private DateTime startedAt;
 	private DateTime finishedAt;
 
+	public TestRun(String name, String description, DateTime startedAt) {
+		this(null, name, description, startedAt, null);
+	}
+
 	public TestRun(String name, String description, DateTime startedAt, DateTime finishedAt) {
 		this(null, name, description, startedAt, finishedAt);
 	}

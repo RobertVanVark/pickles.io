@@ -4,16 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.joda.time.DateTime;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
 
 public class FeatureModel {
 
+	private Integer id;
+	private TestRun testRun;
+	private DateTime startedAt;
+	private DateTime finishedAt;
 	private Feature feature;
 	private String uri;
 	private List<ScenarioModel> scenarioModels = new ArrayList<>();
@@ -33,6 +40,38 @@ public class FeatureModel {
 		return feature;
 	}
 
+	public TestRun getTestRun() {
+		return testRun;
+	}
+
+	public void setTestRun(TestRun testRun) {
+		this.testRun = testRun;
+	}
+
+	public DateTime getStartedAt() {
+		return startedAt;
+	}
+
+	public void setStartedAt(DateTime startedAt) {
+		this.startedAt = startedAt;
+	}
+
+	public DateTime getFinishedAt() {
+		return finishedAt;
+	}
+
+	public void setFinishedAt(DateTime finishedAt) {
+		this.finishedAt = finishedAt;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public void addScenario(ScenarioModel scenario) {
 		scenarioModels.add(scenario);
 		scenario.setFeature(this);
@@ -45,6 +84,16 @@ public class FeatureModel {
 
 	public ScenarioModel getScenario(int i) {
 		return scenarioModels.get(i);
+	}
+
+	public ScenarioModel getScenario(Scenario scenario) {
+		for (ScenarioModel model : scenarioModels) {
+			if (model.getScenarioId() == scenario.getId()) {
+				return model;
+			}
+		}
+
+		return null;
 	}
 
 	public ScenarioModel getCurrentScenario() {
@@ -71,7 +120,7 @@ public class FeatureModel {
 		return feature.getKeyword();
 	}
 
-	public String getId() {
+	public String getFeatureId() {
 		return feature.getId();
 	}
 
@@ -146,7 +195,7 @@ public class FeatureModel {
 		return gson.toJsonTree(this).getAsJsonObject();
 	}
 
-	public StepModel getFirstUnmatchedStep() {
+	public StepModel getFirstStepWithoutMatch() {
 		return scenarioModels.stream().flatMap(s -> s.getSteps().stream()).filter(s -> {
 			return !s.hasMatch();
 		}).findFirst().get();

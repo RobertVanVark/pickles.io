@@ -31,7 +31,7 @@ public class FeatureModelDeserializerShould {
 		assertThat(model.getName(), equalTo("Cucumber feature"));
 		assertThat(model.getLine(), equalTo(14));
 		assertThat(model.getDescription(), equalTo("feature description"));
-		assertThat(model.getId(), equalTo("a-fancy-id"));
+		assertThat(model.getFeatureId(), equalTo("a-fancy-id"));
 
 		assertThat(model.getScenarios(), emptyIterable());
 	}

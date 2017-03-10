@@ -39,7 +39,7 @@ public abstract class CorePlugin extends TemplateFormatter implements Reporter {
 	@Override
 	public void match(Match match) {
 		log("match ");
-		StepModel unmatchedStep = lastFeature().getFirstUnmatchedStep();
+		StepModel unmatchedStep = lastFeature().getFirstStepWithoutMatch();
 		unmatchedStep.setMatch(match);
 	}
 

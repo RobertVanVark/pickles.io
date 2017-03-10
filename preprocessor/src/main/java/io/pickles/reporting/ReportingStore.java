@@ -5,13 +5,9 @@ import io.pickles.preprocessor.model.TestRun;
 
 public interface ReportingStore {
 
-	void createTestRun(TestRun run);
+	void create(TestRun run);
 
-	TestRun getTestRunBy(String id);
+	void update(TestRun run);
 
-	void storeFeture(FeatureModel feature);
-
-	void readFeature(FeatureModel feature);
-
-	void readAllFor(TestRun run);
+	void create(FeatureModel feature);
 }

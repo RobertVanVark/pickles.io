@@ -22,7 +22,7 @@ class FeatureModelSerializer implements JsonSerializer<FeatureModel> {
 		json.add("name", new JsonPrimitive(src.getName()));
 		json.add("description", new JsonPrimitive(src.getDescription()));
 		json.add("keyword", new JsonPrimitive("Feature"));
-		json.add("id", new JsonPrimitive(src.getId()));
+		json.add("id", new JsonPrimitive(src.getFeatureId()));
 
 		if (src.hasTags()) {
 			json.add("tags", tagsJson(src));

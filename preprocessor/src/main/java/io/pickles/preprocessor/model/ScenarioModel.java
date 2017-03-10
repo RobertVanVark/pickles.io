@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.joda.time.DateTime;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,6 +15,12 @@ import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
 
 public class ScenarioModel {
+
+	private Integer id;
+	private DateTime startedAt;
+	private DateTime finishedAt;
+	private String triggeringDvId;
+	private String nextDvId;
 
 	private Scenario scenario;
 	private FeatureModel feature;
@@ -31,8 +39,49 @@ public class ScenarioModel {
 		return scenario;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public DateTime getStartedAt() {
+		return startedAt;
+	}
+
+	public void setStartedAt(DateTime startedAt) {
+		this.startedAt = startedAt;
+	}
+
+	public DateTime getFinishedAt() {
+		return finishedAt;
+	}
+
+	public void setFinishedAt(DateTime finishedAt) {
+		this.finishedAt = finishedAt;
+	}
+
+	public String getTriggeringDvId() {
+		return triggeringDvId;
+	}
+
+	public void setTriggeringDvId(String triggeringDvId) {
+		this.triggeringDvId = triggeringDvId;
+	}
+
+	public String getNextDvId() {
+		return nextDvId;
+	}
+
+	public void setNextDvId(String nextDvId) {
+		this.nextDvId = nextDvId;
+	}
+
 	public void addStep(StepModel step) {
 		stepModels.add(step);
+		step.setScenario(this);
 	}
 
 	public List<StepModel> getSteps() {
@@ -70,7 +119,8 @@ public class ScenarioModel {
 	public void addTag(String name) {
 		List<Tag> tags = new ArrayList<>(scenario.getTags());
 		tags.add(new Tag(name, 0));
-		scenario = new Scenario(getComments(), tags, getKeyword(), getName(), getDescription(), getLine(), getId());
+		scenario = new Scenario(getComments(), tags, getKeyword(), getName(), getDescription(), getLine(),
+				getScenarioId());
 	}
 
 	public List<Comment> getComments() {
@@ -81,7 +131,7 @@ public class ScenarioModel {
 		return scenario.getDescription();
 	}
 
-	public String getId() {
+	public String getScenarioId() {
 		return scenario.getId();
 	}
 

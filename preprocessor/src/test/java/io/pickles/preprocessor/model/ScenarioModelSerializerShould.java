@@ -28,7 +28,7 @@ public class ScenarioModelSerializerShould {
 		assertThat(jsonObject.get("keyword").getAsString(), equalTo(scenarioModel.getKeyword()));
 		assertThat(jsonObject.get("type").getAsString(), equalTo(scenarioModel.getKeyword().toLowerCase()));
 		assertThat(jsonObject.get("description").getAsString(), equalTo(scenarioModel.getDescription()));
-		assertThat(jsonObject.get("id").getAsString(), equalTo(scenarioModel.getId()));
+		assertThat(jsonObject.get("id").getAsString(), equalTo(scenarioModel.getScenarioId()));
 
 		assertThat(jsonObject.get("steps").getAsJsonArray(), emptyIterable());
 	}

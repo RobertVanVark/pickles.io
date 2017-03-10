@@ -22,7 +22,7 @@ class ScenarioModelSerializer implements JsonSerializer<ScenarioModel> {
 		json.add("name", new JsonPrimitive(src.getName()));
 		json.add("description", new JsonPrimitive(src.getDescription()));
 		json.add("keyword", new JsonPrimitive(src.getKeyword()));
-		json.add("id", new JsonPrimitive(src.getId()));
+		json.add("id", new JsonPrimitive(src.getScenarioId()));
 		json.add("type", new JsonPrimitive(src.getKeyword().toLowerCase()));
 
 		if (src.hasTags()) {

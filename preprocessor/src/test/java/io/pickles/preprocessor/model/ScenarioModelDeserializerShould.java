@@ -30,7 +30,7 @@ public class ScenarioModelDeserializerShould {
 		assertThat(model.getName(), equalTo("a scenario"));
 		assertThat(model.getDescription(), equalTo("fancy description"));
 		assertThat(model.getLine(), equalTo(12));
-		assertThat(model.getId(), equalTo("an-id"));
+		assertThat(model.getScenarioId(), equalTo("an-id"));
 
 		assertThat(model.getSteps(), emptyIterable());
 

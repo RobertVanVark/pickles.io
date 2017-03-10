@@ -19,6 +19,8 @@ import gherkin.formatter.model.Step;
 
 public class StepModel {
 
+	private Integer id;
+
 	private Step step;
 	private Match match;
 	private Result result;
@@ -49,6 +51,14 @@ public class StepModel {
 
 	public ScenarioModel getScenario() {
 		return scenario;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public boolean hasComments() {

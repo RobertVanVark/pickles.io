@@ -15,6 +15,7 @@
 	</changeSet>
 
 	<changeSet author="Robert van Vark" id="Reporting tables">
+
 		<createTable tableName="PICKLES_TEST_RUN">
 			<column name="ID" type="INTEGER" autoIncrement="true">
 				<constraints nullable="false" primaryKey="true" />
@@ -26,7 +27,47 @@
 			<column name="NAME" type="varchar(32)" />
 			<column name="DESCRIPTION" type="varchar(255)" />
 		</createTable>
-	</changeSet>
 
+		<createTable tableName="PICKLES_FEATURE">
+			<column name="ID" type="INTEGER" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="TEST_RUN_ID" type="INTEGER">
+				<constraints nullable="false"/>
+			</column>
+			<column name="STARTED_AT" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="FINISHED_AT" type="datetime" />
+			<column name="JSON" type="varchar(1024)" />
+		</createTable>
+
+		<createTable tableName="PICKLES_SCENARIO">
+			<column name="ID" type="INTEGER" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="FEATURE_ID" type="INTEGER">
+				<constraints nullable="false"/>
+			</column>
+			<column name="STARTED_AT" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="FINISHED_AT" type="datetime" />
+			<column name="TRIGGERED_BY_DV_ID" type="varchar(36)" />
+			<column name="NEXT_DV_ID" type="varchar(36)" />
+			<column name="JSON" type="varchar(1024)" />
+		</createTable>
+
+		<createTable tableName="PICKLES_STEP">
+			<column name="ID" type="INTEGER" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="SCENARIO_ID" type="INTEGER">
+				<constraints nullable="false"/>
+			</column>
+			<column name="JSON" type="varchar(1024)" />
+		</createTable>
+
+	</changeSet>
 
 </databaseChangeLog>
