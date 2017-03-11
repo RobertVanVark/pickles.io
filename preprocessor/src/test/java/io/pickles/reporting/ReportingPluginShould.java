@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.Test;
+
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.Runtime;
 import cucumber.runtime.RuntimeOptions;
@@ -13,9 +15,10 @@ import cucumber.runtime.io.ResourceLoaderClassFinder;
 
 public class ReportingPluginShould {
 
+	@Test
 	public void runCucumberWithPlugin() throws IOException {
 		ArrayList<String> commandlineParams = new ArrayList<>();
-		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.reporting.ReportingPlugin"));
+		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.reporting.LocalReportingPlugin"));
 		commandlineParams.addAll(Arrays.asList("-g", "classpath:io.pickles"));
 		commandlineParams.addAll(Arrays.asList("classpath:io/pickles/preprocessor"));
 

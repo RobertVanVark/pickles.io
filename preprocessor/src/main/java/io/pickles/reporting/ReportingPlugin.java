@@ -31,6 +31,7 @@ public class ReportingPlugin extends CorePlugin {
 		super.feature(feature);
 		lastFeature().setStartedAt(DateTime.now());
 		storeTestRun();
+		lastFeature().setTestRun(testRun);
 	}
 
 	@Override
