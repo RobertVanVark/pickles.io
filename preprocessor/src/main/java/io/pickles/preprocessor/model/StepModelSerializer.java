@@ -64,7 +64,9 @@ class StepModelSerializer implements JsonSerializer<StepModel> {
 		JsonObject resultJson = new JsonObject();
 		if (src.hasResult()) {
 			resultJson.add("status", new JsonPrimitive(src.getResult().getStatus()));
-			resultJson.add("duration", new JsonPrimitive(src.getResult().getDuration()));
+			if (src.getResult().getDuration() != null) {
+				resultJson.add("duration", new JsonPrimitive(src.getResult().getDuration()));
+			}
 		} else {
 			resultJson.add("status", new JsonPrimitive("undefined"));
 		}
@@ -74,7 +76,9 @@ class StepModelSerializer implements JsonSerializer<StepModel> {
 	private JsonObject matchJson(StepModel src) {
 		JsonObject matchJson = new JsonObject();
 		if (src.hasMatch()) {
-			matchJson.add("location", new JsonPrimitive(src.getMatch().getLocation()));
+			if (src.getMatch().getLocation() != null) {
+				matchJson.add("location", new JsonPrimitive(src.getMatch().getLocation()));
+			}
 		}
 		return matchJson;
 	}
