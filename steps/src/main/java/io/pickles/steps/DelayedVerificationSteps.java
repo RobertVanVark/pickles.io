@@ -24,7 +24,7 @@ public class DelayedVerificationSteps {
 	 *
 	 * @param executionContext
 	 *            {@link TestExecutionContext} to be used
-	 * 
+	 *
 	 */
 	public void setTestExecutionContext(TestExecutionContext executionContext) {
 		context = executionContext;
@@ -35,7 +35,7 @@ public class DelayedVerificationSteps {
 	 *
 	 * @param testData
 	 *            {@link PersistableTestData} to be used
-	 * 
+	 *
 	 */
 	public void setPersistableTestData(PersistableTestData testData) {
 		this.testData = testData;
@@ -96,7 +96,8 @@ public class DelayedVerificationSteps {
 	@Given("^Test Execution Context is loaded for dvId=(.+)$")
 	public void testExecutionContextIsLoadedForDvId(String dvId) {
 		verification = verificationStore.read(dvId);
-
+		verification.setProcessedAt(DateTime.now());
+		verificationStore.update(verification);
 		context.set(verification);
 
 		if (testData != null) {

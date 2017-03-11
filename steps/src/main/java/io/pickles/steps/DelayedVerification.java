@@ -4,12 +4,12 @@ import org.joda.time.DateTime;
 
 public class DelayedVerification {
 
-	private final String id;
-	private final DateTime createdAt;
-	private final DateTime verifyAt;
-	private final DateTime processedAt;
-	private final String scenarioChecksum;
-	private final String featureUri;
+	private String id;
+	private DateTime createdAt;
+	private DateTime verifyAt;
+	private DateTime processedAt;
+	private String scenarioChecksum;
+	private String featureUri;
 
 	public DelayedVerification(String id, DateTime verifyAt, String scenarioChecksum, String featureUri) {
 		this(id, DateTime.now(), verifyAt, null, scenarioChecksum, featureUri);
@@ -47,5 +47,9 @@ public class DelayedVerification {
 
 	public String getFeatureUri() {
 		return featureUri;
+	}
+
+	public void setProcessedAt(DateTime processedAt) {
+		this.processedAt = processedAt;
 	}
 }
