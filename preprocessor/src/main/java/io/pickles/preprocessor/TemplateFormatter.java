@@ -49,7 +49,7 @@ public class TemplateFormatter implements Formatter {
 
 	@Override
 	public void uri(String uri) {
-		log("uri");
+		log("uri - " + uri);
 		FeatureModel feature = new FeatureModel();
 		feature.setUri(uri);
 		features.add(feature);
@@ -57,51 +57,51 @@ public class TemplateFormatter implements Formatter {
 
 	@Override
 	public void feature(Feature feature) {
-		log("feature");
+		log("feature - " + feature.getName());
 		lastFeature().setFeature(feature);
 	}
 
 	@Override
 	public void scenarioOutline(ScenarioOutline scenarioOutline) {
-		log("scenario outline");
+		log("scenario outline - " + scenarioOutline.getName());
 		// intentionally left blank
 	}
 
 	@Override
 	public void examples(Examples examples) {
-		log("examples");
+		log("examples - " + examples.getRows().size() + " rows");
 		// intentionally left blank
 	}
 
 	@Override
 	public void startOfScenarioLifeCycle(Scenario scenario) {
-		log("start of scenario");
+		log("start of scenario - " + scenario.getName());
 		// intentionally left blank
 	}
 
 	@Override
 	public void background(Background background) {
-		log("background");
+		log("background - " + background.getDescription());
 		// intentionally left blank
 	}
 
 	@Override
 	public void scenario(Scenario scenario) {
-		log("scenario");
+		log("scenario - " + scenario.getName());
 		ScenarioModel model = new ScenarioModel(scenario);
 		lastFeature().addScenario(model);
 	}
 
 	@Override
 	public void step(Step step) {
-		log("step");
+		log("step - " + step.getKeyword() + " " + step.getName());
 		ScenarioModel scenario = lastFeature().getCurrentScenario();
 		scenario.addStep(new StepModel(step));
 	}
 
 	@Override
 	public void endOfScenarioLifeCycle(Scenario scenario) {
-		log("end of scenario");
+		log("end of scenario - " + scenario.getName());
 		// intentionally left blank
 	}
 
@@ -124,6 +124,6 @@ public class TemplateFormatter implements Formatter {
 	}
 
 	private void log(String msg) {
-		LOGGER.info(msg);
+		LOGGER.debug(msg);
 	}
 }

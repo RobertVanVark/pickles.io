@@ -20,39 +20,39 @@ public abstract class CorePlugin extends TemplateFormatter implements Reporter {
 	@Override
 	public void before(Match match, Result result) {
 		// intentionally left blank
-		log("before");
+		log("before - " + result.getStatus());
 	}
 
 	@Override
 	public void result(Result result) {
-		log("result : " + result.getStatus());
+		log("result - " + result.getStatus());
 		StepModel stepWithoutResult = lastFeature().getFirstStepWithoutResult();
 		stepWithoutResult.setResult(result);
 	}
 
 	@Override
 	public void after(Match match, Result result) {
+		log("after - " + result.getStatus());
 		// intentionally left blank
-		log("after");
 	}
 
 	@Override
 	public void match(Match match) {
-		log("match ");
+		log("match");
 		StepModel unmatchedStep = lastFeature().getFirstStepWithoutMatch();
 		unmatchedStep.setMatch(match);
 	}
 
 	@Override
 	public void embedding(String mimeType, byte[] data) {
-		// intentionally left blank
 		log("embedding");
+		// intentionally left blank
 	}
 
 	@Override
 	public void write(String text) {
+		log("write - " + text);
 		// intentionally left blank
-		log("write");
 	}
 
 	protected void log(String msg) {

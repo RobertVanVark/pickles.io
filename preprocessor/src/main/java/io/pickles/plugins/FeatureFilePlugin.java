@@ -16,10 +16,10 @@ public class FeatureFilePlugin extends CorePlugin {
 	@Override
 	public void done() {
 		log("done");
-		System.out.println("#######################################################################");
+		out.println("#######################################################################");
 		for (FeatureModel feature : getFeatures()) {
-			System.out.println(feature.toGherkin());
-			System.out.println("#######################################################################");
+			out.println(feature.toGherkin());
+			out.println("#######################################################################");
 		}
 	}
 

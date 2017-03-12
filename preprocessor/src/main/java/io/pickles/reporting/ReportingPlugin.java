@@ -60,7 +60,7 @@ public class ReportingPlugin extends CorePlugin {
 		model.setStartedAt(DateTime.now());
 		Matcher matcher = scenarioPattern.matcher(scenario.getName());
 		if (matcher.matches()) {
-			System.out.println("Triggered by dvID : (" + matcher.group(1) + ") from " + scenario.getName());
+			log("Triggered by dvID : (" + matcher.group(1) + ") from " + scenario.getName());
 			model.setTriggeringDvId(matcher.group(1));
 		}
 	}
@@ -72,7 +72,7 @@ public class ReportingPlugin extends CorePlugin {
 		super.step(step);
 		Matcher matcher = thenAfterPattern.matcher(step.getName());
 		if (matcher.matches()) {
-			System.out.println("Triggering dvID : (" + matcher.group(1) + ") from " + step.getName());
+			log("Triggering dvID : (" + matcher.group(1) + ") from " + step.getName());
 			lastFeature().getFirstUnfinishedScenario().setNextDvId(matcher.group(1));
 		}
 	}

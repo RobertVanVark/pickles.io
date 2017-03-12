@@ -23,7 +23,7 @@ public class JsonPlugin extends CorePlugin {
 			// featuresJSON.addAll((feature.toJSON());
 		}
 
-		System.out.println(featuresJSON.toString(4));
+		out.println(featuresJSON.toString(4));
 	}
 
 	@Override
