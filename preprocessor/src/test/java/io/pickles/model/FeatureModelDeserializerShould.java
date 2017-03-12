@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,6 +15,8 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.ScenarioModel;
 
 public class FeatureModelDeserializerShould {
 

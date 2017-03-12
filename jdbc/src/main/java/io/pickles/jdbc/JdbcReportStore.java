@@ -11,8 +11,8 @@ import javax.sql.DataSource;
 
 import org.joda.time.DateTime;
 
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.TestRun;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.TestRun;
 import io.pickles.reporting.ReportStore;
 
 public class JdbcReportStore implements ReportStore {

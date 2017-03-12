@@ -2,8 +2,8 @@ package io.pickles.reporting;
 
 import java.util.List;
 
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.TestRun;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.TestRun;
 
 public interface ReportStore {
 

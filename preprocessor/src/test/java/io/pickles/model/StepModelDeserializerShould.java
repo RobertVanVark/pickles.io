@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
@@ -14,6 +14,7 @@ import org.junit.Test;
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
 import gherkin.formatter.model.Step;
+import io.pickles.model.StepModel;
 
 public class StepModelDeserializerShould {
 

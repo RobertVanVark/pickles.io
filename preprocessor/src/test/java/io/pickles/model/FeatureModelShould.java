@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;

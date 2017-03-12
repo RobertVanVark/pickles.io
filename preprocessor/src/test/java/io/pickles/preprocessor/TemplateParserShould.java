@@ -7,8 +7,8 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import io.pickles.model.FeatureModel;
 import io.pickles.preprocessor.TemplateParser;
-import io.pickles.preprocessor.model.FeatureModel;
 import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 import static org.junit.Assert.assertThat;

@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import gherkin.formatter.Reporter;
 import gherkin.formatter.model.Match;
 import gherkin.formatter.model.Result;
+import io.pickles.model.StepModel;
 import io.pickles.preprocessor.TemplateFormatter;
-import io.pickles.preprocessor.model.StepModel;
 
 public abstract class CorePlugin extends TemplateFormatter implements Reporter {
 

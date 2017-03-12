@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.pickles.preprocessor.model.FeatureModel;
+import io.pickles.model.FeatureModel;
 
 public class JsonPlugin extends CorePlugin {
 

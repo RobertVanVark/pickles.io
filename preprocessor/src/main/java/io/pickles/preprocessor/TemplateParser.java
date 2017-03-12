@@ -8,7 +8,7 @@ import java.util.List;
 
 import gherkin.parser.Parser;
 import gherkin.util.FixJava;
-import io.pickles.preprocessor.model.FeatureModel;
+import io.pickles.model.FeatureModel;
 
 public class TemplateParser {
 

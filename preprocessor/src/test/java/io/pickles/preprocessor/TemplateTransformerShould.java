@@ -19,8 +19,8 @@ import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.StepModel;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.StepModel;
 import io.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
 

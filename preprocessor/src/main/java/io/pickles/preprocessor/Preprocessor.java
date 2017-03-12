@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import io.pickles.preprocessor.model.FeatureModel;
+import io.pickles.model.FeatureModel;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class Preprocessor {

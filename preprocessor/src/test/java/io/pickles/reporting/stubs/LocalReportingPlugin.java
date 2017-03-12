@@ -1,6 +1,6 @@
-package io.pickles.reporting;
+package io.pickles.reporting.stubs;
 
-import io.pickles.reporting.stubs.StubReportingStore;
+import io.pickles.reporting.ReportingPlugin;
 
 public class LocalReportingPlugin extends ReportingPlugin {
 

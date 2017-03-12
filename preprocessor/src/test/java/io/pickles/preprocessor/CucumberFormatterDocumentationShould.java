@@ -14,9 +14,9 @@ import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.StepModel;
 import io.pickles.preprocessor.TemplateParser;
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.StepModel;
 import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class CucumberFormatterDocumentationShould {

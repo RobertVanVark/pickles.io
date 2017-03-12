@@ -21,11 +21,12 @@ import org.reflections.util.FilterBuilder;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import io.pickles.steps.delays.DelayFactory;
+import io.pickles.steps.delays.BaseFixedTimeTest;
 import io.pickles.steps.stubs.StubDelayedVerificationStore;
 import io.pickles.steps.stubs.StubExecutionContext;
 import io.pickles.steps.stubs.StubTestData;
 
-public class DelayedVerificationStepsShould extends FixedTimeTest {
+public class DelayedVerificationStepsShould extends BaseFixedTimeTest {
 
 	/*
 	 * match Then after Business-Event .*

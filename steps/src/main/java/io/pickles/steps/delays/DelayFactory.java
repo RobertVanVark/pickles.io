@@ -1,7 +1,5 @@
 package io.pickles.steps.delays;
 
-import io.pickles.steps.DelayException;
-
 public class DelayFactory {
 
 	private static final String SINGLE_DELAY_EXPRESSION = "" //

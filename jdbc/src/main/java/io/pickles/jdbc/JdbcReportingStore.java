@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.ScenarioModel;
-import io.pickles.preprocessor.model.StepModel;
-import io.pickles.preprocessor.model.TestRun;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.ScenarioModel;
+import io.pickles.model.StepModel;
+import io.pickles.model.TestRun;
 import io.pickles.reporting.ReportingStore;
 
 public class JdbcReportingStore implements ReportingStore {

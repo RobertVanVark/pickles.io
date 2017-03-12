@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
@@ -20,6 +20,9 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.ScenarioModel;
+import io.pickles.model.StepModel;
 
 public class ScenarioModelShould {
 

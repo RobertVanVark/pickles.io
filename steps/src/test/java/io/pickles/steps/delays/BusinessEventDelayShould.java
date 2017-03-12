@@ -6,11 +6,10 @@ import static org.junit.Assert.assertThat;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import io.pickles.steps.FixedTimeTest;
 import io.pickles.steps.stubs.StubExecutionContext;
 import io.pickles.steps.stubs.StubNextDayExecutionContext;
 
-public class BusinessEventDelayShould extends FixedTimeTest {
+public class BusinessEventDelayShould extends BaseFixedTimeTest {
 
 	@Test
 	public void matchBusinessEventWithHyphen() {

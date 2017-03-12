@@ -1,11 +1,11 @@
-package io.pickles.steps;
+package io.pickles.steps.delays;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Before;
 
-public class FixedTimeTest {
+public class BaseFixedTimeTest {
 
 	@Before
 	public void givenTimeFixedAtTen() {

@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +193,16 @@ public class FeatureModel {
 	public JsonObject toJsonObject() {
 		Gson gson = ModelGsonBuilder.gson();
 		return gson.toJsonTree(this).getAsJsonObject();
+	}
+
+	public ScenarioModel getFirstUnfinishedScenario() {
+		for (ScenarioModel scenario : getScenarios()) {
+			if (scenario.getFinishedAt() == null) {
+				return scenario;
+			}
+		}
+
+		return null;
 	}
 
 	public StepModel getFirstStepWithoutMatch() {

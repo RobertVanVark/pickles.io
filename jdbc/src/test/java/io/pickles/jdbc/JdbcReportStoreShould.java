@@ -14,8 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import io.pickles.preprocessor.model.FeatureModel;
-import io.pickles.preprocessor.model.TestRun;
+import io.pickles.model.FeatureModel;
+import io.pickles.model.TestRun;
 import io.pickles.reporting.ReportStore;
 import liquibase.Liquibase;
 import liquibase.database.Database;

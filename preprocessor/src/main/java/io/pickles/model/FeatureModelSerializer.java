@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import java.lang.reflect.Type;
 
@@ -12,18 +12,17 @@ import com.google.gson.JsonSerializer;
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Tag;
 
-class ScenarioModelSerializer implements JsonSerializer<ScenarioModel> {
+class FeatureModelSerializer implements JsonSerializer<FeatureModel> {
 
 	@Override
-	public JsonElement serialize(ScenarioModel src, Type typeOfSrc, JsonSerializationContext context) {
+	public JsonElement serialize(FeatureModel src, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject json = new JsonObject();
 		json.add("line", new JsonPrimitive(src.getLine()));
-		json.add("steps", new JsonArray());
+		json.add("elements", new JsonArray());
 		json.add("name", new JsonPrimitive(src.getName()));
 		json.add("description", new JsonPrimitive(src.getDescription()));
-		json.add("keyword", new JsonPrimitive(src.getKeyword()));
-		json.add("id", new JsonPrimitive(src.getScenarioId()));
-		json.add("type", new JsonPrimitive(src.getKeyword().toLowerCase()));
+		json.add("keyword", new JsonPrimitive("Feature"));
+		json.add("id", new JsonPrimitive(src.getFeatureId()));
 
 		if (src.hasTags()) {
 			json.add("tags", tagsJson(src));
@@ -36,7 +35,7 @@ class ScenarioModelSerializer implements JsonSerializer<ScenarioModel> {
 		return json;
 	}
 
-	private JsonArray tagsJson(ScenarioModel src) {
+	private JsonArray tagsJson(FeatureModel src) {
 		JsonArray tagsJson = new JsonArray();
 		for (Tag tag : src.getTags()) {
 			JsonObject json = new JsonObject();
@@ -47,7 +46,7 @@ class ScenarioModelSerializer implements JsonSerializer<ScenarioModel> {
 		return tagsJson;
 	}
 
-	private JsonArray commentsJson(ScenarioModel src) {
+	private JsonArray commentsJson(FeatureModel src) {
 		JsonArray commentsJson = new JsonArray();
 		for (Comment comment : src.getComments()) {
 			JsonObject json = new JsonObject();

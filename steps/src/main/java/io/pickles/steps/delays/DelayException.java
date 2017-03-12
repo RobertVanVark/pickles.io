@@ -1,4 +1,4 @@
-package io.pickles.steps;
+package io.pickles.steps.delays;
 
 public class DelayException extends RuntimeException {
 

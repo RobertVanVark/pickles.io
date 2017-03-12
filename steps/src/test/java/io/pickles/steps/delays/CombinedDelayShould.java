@@ -6,10 +6,9 @@ import static org.junit.Assert.assertThat;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import io.pickles.steps.FixedTimeTest;
 import io.pickles.steps.stubs.StubExecutionContext;
 
-public class CombinedDelayShould extends FixedTimeTest {
+public class CombinedDelayShould extends BaseFixedTimeTest {
 
 	@Test
 	public void addDelays() {

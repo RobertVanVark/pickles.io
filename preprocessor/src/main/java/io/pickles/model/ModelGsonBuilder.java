@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

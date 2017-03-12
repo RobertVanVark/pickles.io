@@ -1,7 +1,8 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.JsonDeserializationContext;
@@ -11,27 +12,25 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import gherkin.formatter.model.Comment;
-import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.Tag;
+import gherkin.formatter.model.DataTableRow;
+import gherkin.formatter.model.Step;
 
-class ScenarioModelDeserializer implements JsonDeserializer<ScenarioModel> {
+class StepModelDeserializer implements JsonDeserializer<StepModel> {
 	@Override
-	public ScenarioModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+	public StepModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
 
 		JsonObject scenarioJson = json.getAsJsonObject();
 
 		String keyword = scenarioJson.get("keyword").getAsString();
 		String name = scenarioJson.get("name").getAsString();
-		String description = scenarioJson.get("description").getAsString();
 		Integer line = scenarioJson.get("line").getAsInt();
-		String id = scenarioJson.get("id").getAsString();
 
 		List<Comment> comments = constructComments(scenarioJson);
-		List<Tag> tags = constructTags(scenarioJson);
+		List<DataTableRow> rows = constructRows(scenarioJson);
 
-		Scenario scenario = new Scenario(comments, tags, keyword, name, description, line, id);
-		return new ScenarioModel(scenario);
+		Step step = new Step(comments, keyword, name, line, rows, null);
+		return new StepModel(step);
 	}
 
 	private List<Comment> constructComments(JsonObject scenarioJson) {
@@ -46,15 +45,17 @@ class ScenarioModelDeserializer implements JsonDeserializer<ScenarioModel> {
 		return comments;
 	}
 
-	private List<Tag> constructTags(JsonObject scenarioJson) {
-		List<Tag> tags = new ArrayList<>();
-		if (scenarioJson.has("tags")) {
-			for (JsonElement element : scenarioJson.get("tags").getAsJsonArray()) {
-				Tag tag = new Tag(element.getAsJsonObject().get("name").getAsString(),
-						element.getAsJsonObject().get("line").getAsInt());
-				tags.add(tag);
+	private List<DataTableRow> constructRows(JsonObject scenarioJson) {
+		List<DataTableRow> rows = new ArrayList<>();
+		if (scenarioJson.has("rows")) {
+			for (JsonElement element : scenarioJson.get("rows").getAsJsonArray()) {
+				List<String> cells = new ArrayList<String>();
+				for (JsonElement cell : element.getAsJsonObject().get("cells").getAsJsonArray()) {
+					cells.add(cell.getAsString());
+				}
+				rows.add(new DataTableRow(Collections.emptyList(), cells, null));
 			}
 		}
-		return tags;
+		return rows;
 	}
 }

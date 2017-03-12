@@ -1,4 +1,4 @@
-package io.pickles.preprocessor.model;
+package io.pickles.model;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -19,6 +19,8 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
 import gherkin.formatter.model.DocString;
 import gherkin.formatter.model.Step;
+import io.pickles.model.ScenarioModel;
+import io.pickles.model.StepModel;
 
 public class StepModelShould {
 

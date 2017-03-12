@@ -8,12 +8,11 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import io.pickles.steps.DelayedVerification;
-import io.pickles.steps.FixedTimeTest;
 import io.pickles.steps.TestExecutionContext;
 import io.pickles.steps.stubs.StubExecutionContext;
 import io.pickles.steps.stubs.StubNextDayExecutionContext;
 
-public class TimeOffsetDelayShould extends FixedTimeTest {
+public class TimeOffsetDelayShould extends BaseFixedTimeTest {
 
 	@Test
 	public void matchValidTimeExpression() {
