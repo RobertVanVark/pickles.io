@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import cucumber.runtime.RuntimeOptions;
 import cucumber.runtime.io.MultiLoader;
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.io.ResourceLoaderClassFinder;
+import io.pickles.model.ScenarioModel;
 import io.pickles.reporting.stubs.StubReportingStore;
 
 public class ReportingPluginShould {
@@ -30,7 +33,7 @@ public class ReportingPluginShould {
 		ArrayList<String> commandlineParams = new ArrayList<>();
 		commandlineParams.addAll(Arrays.asList("-p", "io.pickles.reporting.stubs.LocalReportingPlugin"));
 		commandlineParams.addAll(Arrays.asList("-g", "classpath:io.pickles"));
-		commandlineParams.addAll(Arrays.asList("classpath:io/pickles/preprocessor/test2.feature"));
+		commandlineParams.addAll(Arrays.asList("classpath:io/pickles/reporting"));
 
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		ResourceLoader resourceLoader = new MultiLoader(contextClassLoader);
@@ -41,6 +44,12 @@ public class ReportingPluginShould {
 
 		assertThat(StubReportingStore.createdTestRuns(), hasSize(1));
 		assertThat(StubReportingStore.updatedTestRuns(), hasSize(1));
-		assertThat(StubReportingStore.createdFeatures(), hasSize(1));
+		assertThat(StubReportingStore.createdFeatures(), hasSize(2));
+		assertThat(StubReportingStore.createdScenarios(), hasSize(4));
+		assertThat(StubReportingStore.createdSteps(), hasSize(18));
+
+		List<ScenarioModel> nonInitiating = StubReportingStore.createdScenarios().stream()
+				.filter(s -> s.getNextDvId() == null).collect(Collectors.toList());
+		assertThat(nonInitiating, hasSize(2));
 	}
 }

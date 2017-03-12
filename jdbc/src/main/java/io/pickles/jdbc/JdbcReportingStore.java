@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -88,6 +86,13 @@ public class JdbcReportingStore implements ReportingStore {
 
 	@Override
 	public void create(FeatureModel feature) {
+		save(feature);
+		for (ScenarioModel scenario : feature.getScenarios()) {
+			create(scenario);
+		}
+	}
+
+	protected void save(FeatureModel feature) {
 		try {
 			PreparedStatement statement = getConnection().prepareStatement(
 					"INSERT INTO PICKLES_FEATURE (TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON) VALUES (?, ?, ?, ?)",
@@ -109,75 +114,62 @@ public class JdbcReportingStore implements ReportingStore {
 		} catch (SQLException ex) {
 			throw new ReportingStoreException("Could not save Feture = " + feature.getName(), ex);
 		}
-
-		createScenarios(feature);
-		createSteps(feature);
 	}
 
-	private void createScenarios(FeatureModel feature) {
-		try {
-			Connection connection = getConnection();
-			PreparedStatement statement = connection.prepareStatement(
-					"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
-			connection.setAutoCommit(false);
-
-			for (ScenarioModel scenario : feature.getScenarios()) {
-
-				statement.setInt(1, scenario.getFeature().getId());
-				statement.setTimestamp(2, new Timestamp(scenario.getStartedAt().getMillis()));
-				if (scenario.getFinishedAt() != null) {
-					statement.setTimestamp(3, new Timestamp(scenario.getFinishedAt().getMillis()));
-				} else {
-					statement.setTimestamp(3, null);
-				}
-				statement.setString(4, scenario.getTriggeringDvId());
-				statement.setString(5, scenario.getNextDvId());
-				statement.setString(6, scenario.toJsonObject().toString());
-				statement.addBatch();
-			}
-
-			statement.executeBatch();
-			ResultSet rs = statement.getGeneratedKeys();
-			for (ScenarioModel scenario : feature.getScenarios()) {
-				if (rs.next()) {
-					scenario.setId(rs.getInt(1));
-				}
-			}
-			connection.commit();
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			throw new ReportingStoreException("Could not save scenario in feature = " + feature.getName(), e);
+	@Override
+	public void create(ScenarioModel scenario) {
+		save(scenario);
+		for (StepModel step : scenario.getSteps()) {
+			create(step);
 		}
 	}
 
-	private void createSteps(FeatureModel feature) {
+	private void save(ScenarioModel scenario) {
 		try {
-			Connection connection = getConnection();
-			PreparedStatement statement = connection.prepareStatement(
-					"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-			connection.setAutoCommit(false);
+			PreparedStatement statement = getConnection().prepareStatement(
+					"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 
-			List<StepModel> steps = feature.getScenarios().stream().flatMap(s -> s.getSteps().stream())
-					.collect(Collectors.toList());
-			for (StepModel step : steps) {
-
-				statement.setInt(1, step.getScenario().getId());
-				statement.setString(2, step.toJsonObject().toString());
-				statement.addBatch();
+			statement.setInt(1, scenario.getFeature().getId());
+			statement.setTimestamp(2, new Timestamp(scenario.getStartedAt().getMillis()));
+			if (scenario.getFinishedAt() != null) {
+				statement.setTimestamp(3, new Timestamp(scenario.getFinishedAt().getMillis()));
+			} else {
+				statement.setTimestamp(3, null);
 			}
+			statement.setString(4, scenario.getTriggeringDvId());
+			statement.setString(5, scenario.getNextDvId());
+			statement.setString(6, scenario.toJsonObject().toString());
 
-			statement.executeBatch();
+			statement.execute();
+
 			ResultSet rs = statement.getGeneratedKeys();
-			for (StepModel step : steps) {
-				if (rs.next()) {
-					step.setId(rs.getInt(1));
-				}
+			if (rs.next()) {
+				scenario.setId(rs.getInt(1));
 			}
-			connection.commit();
-			connection.setAutoCommit(true);
+		} catch (
+
+		SQLException e) {
+			throw new ReportingStoreException("Could not save scenario=" + scenario.getName(), e);
+		}
+	}
+
+	@Override
+	public void create(StepModel step) {
+		try {
+			PreparedStatement statement = getConnection().prepareStatement(
+					"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+			statement.setInt(1, step.getScenario().getId());
+			statement.setString(2, step.toJsonObject().toString());
+			statement.execute();
+
+			ResultSet rs = statement.getGeneratedKeys();
+			if (rs.next()) {
+				step.setId(rs.getInt(1));
+			}
 		} catch (SQLException e) {
-			throw new ReportingStoreException("Could not save step in feature = " + feature.getName(), e);
+			throw new ReportingStoreException("Could not save step=" + step.getKeyword() + step.getName(), e);
 		}
 	}
 }

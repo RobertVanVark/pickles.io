@@ -14,13 +14,13 @@
 
 		<insert tableName="PICKLES_FEATURE">
 			<column name="ID">999998</column>
-			<column name="TEST_RUN_ID">1</column>
+			<column name="TEST_RUN_ID">999999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
 		</insert>
 		<insert tableName="PICKLES_FEATURE">
 			<column name="ID">999999</column>
-			<column name="TEST_RUN_ID">1</column>
+			<column name="TEST_RUN_ID">999999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
 			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
