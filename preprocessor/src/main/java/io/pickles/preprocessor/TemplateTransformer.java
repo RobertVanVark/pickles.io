@@ -58,7 +58,7 @@ public class TemplateTransformer {
 
 			subscenarioRanges.remove(0);
 			for (Range<Integer> range : subscenarioRanges) {
-				List<DelayedVerification> verifications = store.readAllForChecksum(checksum);
+				List<DelayedVerification> verifications = store.readAllToVerify(checksum);
 				for (DelayedVerification verification : verifications) {
 					checksum = checksum(originalScenario, range.upperEndpoint());
 					createVerificationScenario(originalScenario, range, verification, checksum);

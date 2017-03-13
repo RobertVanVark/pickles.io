@@ -45,7 +45,6 @@ public class DummyDelayedVerificationStore implements DelayedVerificationStore {
 
 	@Override
 	public List<DelayedVerification> readAllToVerify(String checksum) {
-		// TODO Auto-generated method stub
-		return null;
+		return readAllForChecksum(checksum);
 	}
 }

@@ -49,7 +49,6 @@ public class StubDelayedVerificationStore implements DelayedVerificationStore {
 	@Override
 	public List<DelayedVerification> readAllToVerify(String checksum) {
 		System.out.println("XXXXXXXX - StubDVStore - readAll(verify) : " + checksum);
-		return new ArrayList<DelayedVerification>();
+		return new ArrayList<>();
 	}
-
 }

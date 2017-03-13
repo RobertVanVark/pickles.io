@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -82,7 +83,7 @@ public class JdbcDelayedVerificationStore implements DelayedVerificationStore {
 					"Could not retrieve Delayed Verifications for checksum=" + checksum, ex);
 		}
 
-		return results;
+		return results.stream().filter(dv -> dv.getVerifyAt().isBeforeNow()).collect(Collectors.toList());
 	}
 
 	private List<DelayedVerification> delayedVerificationsFrom(ResultSet resultSet) throws SQLException {

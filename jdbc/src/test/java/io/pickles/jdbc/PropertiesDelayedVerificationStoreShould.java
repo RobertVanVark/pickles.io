@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +16,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertThat;
 
 import io.pickles.steps.DelayedVerification;
 import liquibase.Liquibase;
@@ -99,7 +100,7 @@ public class PropertiesDelayedVerificationStoreShould {
 		assertThat(results, hasSize(3));
 
 		results = getAllToVerify(checksumWithThreeEntriesOneVerified);
-		assertThat(results, hasSize(2));
+		assertThat(results, hasSize(1));
 	}
 
 	@Test
