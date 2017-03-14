@@ -193,7 +193,7 @@ public class TemplateTransformerShould {
 	private FeatureModel transform(List<String> templateLines, int nrDvs) {
 		FeatureModel featureTemplate = new TemplateParser().parse("src/test/resources/featuretemplate", templateLines);
 		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
-				new DummyDelayedVerificationStore(nrDvs));
+				new DummyDelayedVerificationStore(nrDvs), false);
 		return transformer.doIt();
 	}
 

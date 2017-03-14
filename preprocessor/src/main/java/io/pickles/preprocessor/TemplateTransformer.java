@@ -6,9 +6,12 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import org.joda.time.DateTime;
 
 import com.google.common.collect.Range;
 
@@ -36,10 +39,12 @@ public class TemplateTransformer {
 	private FeatureModel originalFeature;
 	private FeatureModel transformedFeature;
 	private DelayedVerificationStore store;
+	private boolean isDryRun;
 
-	public TemplateTransformer(FeatureModel featureTemplate, DelayedVerificationStore store) {
+	public TemplateTransformer(FeatureModel featureTemplate, DelayedVerificationStore store, boolean isDryRun) {
 		originalFeature = featureTemplate;
 		this.store = store;
+		this.isDryRun = isDryRun;
 	}
 
 	public FeatureModel doIt() {
@@ -58,7 +63,7 @@ public class TemplateTransformer {
 
 			subscenarioRanges.remove(0);
 			for (Range<Integer> range : subscenarioRanges) {
-				List<DelayedVerification> verifications = store.readAllToVerify(checksum);
+				List<DelayedVerification> verifications = getDelayedVerificationsToVerify(checksum);
 				for (DelayedVerification verification : verifications) {
 					checksum = checksum(originalScenario, range.upperEndpoint());
 					createVerificationScenario(originalScenario, range, verification, checksum);
@@ -67,6 +72,13 @@ public class TemplateTransformer {
 		}
 
 		return transformedFeature;
+	}
+
+	private List<DelayedVerification> getDelayedVerificationsToVerify(String checksum) {
+		if (isDryRun) {
+			return Arrays.asList(new DelayedVerification("dry-run-id", DateTime.now(), checksum, "dry run featureUri"));
+		}
+		return store.readAllToVerify(checksum);
 	}
 
 	private List<Range<Integer>> findSubScenarios(ScenarioModel originalScenario) {

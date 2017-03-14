@@ -14,15 +14,20 @@ import io.pickles.steps.DelayedVerificationStore;
 
 public class Preprocessor {
 
+	private boolean isDryRun = false;
 	private DelayedVerificationStore store;
 
 	public void setDelayedVerificationStore(DelayedVerificationStore store) {
 		this.store = store;
 	}
 
+	public void setDryRun() {
+		isDryRun = true;
+	}
+
 	List<String> process(String uri, List<String> lines) {
 		FeatureModel original = new TemplateParser().parse(uri, lines);
-		FeatureModel transformed = new TemplateTransformer(original, store).doIt();
+		FeatureModel transformed = new TemplateTransformer(original, store, isDryRun).doIt();
 		return transformed.toGherkinList();
 	}
 
