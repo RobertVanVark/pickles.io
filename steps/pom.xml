@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Pickles - core</name>
-
 	<artifactId>pickles-core</artifactId>
+	<version>${pickles.version}</version>
 	<packaging>jar</packaging>
 
 	<parent>
