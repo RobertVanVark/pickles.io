@@ -13,8 +13,8 @@ import org.junit.Test;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
+import gherkin.formatter.model.Result;
 import gherkin.formatter.model.Step;
-import io.pickles.model.StepModel;
 
 public class StepModelDeserializerShould {
 
@@ -60,4 +60,22 @@ public class StepModelDeserializerShould {
 		assertThat(model.getRows().get(1).getCells().get(1), equalTo("r1v2"));
 		assertThat(model.getRows().get(2).getCells().get(2), equalTo("r2v4"));
 	}
+
+	@Test
+	public void constructOptionalErrorFromJson() {
+		StepModel stepModel = StepModelShould.modelWithName("error step");
+
+		Result result = new Result("status", 999L, new Throwable("error message"), null);
+		stepModel.setResult(result);
+		String json = stepModel.toJsonObject().toString();
+		StepModel model = StepModel.fromJson(json);
+		assertThat(model.getResult().getErrorMessage(), equalTo(stepModel.getResult().getErrorMessage()));
+
+		result = new Result("status", 999L, "error message");
+		stepModel.setResult(result);
+		json = stepModel.toJsonObject().toString();
+		model = StepModel.fromJson(json);
+		assertThat(model.getResult().getErrorMessage(), equalTo(stepModel.getResult().getErrorMessage()));
+	}
+
 }

@@ -2,6 +2,7 @@ package io.pickles.model;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import com.google.gson.JsonObject;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
+import gherkin.formatter.model.Result;
 
 public class StepModelSerializerShould {
 
@@ -77,5 +79,20 @@ public class StepModelSerializerShould {
 		comment = commentsGson.get(1).getAsJsonObject();
 		assertThat(comment.get("value").getAsString(), equalTo("another comment"));
 		assertThat(comment.get("line").getAsInt(), equalTo(2));
+	}
+
+	@Test
+	public void convertOptionalErrorIntoJsonObject() {
+		StepModel stepModel = StepModelShould.modelWithName("error step");
+		Result result = new Result("status", 999L, new Throwable("error message"), null);
+		stepModel.setResult(result);
+		JsonObject jsonObject = stepModel.toJsonObject();
+		assertThat(jsonObject.getAsJsonObject("result").get("error_message").getAsString(),
+				startsWith("java.lang.Throwable: error message"));
+
+		result = new Result("status", 999L, "error message");
+		stepModel.setResult(result);
+		jsonObject = stepModel.toJsonObject();
+		assertThat(jsonObject.getAsJsonObject("result").get("error_message").getAsString(), equalTo("error message"));
 	}
 }

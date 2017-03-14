@@ -67,6 +67,9 @@ class StepModelSerializer implements JsonSerializer<StepModel> {
 			if (src.getResult().getDuration() != null) {
 				resultJson.add("duration", new JsonPrimitive(src.getResult().getDuration()));
 			}
+			if (src.getResult().getErrorMessage() != null) {
+				resultJson.add("error_message", new JsonPrimitive(src.getResult().getErrorMessage()));
+			}
 		} else {
 			resultJson.add("status", new JsonPrimitive("undefined"));
 		}
