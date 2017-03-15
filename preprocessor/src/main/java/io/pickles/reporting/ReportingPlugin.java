@@ -38,15 +38,15 @@ public class ReportingPlugin extends CorePlugin {
 	}
 
 	@Override
+	public void write(String text) {
+		lastFeature().getFirstUnfinishedScenario().addOutput(text);
+	}
+
+	@Override
 	public void eof() {
 		super.eof();
 		lastFeature().setFinishedAt(DateTime.now());
 		store.create(lastFeature());
-	}
-
-	@Override
-	public void close() {
-		super.close();
 		testRun.setFinishedAt(DateTime.now());
 		store.update(testRun);
 	}
@@ -84,7 +84,7 @@ public class ReportingPlugin extends CorePlugin {
 		model.setFinishedAt(DateTime.now());
 	}
 
-	public void storeTestRun() {
+	private void storeTestRun() {
 		if (testRun == null) {
 			testRun = new TestRun("dummy", "dummy description", DateTime.now(), DateTime.now());
 			store.create(testRun);

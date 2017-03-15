@@ -3,6 +3,7 @@ package io.pickles.model;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -15,9 +16,6 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import io.pickles.model.ScenarioModelShould;
-import io.pickles.model.ScenarioModel;
-import io.pickles.model.StepModel;
 
 public class ScenarioModelDeserializerShould {
 
@@ -63,6 +61,19 @@ public class ScenarioModelDeserializerShould {
 		assertThat(model.getTags(), hasSize(2));
 		assertThat(model.getTags().get(0).getName(), equalTo("tag"));
 		assertThat(model.getTags().get(1).getLine(), equalTo(4));
+	}
+
+	@Test
+	public void constructOptionalOutputFromJson() {
+		ScenarioModel scenarioModel = ScenarioModelShould.modelWithName("scenario");
+		scenarioModel.addOutput("sample output text");
+		scenarioModel.addOutput("text");
+		String json = scenarioModel.toJsonObject().toString();
+
+		ScenarioModel model = ScenarioModel.fromJson(json);
+		assertThat(model.getOutput(), iterableWithSize(2));
+		assertThat(model.getOutput().get(0), equalTo("sample output text"));
+		assertThat(model.getOutput().get(1), equalTo("text"));
 	}
 
 	@Test

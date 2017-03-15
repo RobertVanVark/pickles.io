@@ -21,6 +21,7 @@ public class ScenarioModel {
 	private DateTime finishedAt;
 	private String triggeringDvId;
 	private String nextDvId;
+	private List<String> output = new ArrayList<>();
 
 	private Scenario scenario;
 	private FeatureModel feature;
@@ -94,6 +95,14 @@ public class ScenarioModel {
 
 	public StepModel getLastStep() {
 		return stepModels.get(stepModels.size() - 1);
+	}
+
+	public void addOutput(String text) {
+		output.add(text);
+	}
+
+	public List<String> getOutput() {
+		return output;
 	}
 
 	public void setFeature(FeatureModel feature) {
