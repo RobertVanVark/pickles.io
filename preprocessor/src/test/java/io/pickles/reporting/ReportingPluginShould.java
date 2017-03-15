@@ -48,7 +48,7 @@ public class ReportingPluginShould {
 	@Test
 	public void createAndUpdateTestRuns() throws IOException {
 		assertThat(StubReportingStore.createdTestRuns(), hasSize(1));
-		assertThat(StubReportingStore.updatedTestRuns(), hasSize(1));
+		assertThat(StubReportingStore.updatedTestRuns(), hasSize(2));
 	}
 
 	@Test
