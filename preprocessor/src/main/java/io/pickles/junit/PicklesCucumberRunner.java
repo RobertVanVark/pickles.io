@@ -50,6 +50,9 @@ public class PicklesCucumberRunner extends Runner {
 
 		Preprocessor preprocessor = new Preprocessor();
 		preprocessor.setDelayedVerificationStore(store);
+		if (getRuntimeOptions().isDryRun()) {
+			preprocessor.setDryRun();
+		}
 
 		for (File featureTemplate : getFeatureTemplateFiles()) {
 			preprocessor.process(featureTemplate);
@@ -81,8 +84,13 @@ public class PicklesCucumberRunner extends Runner {
 	}
 
 	private List<String> getFeaturePaths() {
+		RuntimeOptions runtimeOptions = getRuntimeOptions();
+		return runtimeOptions.getFeaturePaths();
+	}
+
+	private RuntimeOptions getRuntimeOptions() {
 		RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(clazz);
 		RuntimeOptions runtimeOptions = runtimeOptionsFactory.create();
-		return runtimeOptions.getFeaturePaths();
+		return runtimeOptions;
 	}
 }

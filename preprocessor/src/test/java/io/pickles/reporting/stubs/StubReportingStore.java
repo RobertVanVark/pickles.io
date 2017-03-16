@@ -25,6 +25,7 @@ public class StubReportingStore implements ReportingStore {
 
 	@Override
 	public void create(TestRun run) {
+		run.setId(1111);
 		createdTestRuns.add(run);
 	}
 

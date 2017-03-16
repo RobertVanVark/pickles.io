@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Result;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import io.pickles.model.ScenarioModel;
@@ -20,6 +21,8 @@ public class ReportingPlugin extends CorePlugin {
 
 	private ReportingStore store;
 	private TestRun testRun;
+
+	private boolean isDryRun = true;
 
 	public ReportingPlugin(Appendable out) {
 		super(out);
@@ -38,17 +41,26 @@ public class ReportingPlugin extends CorePlugin {
 	}
 
 	@Override
+	public void result(Result result) {
+		super.result(result);
+		if (!"skipped".equals(result.getStatus()) && !"undefined".equals(result.getStatus())) {
+			isDryRun = false;
+		}
+	}
+
+	@Override
 	public void write(String text) {
 		lastFeature().getFirstUnfinishedScenario().addOutput(text);
+		isDryRun = false;
 	}
 
 	@Override
 	public void eof() {
 		super.eof();
-		lastFeature().setFinishedAt(DateTime.now());
-		store.create(lastFeature());
 		testRun.setFinishedAt(DateTime.now());
-		store.update(testRun);
+		storeTestRun();
+		lastFeature().setFinishedAt(DateTime.now());
+		storeFeature();
 	}
 
 	private Pattern scenarioPattern = Pattern.compile(".* \\(dvId=(.*)\\)$");
@@ -85,9 +97,27 @@ public class ReportingPlugin extends CorePlugin {
 	}
 
 	private void storeTestRun() {
-		if (testRun == null) {
-			testRun = new TestRun("dummy", "dummy description", DateTime.now(), DateTime.now());
-			store.create(testRun);
+		if (testRun != null && testRun.getId() != null) {
+			updateTestRun();
+		} else {
+			if (testRun == null) {
+				testRun = new TestRun("dummy", "dummy description", DateTime.now(), DateTime.now());
+			}
+			if (!isDryRun) {
+				store.create(testRun);
+			}
+		}
+	}
+
+	private void updateTestRun() {
+		if (!isDryRun) {
+			store.update(testRun);
+		}
+	}
+
+	private void storeFeature() {
+		if (!isDryRun) {
+			store.create(lastFeature());
 		}
 	}
 
@@ -95,4 +125,5 @@ public class ReportingPlugin extends CorePlugin {
 	protected void log(String msg) {
 		LOGGER.debug(msg);
 	}
+
 }
