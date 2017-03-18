@@ -148,6 +148,10 @@ public class FeatureModel {
 		this.uri = uri;
 	}
 
+	public void keepInitiatingScenariosOnly() {
+		scenarioModels = scenarioModels.stream().filter(s -> s.isInitiation()).collect(Collectors.toList());
+	}
+
 	public String toGherkin() {
 		return String.join(System.getProperty("line.separator"), toGherkinList());
 	}

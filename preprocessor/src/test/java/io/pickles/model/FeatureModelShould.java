@@ -204,7 +204,7 @@ public class FeatureModelShould {
 		return modelWith("", Collections.emptyList(), comments);
 	}
 
-	static FeatureModel modelWithName(String name) {
+	public static FeatureModel modelWithName(String name) {
 		return modelWith(name, Collections.emptyList(), Collections.emptyList());
 	}
 

@@ -180,7 +180,7 @@ public class ScenarioModelShould {
 		return modelWith("", Collections.emptyList(), tags);
 	}
 
-	static ScenarioModel modelWithName(String name) {
+	public static ScenarioModel modelWithName(String name) {
 		return modelWith(name, Collections.emptyList(), Collections.emptyList());
 	}
 

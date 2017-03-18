@@ -97,6 +97,14 @@ public class ScenarioModel {
 		return stepModels.get(stepModels.size() - 1);
 	}
 
+	public boolean isInitiation() {
+		return triggeringDvId == null || triggeringDvId.isEmpty();
+	}
+
+	public boolean isFinalScenario() {
+		return nextDvId == null || nextDvId.isEmpty();
+	}
+
 	public void addOutput(String text) {
 		output.add(text);
 	}

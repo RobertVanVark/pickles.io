@@ -77,6 +77,12 @@ public class StepModel {
 		return step.getRows();
 	}
 
+	public void setDatatable(List<DataTableRow> rows) {
+		Step newStep = new Step(step.getComments(), step.getKeyword(), step.getName(), step.getLine(), rows,
+				step.getDocString());
+		step = newStep;
+	}
+
 	public String getKeyword() {
 		return step.getKeyword();
 	}
@@ -89,7 +95,7 @@ public class StepModel {
 		return step.getLineRange();
 	}
 
-	Match getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 
@@ -101,7 +107,7 @@ public class StepModel {
 		return step.getOutlineArgs();
 	}
 
-	Result getResult() {
+	public Result getResult() {
 		return result;
 	}
 

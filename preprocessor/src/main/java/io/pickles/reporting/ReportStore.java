@@ -5,6 +5,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import io.pickles.model.FeatureModel;
+import io.pickles.model.ScenarioModel;
 import io.pickles.model.TestRun;
 
 public interface ReportStore {
@@ -18,4 +19,6 @@ public interface ReportStore {
 	FeatureModel readFeature(Integer id);
 
 	List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns);
+
+	ScenarioModel findScenarioTriggeredBy(String dvId);
 }

@@ -183,6 +183,24 @@ public class JdbcReportStore implements ReportStore {
 		return scenario;
 	}
 
+	@Override
+	public ScenarioModel findScenarioTriggeredBy(String dvId) {
+		List<Integer> ids;
+		try {
+			PreparedStatement statement = getConnection()
+					.prepareStatement("SELECT ID FROM PICKLES_SCENARIO WHERE TRIGGERED_BY_DV_ID = ?");
+			statement.setString(1, dvId);
+			ids = idsFrom(statement.executeQuery());
+		} catch (SQLException ex) {
+			throw new ReportingStoreException("Could not retrieve scenario for trigggering dv id=" + dvId, ex);
+		}
+		if (ids.isEmpty()) {
+			return null;
+		}
+
+		return readScenario(ids.get(0));
+	}
+
 	private List<ScenarioModel> scenariosFrom(ResultSet resultSet) throws SQLException {
 		List<ScenarioModel> results = new ArrayList<>();
 		while (resultSet.next()) {
@@ -282,5 +300,4 @@ public class JdbcReportStore implements ReportStore {
 		}
 		return results;
 	}
-
 }
