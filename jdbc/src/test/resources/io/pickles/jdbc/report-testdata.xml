@@ -3,43 +3,101 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+	<!-- 
+	2017-03-09T07:50:00
+	TestRun (999), Feature(998), Feature(999), Scenario(999), Step(999), Step(998)
+	
+	2017-03-10T07:50:00
+	TestRun(888), Feature(888) 
+	
+	2017-03-10T19:50:00 
+	TestRun(777) 
+	
+	2017-01-01T07:50:00 
+	TestRun (999999), Feature(999999)
+	-->
+
+
 	<changeSet author="Robert van Vark" id="Report test data for unit tests">
 		<insert tableName="PICKLES_TEST_RUN">
-			<column name="ID">999999</column>
+			<column name="ID">999</column>
 			<column name="NAME">ROBERT</column>
 			<column name="DESCRIPTION">Robert's Unit Test Run</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
-			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
 		</insert>
 
 		<insert tableName="PICKLES_FEATURE">
-			<column name="ID">999998</column>
-			<column name="TEST_RUN_ID">999999</column>
+			<column name="ID">998</column>
+			<column name="TEST_RUN_ID">999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
-			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
+			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
 		</insert>
 		<insert tableName="PICKLES_FEATURE">
-			<column name="ID">999999</column>
-			<column name="TEST_RUN_ID">999999</column>
+			<column name="ID">999</column>
+			<column name="TEST_RUN_ID">999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
-			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
 			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
 		</insert>
 
 		<insert tableName="PICKLES_SCENARIO">
-			<column name="ID">999999</column>
-			<column name="FEATURE_ID">999999</column>
+			<column name="ID">999</column>
+			<column name="FEATURE_ID">999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
-			<column name="FINISHED_AT" valueDate="2017-04-26T08:10:00" />
-			<column name="TRIGGERED_BY_DV_ID"/>
+			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
+			<column name="TRIGGERED_BY_DV_ID" />
 			<column name="NEXT_DV_ID">1111-1111-1111-1111111111111</column>
-			<column name="JSON">[]</column>
+			<column name="JSON">{"line":-1,"steps":[],"name":"scenario name","description":"","keyword":"Scenario","id":"scenario-id","type":"scenario"}</column>
 		</insert>
 
 		<insert tableName="PICKLES_STEP">
+			<column name="ID">999</column>
+			<column name="SCENARIO_ID">999</column>
+			<column name="JSON">{"line":-1,"name":"a step name","keyword":"Given","match":{},"result":{"status":"undefined"}}</column>
+		</insert>
+		<insert tableName="PICKLES_STEP">
+			<column name="ID">998</column>
+			<column name="SCENARIO_ID">999</column>
+			<column name="JSON">{"line":-1,"name":"a step name","keyword":"Given","match":{},"result":{"status":"undefined"}}</column>
+		</insert>
+
+		<insert tableName="PICKLES_TEST_RUN">
+			<column name="ID">888</column>
+			<column name="NAME">REPORT RUN</column>
+			<column name="DESCRIPTION">Test Run for Report</column>
+			<column name="STARTED_AT" valueDate="2017-03-10T07:50:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-10T08:10:00" />
+		</insert>
+		<insert tableName="PICKLES_FEATURE">
+			<column name="ID">888</column>
+			<column name="TEST_RUN_ID">888</column>
+			<column name="STARTED_AT" valueDate="2017-03-10T07:50:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-10T08:10:00" />
+			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
+		</insert>
+
+		<insert tableName="PICKLES_TEST_RUN">
+			<column name="ID">777</column>
+			<column name="NAME">REPORT RUN</column>
+			<column name="DESCRIPTION">Test Run for Report</column>
+			<column name="STARTED_AT" valueDate="2017-03-10T19:50:00" />
+			<column name="FINISHED_AT" valueDate="2017-03-10T20:10:00" />
+		</insert>
+
+		<insert tableName="PICKLES_TEST_RUN">
 			<column name="ID">999999</column>
-			<column name="SCENARIO_ID">999999</column>
-			<column name="JSON">[]</column>
+			<column name="NAME">ErrorRun</column>
+			<column name="DESCRIPTION">Feature without json in run</column>
+			<column name="STARTED_AT" valueDate="2017-01-01T07:50:00" />
+			<column name="FINISHED_AT" valueDate="2017-01-01T08:10:00" />
+		</insert>
+		<insert tableName="PICKLES_FEATURE">
+			<column name="ID">999999</column>
+			<column name="TEST_RUN_ID">999999</column>
+			<column name="STARTED_AT" valueDate="2017-01-01T07:50:00" />
+			<column name="FINISHED_AT" valueDate="2017-01-01T08:10:00" />
 		</insert>
 
 	</changeSet>

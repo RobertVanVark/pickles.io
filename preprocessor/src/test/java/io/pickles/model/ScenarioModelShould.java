@@ -20,9 +20,6 @@ import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
-import io.pickles.model.FeatureModel;
-import io.pickles.model.ScenarioModel;
-import io.pickles.model.StepModel;
 
 public class ScenarioModelShould {
 
@@ -129,6 +126,7 @@ public class ScenarioModelShould {
 	public void convertRequiredFieldsIntoJsonObject() {
 		ScenarioModel scenarioModel = modelWithName("scenario name");
 		JsonObject jsonObject = scenarioModel.toJsonObject().getAsJsonObject();
+		System.out.println(jsonObject);
 		assertThat(jsonObject.get("line").getAsInt(), equalTo(scenarioModel.getLine()));
 		assertThat(jsonObject.get("name").getAsString(), equalTo(scenarioModel.getName()));
 		assertThat(jsonObject.get("keyword").getAsString(), equalTo(scenarioModel.getKeyword()));

@@ -2,12 +2,15 @@ package io.pickles.jdbc;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,6 +28,11 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
 public class JdbcReportStoreShould {
+
+	/*
+	 * ReadFeatures(List<TestRun>)
+	 *
+	 */
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -51,18 +59,29 @@ public class JdbcReportStoreShould {
 	@Test
 	public void getTestRunByName() {
 		String validName = "ROBERT";
-		TestRun run = getRunBy(validName);
+		TestRun run = readTestRun(validName);
 
 		assertThat(run.getName(), is(validName));
 	}
 
 	@Test
-	public void getFeatureById() {
-		FeatureModel model;
-		ReportStore store = new PropertiesReportStore();
-		model = store.readFeature(999999);
+	public void getTestRunsByDateTime() {
+		DateTime startDate = DateTime.parse("2017-03-09");
 
-		assertThat(model.getId(), equalTo(999999));
+		List<TestRun> runs = readTestRuns(startDate, DateTime.parse("2017-03-10"));
+		assertThat(runs, iterableWithSize(1));
+
+		runs = readTestRuns(startDate, DateTime.parse("2017-03-11"));
+		assertThat(runs, iterableWithSize(3));
+	}
+
+	@Test
+	public void getFeatureById() {
+		FeatureModel model = readFeature(999);
+
+		assertThat(model.getId(), equalTo(999));
+		assertThat(model.getScenarios(), iterableWithSize(1));
+		assertThat(model.getScenario(0).getSteps(), iterableWithSize(2));
 	}
 
 	@Test
@@ -70,11 +89,39 @@ public class JdbcReportStoreShould {
 		thrown.expect(ReportingStoreException.class);
 		thrown.expectMessage("Feature without json");
 		ReportStore store = new PropertiesReportStore();
-		store.readFeature(999998);
+		store.readFeature(999999);
 	}
 
-	private TestRun getRunBy(String name) {
+	@Test
+	public void getFeatuesForTestRuns() {
+		DateTime startDate = DateTime.parse("2017-03-09");
+
+		List<TestRun> runs = readTestRuns(startDate, DateTime.parse("2017-03-10"));
+		List<FeatureModel> features = readAllFor(runs);
+		assertThat(features, iterableWithSize(2));
+
+		runs = readTestRuns(startDate, DateTime.parse("2017-03-11"));
+		features = readAllFor(runs);
+		assertThat(features, iterableWithSize(3));
+	}
+
+	private TestRun readTestRun(String name) {
 		ReportStore store = new PropertiesReportStore();
 		return store.readTestRun(name);
+	}
+
+	private List<TestRun> readTestRuns(DateTime startDate, DateTime endDate) {
+		ReportStore store = new PropertiesReportStore();
+		return store.readTestRuns(startDate, endDate);
+	}
+
+	private FeatureModel readFeature(int id) {
+		ReportStore store = new PropertiesReportStore();
+		return store.readFeature(id);
+	}
+
+	private List<FeatureModel> readAllFor(List<TestRun> runs) {
+		ReportStore store = new PropertiesReportStore();
+		return store.readAllFor(runs);
 	}
 }
