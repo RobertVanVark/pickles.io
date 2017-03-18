@@ -46,7 +46,7 @@ public class StubReportStore implements ReportStore {
 	}
 
 	@Override
-	public List<FeatureModel> readAllFor(List<TestRun> testRuns) {
+	public List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -17,5 +17,5 @@ public interface ReportStore {
 
 	FeatureModel readFeature(Integer id);
 
-	List<FeatureModel> readAllFor(List<TestRun> testRuns);
+	List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns);
 }

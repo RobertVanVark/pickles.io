@@ -123,28 +123,6 @@ public class JdbcReportStore implements ReportStore {
 		return feature;
 	}
 
-	public List<FeatureModel> readAll(List<TestRun> testRuns) {
-		List<FeatureModel> results = new ArrayList<FeatureModel>();
-		for (TestRun run : testRuns) {
-			List<FeatureModel> testrunFeatures;
-			try {
-				Connection connection = getConnection();
-				PreparedStatement statement = connection.prepareStatement(
-						"SELECT ID, TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON FROM PICKLES_FEATURE WHERE TEST_RUN_ID = ?");
-				statement.setInt(1, run.getId());
-				testrunFeatures = featuresFrom(statement.executeQuery());
-			} catch (SQLException ex) {
-				throw new ReportingStoreException("Could not retrieve Feature for TestRuns", ex);
-			}
-			for (FeatureModel feature : testrunFeatures) {
-				feature.setTestRun(run);
-			}
-			results.addAll(testrunFeatures);
-		}
-
-		return results;
-	}
-
 	private List<FeatureModel> featuresFrom(ResultSet resultSet) throws SQLException {
 		List<FeatureModel> results = new ArrayList<>();
 		while (resultSet.next()) {
@@ -165,7 +143,7 @@ public class JdbcReportStore implements ReportStore {
 	}
 
 	@Override
-	public List<FeatureModel> readAllFor(List<TestRun> testRuns) {
+	public List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns) {
 		List<FeatureModel> results = new ArrayList<FeatureModel>();
 		for (TestRun run : testRuns) {
 			try {
@@ -241,7 +219,7 @@ public class JdbcReportStore implements ReportStore {
 				scenarios.add(scenario);
 			}
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Feature for TestRuns", ex);
+			throw new ReportingStoreException("Could not retrieve scenario for Feature " + feature.getId(), ex);
 		}
 		return scenarios;
 	}
@@ -254,11 +232,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setInt(1, id);
 			results = stepsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve scenario for id=" + id, ex);
+			throw new ReportingStoreException("Could not retrieve step for id=" + id, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single scenario found for id =" + id);
+			throw new ReportingStoreException("No single step found for id =" + id);
 		}
 		return results.get(0);
 	}
@@ -291,7 +269,7 @@ public class JdbcReportStore implements ReportStore {
 				steps.add(step);
 			}
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Step for Scenario : " + scenario.getName(), ex);
+			throw new ReportingStoreException("Could not retrieve Step for Scenario : " + scenario.getId(), ex);
 		}
 		return steps;
 	}

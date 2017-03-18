@@ -122,6 +122,6 @@ public class JdbcReportStoreShould {
 
 	private List<FeatureModel> readAllFor(List<TestRun> runs) {
 		ReportStore store = new PropertiesReportStore();
-		return store.readAllFor(runs);
+		return store.readAllFeaturesFor(runs);
 	}
 }
