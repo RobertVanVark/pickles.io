@@ -17,6 +17,7 @@ public class StubReportStore implements ReportStore {
 	private List<TestRun> testRuns = new ArrayList<>();
 	private List<FeatureModel> features = new ArrayList<>();
 	private List<ScenarioModel> scenarios = new ArrayList<>();
+	private String featureTemplate;
 
 	public void setTestRuns(List<TestRun> testRuns) {
 		this.testRuns = testRuns;
@@ -28,6 +29,10 @@ public class StubReportStore implements ReportStore {
 
 	public void setScenarios(List<ScenarioModel> scenarios) {
 		this.scenarios = scenarios;
+	}
+
+	public void setFeatureTemplate(String featureTemplate) {
+		this.featureTemplate = featureTemplate;
 	}
 
 	@Override
@@ -65,6 +70,11 @@ public class StubReportStore implements ReportStore {
 			return findFirst.get();
 		}
 		return null;
+	}
+
+	@Override
+	public String readTemplate(String hashKey) {
+		return featureTemplate;
 	}
 
 }

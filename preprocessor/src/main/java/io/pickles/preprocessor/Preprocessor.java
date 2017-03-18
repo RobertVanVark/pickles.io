@@ -10,15 +10,21 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import io.pickles.model.FeatureModel;
+import io.pickles.reporting.ReportingStore;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class Preprocessor {
 
 	private boolean isDryRun = false;
 	private DelayedVerificationStore store;
+	private ReportingStore reportingStore;
 
 	public void setDelayedVerificationStore(DelayedVerificationStore store) {
 		this.store = store;
+	}
+
+	public void setReportingStore(ReportingStore store) {
+		reportingStore = store;
 	}
 
 	public void setDryRun() {
@@ -27,6 +33,7 @@ public class Preprocessor {
 
 	List<String> process(String uri, List<String> lines) {
 		FeatureModel original = new TemplateParser().parse(uri, lines);
+		storeFeatureTemplate(original, uri, lines);
 		FeatureModel transformed = new TemplateTransformer(original, store, isDryRun).doIt();
 		return transformed.toGherkinList();
 	}
@@ -66,5 +73,11 @@ public class Preprocessor {
 
 	public List<String> process(File templateFile) {
 		return process(templateFile.toPath());
+	}
+
+	private void storeFeatureTemplate(FeatureModel template, String uri, List<String> lines) {
+		if (!isDryRun) {
+			reportingStore.create(template, uri, lines);
+		}
 	}
 }

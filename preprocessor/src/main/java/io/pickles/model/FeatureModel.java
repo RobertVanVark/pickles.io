@@ -21,6 +21,7 @@ public class FeatureModel {
 	private TestRun testRun;
 	private DateTime startedAt;
 	private DateTime finishedAt;
+	private String templateHashKey;
 	private Feature feature;
 	private String uri;
 	private List<ScenarioModel> scenarioModels = new ArrayList<>();
@@ -62,6 +63,14 @@ public class FeatureModel {
 
 	public void setFinishedAt(DateTime finishedAt) {
 		this.finishedAt = finishedAt;
+	}
+
+	public String getTemplateHashKey() {
+		return templateHashKey;
+	}
+
+	public void setTemplateHashKey(String templateHashKey) {
+		this.templateHashKey = templateHashKey;
 	}
 
 	public Integer getId() {

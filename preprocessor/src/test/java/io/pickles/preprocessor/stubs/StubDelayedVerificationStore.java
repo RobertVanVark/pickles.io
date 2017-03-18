@@ -6,12 +6,12 @@ import java.util.List;
 import io.pickles.steps.DelayedVerification;
 import io.pickles.steps.DelayedVerificationStore;
 
-public class DummyDelayedVerificationStore implements DelayedVerificationStore {
+public class StubDelayedVerificationStore implements DelayedVerificationStore {
 
 	private int nrDvs;
 	private Integer nextId = 1000;
 
-	public DummyDelayedVerificationStore(int nrDvs) {
+	public StubDelayedVerificationStore(int nrDvs) {
 		this.nrDvs = nrDvs;
 	}
 

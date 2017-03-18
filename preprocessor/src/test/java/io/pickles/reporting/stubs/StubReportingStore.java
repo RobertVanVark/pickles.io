@@ -75,4 +75,10 @@ public class StubReportingStore implements ReportingStore {
 		return createdSteps;
 	}
 
+	@Override
+	public void create(FeatureModel template, String uri, List<String> lines) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

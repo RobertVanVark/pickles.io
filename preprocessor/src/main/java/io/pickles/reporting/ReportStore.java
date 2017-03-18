@@ -16,6 +16,8 @@ public interface ReportStore {
 
 	List<TestRun> readTestRuns(DateTime from, DateTime until);
 
+	String readTemplate(String hashKey);
+
 	FeatureModel readFeature(Integer id);
 
 	List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns);

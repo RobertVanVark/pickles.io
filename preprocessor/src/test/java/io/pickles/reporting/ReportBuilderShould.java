@@ -4,12 +4,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonArray;
@@ -83,6 +83,8 @@ public class ReportBuilderShould {
 		assertThat(steps.get(2).getAsJsonObject().getAsJsonObject("result").get("duration").getAsInt(),
 				equalTo(999999));
 		assertThat(steps.get(2).getAsJsonObject().getAsJsonArray("rows"), iterableWithSize(2));
+
+		System.out.println(report);
 	}
 
 	@Test
@@ -98,9 +100,10 @@ public class ReportBuilderShould {
 
 		JsonArray steps = scenarios.get(0).getAsJsonObject().getAsJsonArray("steps");
 		assertThat(steps, iterableWithSize(6));
+
+		System.out.println(report);
 	}
 
-	@Ignore
 	@Test
 	public void completeIncompleteThenAfterScenario() {
 		givenIncompleteThenAfterScenario();
@@ -114,6 +117,8 @@ public class ReportBuilderShould {
 
 		JsonArray steps = scenarios.get(0).getAsJsonObject().getAsJsonArray("steps");
 		assertThat(steps, iterableWithSize(4));
+
+		System.out.println(report);
 	}
 
 	private TestRun testrunWithoutFeatures() {
@@ -159,7 +164,9 @@ public class ReportBuilderShould {
 		feature1.addScenario(scenario1);
 		scenario1.addStep(matchedStepWith("Given ", "a certain context", 100));
 		scenario1.addStep(matchedStepWith("When ", "an action is performed", 100));
-		scenario1.addStep(matchedStepWith("Then ", "after 03:00 hr I expect a certain outcome", 100));
+		scenario1.addStep(matchedStepWith("Then ",
+				"after 03:00 hr I expect a certain outcome (dvChecksum=12345, dvId=1111111111, dvFeatureUri=dummyHashKey)",
+				100));
 
 		TestRun run2 = new TestRun(2, "", "", DateTime.now(), DateTime.now());
 		FeatureModel feature2 = FeatureModelShould.modelWithName("same feature");
@@ -183,18 +190,33 @@ public class ReportBuilderShould {
 		stubReportStore = new StubReportStore();
 
 		TestRun run1 = new TestRun(1, "", "", DateTime.now(), DateTime.now());
-		FeatureModel feature1 = FeatureModelShould.modelWithName("same feature");
+		FeatureModel feature1 = FeatureModelShould.modelWithName("feature name");
 		feature1.setTestRun(run1);
-		ScenarioModel scenario1 = ScenarioModelShould.modelWithName("scenario");
+		ScenarioModel scenario1 = ScenarioModelShould.modelWithName("scenario name");
 		scenario1.setNextDvId("1111111111");
 		feature1.addScenario(scenario1);
 		scenario1.addStep(matchedStepWith("Given ", "a certain context", 100));
 		scenario1.addStep(matchedStepWith("When ", "an action is performed", 100));
-		scenario1.addStep(matchedStepWith("Then ", "after 03:00 hr I expect a certain outcome", 100));
+		scenario1.addStep(matchedStepWith("Then ",
+				"after 03:00 hr I expect a certain outcome (dvChecksum=12345, dvId=098765, dvFeatureUri=dummyHashKey)",
+				100));
 
 		stubReportStore.setTestRuns(Arrays.asList(run1));
 		stubReportStore.setFeatures(Arrays.asList(feature1));
 		stubReportStore.setScenarios(Arrays.asList(scenario1));
+
+		List<String> template = new ArrayList<>();
+		template.add("Feature: feature name");
+		template.add("");
+		template.add("Scenario: scenario name");
+		template.add("");
+		template.add("Given a certain context");
+		template.add("When an action is performed");
+		template.add("Then after 03:00 hr I expect a certain outcome");
+		template.add("| h1 | h2 |");
+		template.add("| v1 | v2 |");
+		template.add("Then another outcome");
+		stubReportStore.setFeatureTemplate(String.join(System.getProperty("line.separator"), template));
 
 		reporter = new ReportBuilder();
 		reporter.setReportStore(stubReportStore);
@@ -211,7 +233,9 @@ public class ReportBuilderShould {
 		feature1.addScenario(scenario1);
 		scenario1.addStep(matchedStepWith("Given ", "a certain context", 100));
 		scenario1.addStep(matchedStepWith("When ", "an action is performed", 100));
-		scenario1.addStep(matchedStepWith("Then ", "after 03:00 hr I expect a certain outcome", 100));
+		scenario1.addStep(matchedStepWith("Then ",
+				"after 03:00 hr I expect a certain outcome (dvChecksum=12345, dvId=1111111111, dvFeatureUri=dummyHashKey)",
+				100));
 
 		TestRun run2 = new TestRun(2, "", "", DateTime.now(), DateTime.now());
 		FeatureModel feature2 = FeatureModelShould.modelWithName("same feature");
@@ -222,7 +246,9 @@ public class ReportBuilderShould {
 		feature2.addScenario(scenario2);
 		scenario2.addStep(matchedStepWith("Given ", "Test Execution Context is loaded for dvId=1111111111", 999999L));
 		scenario2.addStep(matchedStepWithDatatableAnd("Then ", "I expect a certain outcome", 999999L));
-		scenario2.addStep(matchedStepWith("Then ", "after 5:00 hr yet another outcome", 999999L));
+		scenario2.addStep(matchedStepWith("Then ",
+				"after 5:00 hr yet another outcome (dvChecksum=12345, dvId=2222222222, dvFeatureUri=dummyHashKey)",
+				999999L));
 
 		TestRun run3 = new TestRun(2, "", "", DateTime.now(), DateTime.now());
 		FeatureModel feature3 = FeatureModelShould.modelWithName("same feature");

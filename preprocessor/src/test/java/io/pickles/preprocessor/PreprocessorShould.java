@@ -2,7 +2,7 @@ package io.pickles.preprocessor;
 
 import java.util.List;
 
-import io.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
+import io.pickles.preprocessor.stubs.StubDelayedVerificationStore;
 import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
 
 public class PreprocessorShould {
@@ -20,7 +20,7 @@ public class PreprocessorShould {
 
 	private List<String> preprocess(List<String> featureLines) {
 		Preprocessor preprocessor = new Preprocessor();
-		preprocessor.setDelayedVerificationStore(new DummyDelayedVerificationStore(2));
+		preprocessor.setDelayedVerificationStore(new StubDelayedVerificationStore(2));
 		return preprocessor.process("features/preprocessor.feature", featureLines);
 	}
 }

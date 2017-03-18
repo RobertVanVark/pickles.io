@@ -208,7 +208,7 @@ public class TemplateTransformer {
 		Integer line = thenAfter.getLine();
 		String dvId = UUID.randomUUID().toString();
 		String name = thenAfter.getName() + " (dvChecksum=" + checksum + ", dvId=" + dvId + ", dvFeatureUri="
-				+ originalFeature.getUri() + ")";
+				+ originalFeature.getTemplateHashKey() + ")";
 
 		Step step = new Step(comments, keyword, name, line, null, null);
 		return new StepModel(step);

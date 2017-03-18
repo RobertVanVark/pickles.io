@@ -6,6 +6,8 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,15 +16,12 @@ import java.util.stream.Collectors;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
 import io.pickles.model.FeatureModel;
 import io.pickles.model.StepModel;
-import io.pickles.preprocessor.stubs.DummyDelayedVerificationStore;
 import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
+import io.pickles.preprocessor.stubs.StubDelayedVerificationStore;
 
 public class TemplateTransformerShould {
 
@@ -63,14 +62,14 @@ public class TemplateTransformerShould {
 	}
 
 	@Test
-	public void appendUriToEachThenAfter() {
+	public void appendTemplateHashToEachThenAfter() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 1);
 
 		assertThat(featureTemplate.getScenario(0).getLastStep().getName(),
-				endsWith(", dvFeatureUri=src/test/resources/featuretemplate)"));
+				endsWith(", dvFeatureUri=dummy feature template hash key)"));
 
 		assertThat(featureTemplate.getScenario(1).getLastStep().getName(),
-				endsWith(", dvFeatureUri=src/test/resources/featuretemplate)"));
+				endsWith(", dvFeatureUri=dummy feature template hash key)"));
 	}
 
 	@Test
@@ -192,8 +191,9 @@ public class TemplateTransformerShould {
 
 	private FeatureModel transform(List<String> templateLines, int nrDvs) {
 		FeatureModel featureTemplate = new TemplateParser().parse("src/test/resources/featuretemplate", templateLines);
+		featureTemplate.setTemplateHashKey("dummy feature template hash key");
 		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
-				new DummyDelayedVerificationStore(nrDvs), false);
+				new StubDelayedVerificationStore(nrDvs), false);
 		return transformer.doIt();
 	}
 

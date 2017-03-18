@@ -104,6 +104,36 @@ public class JdbcReportStore implements ReportStore {
 	}
 
 	@Override
+	public String readTemplate(String hashKey) {
+		List<String> results;
+		try {
+			PreparedStatement statement = getConnection()
+					.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?");
+			statement.setString(1, hashKey);
+			results = templatesFrom(statement.executeQuery());
+
+		} catch (SQLException ex) {
+			throw new ReportingStoreException("Could not retrieve find feature template for hash key =" + hashKey, ex);
+		}
+
+		if (results.size() != 1) {
+			throw new ReportingStoreException("No single Feature template found for hash key =" + hashKey);
+		}
+
+		return results.get(0);
+	}
+
+	private List<String> templatesFrom(ResultSet resultSet) throws SQLException {
+		List<String> results = new ArrayList<>();
+		while (resultSet.next()) {
+			String template = resultSet.getString(1);
+			results.add(template);
+		}
+
+		return results;
+	}
+
+	@Override
 	public FeatureModel readFeature(Integer id) {
 		List<FeatureModel> results;
 		try {

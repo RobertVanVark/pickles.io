@@ -1,11 +1,17 @@
 package io.pickles.jdbc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -13,6 +19,7 @@ import io.pickles.model.FeatureModel;
 import io.pickles.model.ScenarioModel;
 import io.pickles.model.StepModel;
 import io.pickles.model.TestRun;
+import io.pickles.preprocessor.TemplateTransformerException;
 import io.pickles.reporting.ReportingStore;
 
 public class JdbcReportingStore implements ReportingStore {
@@ -172,4 +179,68 @@ public class JdbcReportingStore implements ReportingStore {
 			throw new ReportingStoreException("Could not save step=" + step.getKeyword() + step.getName(), e);
 		}
 	}
+
+	@Override
+	public void create(FeatureModel template, String uri, List<String> lines) {
+		String hashKey = checksum(lines);
+		if (findTemplate(hashKey) != null) {
+			String contents = String.join(System.getProperty("line.separator"), lines);
+			try {
+				PreparedStatement statement = getConnection().prepareStatement(
+						"INSERT INTO PICKLES_FEATURE_TEMPLATE (HASH_KEY, NAME, URI, CONTENTS) VALUES (?, ?, ?, ?)");
+
+				statement.setString(1, hashKey);
+				statement.setString(2, template.getName());
+				statement.setString(3, uri);
+				statement.setString(4, contents);
+				statement.execute();
+
+				template.setTemplateHashKey(hashKey);
+			} catch (SQLException e) {
+				throw new ReportingStoreException("Could not save step=" + template.getName(), e);
+			}
+		}
+	}
+
+	private String findTemplate(String hashKey) {
+		try {
+			PreparedStatement statement = getConnection()
+					.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?");
+			statement.setString(1, hashKey);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return rs.getString(1);
+			}
+
+		} catch (SQLException ex) {
+			throw new ReportingStoreException("Could not retrieve find feature template for hash key =" + hashKey, ex);
+		}
+
+		return null;
+	}
+
+	private String checksum(List<String> lines) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		for (String line : lines) {
+			write(stream, line);
+		}
+
+		byte[] digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-1").digest(stream.toByteArray());
+		} catch (NoSuchAlgorithmException ex) {
+			throw new ReportingStoreException(ex.getMessage(), ex);
+		}
+
+		return new BigInteger(1, digest).toString();
+	}
+
+	private void write(ByteArrayOutputStream stream, String value) {
+		try {
+			stream.write(value.getBytes("UTF-8"));
+		} catch (IOException ex) {
+			throw new TemplateTransformerException("Error calculating checksum for " + value, ex);
+		}
+	}
+
 }
