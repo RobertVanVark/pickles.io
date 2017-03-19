@@ -113,7 +113,7 @@ public class JdbcReportStore implements ReportStore {
 			results = templatesFrom(statement.executeQuery());
 
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve find feature template for hash key =" + hashKey, ex);
+			throw new ReportingStoreException("Could not read feature template for hash key =" + hashKey, ex);
 		}
 
 		if (results.size() != 1) {

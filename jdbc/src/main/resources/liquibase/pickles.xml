@@ -75,8 +75,9 @@
 			<column name="HASH_KEY" type="varchar(64)">
 				<constraints nullable="false"/>
 			</column>
+			<column name="NAME" type="varchar(128)" />
 			<column name="URI" type="varchar(255)" />
-			<column name="CONTENTS" type="varchar(4096)" />
+			<column name="CONTENTS" type="varchar(12000)" />
 		</createTable>
 
 	</changeSet>

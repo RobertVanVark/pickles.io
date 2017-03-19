@@ -94,6 +94,8 @@ public class JdbcReportingStore implements ReportingStore {
 	@Override
 	public void create(FeatureModel feature) {
 		save(feature);
+		System.out.print(feature.getScenarios().size());
+		System.out.println(" " + feature.getName());
 		for (ScenarioModel scenario : feature.getScenarios()) {
 			create(scenario);
 		}
@@ -183,7 +185,8 @@ public class JdbcReportingStore implements ReportingStore {
 	@Override
 	public void create(FeatureModel template, String uri, List<String> lines) {
 		String hashKey = checksum(lines);
-		if (findTemplate(hashKey) != null) {
+		template.setTemplateHashKey(hashKey);
+		if (findTemplate(hashKey) == null) {
 			String contents = String.join(System.getProperty("line.separator"), lines);
 			try {
 				PreparedStatement statement = getConnection().prepareStatement(
@@ -194,8 +197,6 @@ public class JdbcReportingStore implements ReportingStore {
 				statement.setString(3, uri);
 				statement.setString(4, contents);
 				statement.execute();
-
-				template.setTemplateHashKey(hashKey);
 			} catch (SQLException e) {
 				throw new ReportingStoreException("Could not save step=" + template.getName(), e);
 			}
@@ -213,7 +214,7 @@ public class JdbcReportingStore implements ReportingStore {
 			}
 
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve find feature template for hash key =" + hashKey, ex);
+			throw new ReportingStoreException("Could not find feature template for hash key =" + hashKey, ex);
 		}
 
 		return null;

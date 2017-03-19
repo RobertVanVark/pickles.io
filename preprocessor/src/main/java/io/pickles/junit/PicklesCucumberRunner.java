@@ -20,12 +20,14 @@ import cucumber.runtime.io.Resource;
 import cucumber.runtime.io.ResourceLoader;
 import io.pickles.preprocessor.Preprocessor;
 import io.pickles.preprocessor.PreprocessorException;
+import io.pickles.reporting.ReportingStore;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class PicklesCucumberRunner extends Runner {
 
 	private Class<?> clazz;
-	private DelayedVerificationStore store;
+	private DelayedVerificationStore delayedVerificationStore;
+	private ReportingStore reportingStore;
 
 	private Cucumber cucumber;
 
@@ -33,8 +35,12 @@ public class PicklesCucumberRunner extends Runner {
 		this.clazz = clazz;
 	}
 
-	public void setDelayedVerificationStore(DelayedVerificationStore store) {
-		this.store = store;
+	public void setDelayedVerificationStore(DelayedVerificationStore delayedVerificationstore) {
+		delayedVerificationStore = delayedVerificationstore;
+	}
+
+	public void setReportingStore(ReportingStore reportingStore) {
+		this.reportingStore = reportingStore;
 	}
 
 	@Override
@@ -49,7 +55,8 @@ public class PicklesCucumberRunner extends Runner {
 		long startTime = System.currentTimeMillis();
 
 		Preprocessor preprocessor = new Preprocessor();
-		preprocessor.setDelayedVerificationStore(store);
+		preprocessor.setDelayedVerificationStore(delayedVerificationStore);
+		preprocessor.setReportingStore(reportingStore);
 		if (getRuntimeOptions().isDryRun()) {
 			preprocessor.setDryRun();
 		}
