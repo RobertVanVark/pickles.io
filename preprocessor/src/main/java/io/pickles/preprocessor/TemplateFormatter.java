@@ -123,7 +123,7 @@ public class TemplateFormatter implements Formatter {
 		// intentionally left blank
 	}
 
-	private void log(String msg) {
+	protected void log(String msg) {
 		LOGGER.debug(msg);
 	}
 }

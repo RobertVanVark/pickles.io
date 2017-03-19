@@ -11,6 +11,8 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cucumber.api.junit.Cucumber;
 import cucumber.runtime.RuntimeOptions;
@@ -24,6 +26,8 @@ import io.pickles.reporting.ReportingStore;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class PicklesCucumberRunner extends Runner {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PicklesCucumberRunner.class);
 
 	private Class<?> clazz;
 	private DelayedVerificationStore delayedVerificationStore;
@@ -51,7 +55,7 @@ public class PicklesCucumberRunner extends Runner {
 	@Override
 	public void run(RunNotifier notifier) {
 
-		System.out.println("Starting preprocessing of feature templates...");
+		LOGGER.info("Starting preprocessing of feature templates...");
 		long startTime = System.currentTimeMillis();
 
 		Preprocessor preprocessor = new Preprocessor();
@@ -65,7 +69,7 @@ public class PicklesCucumberRunner extends Runner {
 			preprocessor.process(featureTemplate);
 		}
 
-		System.out.println("Done in " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds.");
+		LOGGER.info("Done in " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds.");
 
 		try {
 			cucumber = new Cucumber(clazz);

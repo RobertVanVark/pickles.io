@@ -9,7 +9,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
@@ -19,8 +18,7 @@ import gherkin.formatter.model.Step;
 
 class StepModelDeserializer implements JsonDeserializer<StepModel> {
 	@Override
-	public StepModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
+	public StepModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
 
 		JsonObject stepJson = json.getAsJsonObject();
 

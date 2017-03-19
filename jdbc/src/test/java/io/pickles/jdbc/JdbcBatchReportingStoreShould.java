@@ -26,7 +26,6 @@ import io.pickles.model.FeatureModel;
 import io.pickles.model.ScenarioModel;
 import io.pickles.model.StepModel;
 import io.pickles.model.TestRun;
-import io.pickles.reporting.ReportStore;
 import io.pickles.reporting.ReportingStore;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -130,9 +129,4 @@ public class JdbcBatchReportingStoreShould {
 	private ReportingStore reportingStore() {
 		return new PropertiesBatchReportingStore();
 	}
-
-	private ReportStore reportStore() {
-		return new PropertiesReportStore();
-	}
-
 }

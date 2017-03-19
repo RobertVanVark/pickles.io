@@ -10,8 +10,6 @@ import java.util.Properties;
 public class PropertiesBatchReportingStore extends JdbcBatchReportingStore {
 
 	private String url;
-	private String username;
-	private String password;
 
 	public PropertiesBatchReportingStore() {
 		InputStream stream = ClassLoader.getSystemResourceAsStream("delayed-verification-store.properties");
@@ -32,8 +30,6 @@ public class PropertiesBatchReportingStore extends JdbcBatchReportingStore {
 					e);
 		}
 		url = properties.getProperty("url");
-		username = properties.getProperty("username");
-		password = properties.getProperty("password");
 	}
 
 	@Override

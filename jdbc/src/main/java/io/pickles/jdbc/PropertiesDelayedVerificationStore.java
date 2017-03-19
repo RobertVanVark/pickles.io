@@ -13,8 +13,6 @@ public class PropertiesDelayedVerificationStore extends JdbcDelayedVerificationS
 		implements DelayedVerificationStore {
 
 	private String url;
-	private String username;
-	private String password;
 
 	public PropertiesDelayedVerificationStore() {
 		InputStream stream = ClassLoader.getSystemResourceAsStream("delayed-verification-store.properties");
@@ -35,8 +33,6 @@ public class PropertiesDelayedVerificationStore extends JdbcDelayedVerificationS
 					e);
 		}
 		url = properties.getProperty("url");
-		username = properties.getProperty("username");
-		password = properties.getProperty("password");
 	}
 
 	@Override

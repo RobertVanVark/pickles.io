@@ -8,7 +8,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
@@ -16,8 +15,7 @@ import gherkin.formatter.model.Tag;
 
 class ScenarioModelDeserializer implements JsonDeserializer<ScenarioModel> {
 	@Override
-	public ScenarioModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
+	public ScenarioModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
 
 		JsonObject scenarioJson = json.getAsJsonObject();
 

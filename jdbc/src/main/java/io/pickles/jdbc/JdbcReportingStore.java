@@ -45,10 +45,9 @@ public class JdbcReportingStore implements ReportingStore {
 
 	@Override
 	public void create(TestRun run) {
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"INSERT INTO PICKLES_TEST_RUN (NAME, DESCRIPTION, STARTED_AT, FINISHED_AT) VALUES (?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"INSERT INTO PICKLES_TEST_RUN (NAME, DESCRIPTION, STARTED_AT, FINISHED_AT) VALUES (?, ?, ?, ?)",
+				Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, run.getName());
 			statement.setString(2, run.getDescription());
 			statement.setTimestamp(3, new Timestamp(run.getStartedAt().getMillis()));
@@ -71,9 +70,8 @@ public class JdbcReportingStore implements ReportingStore {
 	@Override
 	public void update(TestRun run) {
 		{
-			try {
-				PreparedStatement statement = getConnection().prepareStatement(
-						"UPDATE PICKLES_TEST_RUN SET NAME=?, DESCRIPTION=?, STARTED_AT=?, FINISHED_AT=? WHERE ID = ?");
+			try (PreparedStatement statement = getConnection().prepareStatement(
+					"UPDATE PICKLES_TEST_RUN SET NAME=?, DESCRIPTION=?, STARTED_AT=?, FINISHED_AT=? WHERE ID = ?")) {
 				statement.setString(1, run.getName());
 				statement.setString(2, run.getDescription());
 				statement.setTimestamp(3, new Timestamp(run.getStartedAt().getMillis()));
@@ -94,18 +92,15 @@ public class JdbcReportingStore implements ReportingStore {
 	@Override
 	public void create(FeatureModel feature) {
 		save(feature);
-		System.out.print(feature.getScenarios().size());
-		System.out.println(" " + feature.getName());
 		for (ScenarioModel scenario : feature.getScenarios()) {
 			create(scenario);
 		}
 	}
 
 	protected void save(FeatureModel feature) {
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"INSERT INTO PICKLES_FEATURE (TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON) VALUES (?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"INSERT INTO PICKLES_FEATURE (TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON) VALUES (?, ?, ?, ?)",
+				Statement.RETURN_GENERATED_KEYS)) {
 			statement.setInt(1, feature.getTestRun().getId());
 			statement.setTimestamp(2, new Timestamp(feature.getStartedAt().getMillis()));
 			if (feature.getFinishedAt() != null) {
@@ -134,10 +129,9 @@ public class JdbcReportingStore implements ReportingStore {
 	}
 
 	private void save(ScenarioModel scenario) {
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
+				Statement.RETURN_GENERATED_KEYS)) {
 
 			statement.setInt(1, scenario.getFeature().getId());
 			statement.setTimestamp(2, new Timestamp(scenario.getStartedAt().getMillis()));
@@ -165,10 +159,8 @@ public class JdbcReportingStore implements ReportingStore {
 
 	@Override
 	public void create(StepModel step) {
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 			statement.setInt(1, step.getScenario().getId());
 			statement.setString(2, step.toJsonObject().toString());
 			statement.execute();
@@ -188,10 +180,9 @@ public class JdbcReportingStore implements ReportingStore {
 		template.setTemplateHashKey(hashKey);
 		if (findTemplate(hashKey) == null) {
 			String contents = String.join(System.getProperty("line.separator"), lines);
-			try {
-				PreparedStatement statement = getConnection().prepareStatement(
-						"INSERT INTO PICKLES_FEATURE_TEMPLATE (HASH_KEY, NAME, URI, CONTENTS) VALUES (?, ?, ?, ?)");
 
+			try (PreparedStatement statement = getConnection().prepareStatement(
+					"INSERT INTO PICKLES_FEATURE_TEMPLATE (HASH_KEY, NAME, URI, CONTENTS) VALUES (?, ?, ?, ?)")) {
 				statement.setString(1, hashKey);
 				statement.setString(2, template.getName());
 				statement.setString(3, uri);
@@ -204,9 +195,8 @@ public class JdbcReportingStore implements ReportingStore {
 	}
 
 	private String findTemplate(String hashKey) {
-		try {
-			PreparedStatement statement = getConnection()
-					.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?");
+		try (PreparedStatement statement = getConnection()
+				.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?")) {
 			statement.setString(1, hashKey);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {

@@ -92,10 +92,8 @@ public class ReportBuilder {
 
 	private String getHashKey(ScenarioModel scenario) {
 		String lastStep = scenario.getLastStep().getName();
-		System.out.println(lastStep);
 		String[] split = lastStep.split(", dvFeatureUri=");
 		String hashKey = split[split.length - 1].substring(0, split[split.length - 1].length() - 1);
-		System.out.println(hashKey);
 		return hashKey;
 	}
 

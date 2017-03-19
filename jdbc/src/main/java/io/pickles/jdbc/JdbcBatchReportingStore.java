@@ -24,11 +24,10 @@ public class JdbcBatchReportingStore extends JdbcReportingStore {
 	}
 
 	private void createScenarios(FeatureModel feature) {
-		try {
-			Connection connection = getConnection();
-			PreparedStatement statement = connection.prepareStatement(
-					"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+		try (Connection connection = getConnection();
+				PreparedStatement statement = connection.prepareStatement(
+						"INSERT INTO PICKLES_SCENARIO (FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON) VALUES (?, ?, ?, ?, ?, ?)",
+						Statement.RETURN_GENERATED_KEYS)) {
 			connection.setAutoCommit(false);
 
 			for (ScenarioModel scenario : feature.getScenarios()) {
@@ -61,10 +60,10 @@ public class JdbcBatchReportingStore extends JdbcReportingStore {
 	}
 
 	private void createSteps(FeatureModel feature) {
-		try {
-			Connection connection = getConnection();
-			PreparedStatement statement = connection.prepareStatement(
-					"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+		try (Connection connection = getConnection();
+				PreparedStatement statement = connection.prepareStatement(
+						"INSERT INTO PICKLES_STEP (SCENARIO_ID, JSON) VALUES (?, ?)",
+						Statement.RETURN_GENERATED_KEYS)) {
 			connection.setAutoCommit(false);
 
 			List<StepModel> steps = feature.getScenarios().stream().flatMap(s -> s.getSteps().stream())

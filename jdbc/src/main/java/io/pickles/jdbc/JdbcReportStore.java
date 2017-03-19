@@ -41,9 +41,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public TestRun readTestRun(String name) {
 		List<TestRun> results;
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE NAME = ?");
+
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE NAME = ?")) {
 			statement.setString(1, name);
 			results = testRunsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -59,9 +59,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public TestRun readTestRun(Integer key) {
 		List<TestRun> results;
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE ID = ?");
+
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE ID = ?")) {
 			statement.setInt(1, key);
 			results = testRunsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -77,9 +77,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public List<TestRun> readTestRuns(DateTime from, DateTime until) {
 		List<TestRun> results;
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE STARTED_AT >= ? AND FINISHED_AT < ?");
+
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"SELECT ID, NAME, DESCRIPTION, STARTED_AT, FINISHED_AT FROM PICKLES_TEST_RUN WHERE STARTED_AT >= ? AND FINISHED_AT < ?")) {
 			statement.setTimestamp(1, new Timestamp(from.getMillis()));
 			statement.setTimestamp(2, new Timestamp(until.getMillis()));
 			results = testRunsFrom(statement.executeQuery());
@@ -106,9 +106,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public String readTemplate(String hashKey) {
 		List<String> results;
-		try {
-			PreparedStatement statement = getConnection()
-					.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?");
+
+		try (PreparedStatement statement = getConnection()
+				.prepareStatement("SELECT CONTENTS FROM PICKLES_FEATURE_TEMPLATE WHERE HASH_KEY = ?")) {
 			statement.setString(1, hashKey);
 			results = templatesFrom(statement.executeQuery());
 
@@ -136,9 +136,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public FeatureModel readFeature(Integer id) {
 		List<FeatureModel> results;
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"SELECT ID, TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON FROM PICKLES_FEATURE WHERE ID = ?");
+
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"SELECT ID, TEST_RUN_ID, STARTED_AT, FINISHED_AT, JSON FROM PICKLES_FEATURE WHERE ID = ?")) {
 			statement.setInt(1, id);
 			results = featuresFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -176,10 +176,9 @@ public class JdbcReportStore implements ReportStore {
 	public List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns) {
 		List<FeatureModel> results = new ArrayList<FeatureModel>();
 		for (TestRun run : testRuns) {
-			try {
-				Connection connection = getConnection();
-				PreparedStatement statement = connection
-						.prepareStatement("SELECT ID FROM PICKLES_FEATURE WHERE TEST_RUN_ID = ?");
+
+			try (PreparedStatement statement = getConnection()
+					.prepareStatement("SELECT ID FROM PICKLES_FEATURE WHERE TEST_RUN_ID = ?")) {
 				statement.setInt(1, run.getId());
 				for (Integer featureId : idsFrom(statement.executeQuery())) {
 					FeatureModel feature = readFeature(featureId);
@@ -189,6 +188,7 @@ public class JdbcReportStore implements ReportStore {
 			} catch (SQLException ex) {
 				throw new ReportingStoreException("Could not retrieve Feature for TestRuns", ex);
 			}
+
 		}
 
 		return results;
@@ -196,9 +196,9 @@ public class JdbcReportStore implements ReportStore {
 
 	public ScenarioModel readScenario(Integer id) {
 		List<ScenarioModel> results;
-		try {
-			PreparedStatement statement = getConnection().prepareStatement(
-					"SELECT ID, FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON FROM PICKLES_SCENARIO WHERE ID = ?");
+
+		try (PreparedStatement statement = getConnection().prepareStatement(
+				"SELECT ID, FEATURE_ID, STARTED_AT, FINISHED_AT, TRIGGERED_BY_DV_ID, NEXT_DV_ID, JSON FROM PICKLES_SCENARIO WHERE ID = ?")) {
 			statement.setInt(1, id);
 			results = scenariosFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -216,9 +216,9 @@ public class JdbcReportStore implements ReportStore {
 	@Override
 	public ScenarioModel findScenarioTriggeredBy(String dvId) {
 		List<Integer> ids;
-		try {
-			PreparedStatement statement = getConnection()
-					.prepareStatement("SELECT ID FROM PICKLES_SCENARIO WHERE TRIGGERED_BY_DV_ID = ?");
+
+		try (PreparedStatement statement = getConnection()
+				.prepareStatement("SELECT ID FROM PICKLES_SCENARIO WHERE TRIGGERED_BY_DV_ID = ?")) {
 			statement.setString(1, dvId);
 			ids = idsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
@@ -256,10 +256,9 @@ public class JdbcReportStore implements ReportStore {
 
 	private List<ScenarioModel> readAllScenariosFor(FeatureModel feature) {
 		ArrayList<ScenarioModel> scenarios = new ArrayList<>();
-		try {
-			Connection connection = getConnection();
-			PreparedStatement statement = connection
-					.prepareStatement("SELECT ID FROM PICKLES_SCENARIO WHERE FEATURE_ID = ?");
+
+		try (PreparedStatement statement = getConnection()
+				.prepareStatement("SELECT ID FROM PICKLES_SCENARIO WHERE FEATURE_ID = ?")) {
 			statement.setInt(1, feature.getId());
 			for (Integer scenarioId : idsFrom(statement.executeQuery())) {
 				ScenarioModel scenario = readScenario(scenarioId);
@@ -269,14 +268,15 @@ public class JdbcReportStore implements ReportStore {
 		} catch (SQLException ex) {
 			throw new ReportingStoreException("Could not retrieve scenario for Feature " + feature.getId(), ex);
 		}
+
 		return scenarios;
 	}
 
 	public StepModel readStep(Integer id) {
 		List<StepModel> results;
-		try {
-			PreparedStatement statement = getConnection()
-					.prepareStatement("SELECT ID, SCENARIO_ID, JSON FROM PICKLES_STEP WHERE ID = ?");
+
+		try (PreparedStatement statement = getConnection()
+				.prepareStatement("SELECT ID, SCENARIO_ID, JSON FROM PICKLES_STEP WHERE ID = ?")) {
 			statement.setInt(1, id);
 			results = stepsFrom(statement.executeQuery());
 		} catch (SQLException ex) {

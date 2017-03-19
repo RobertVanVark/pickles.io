@@ -16,24 +16,24 @@ public class DelayFactory {
 			+ SINGLE_DELAY_EXPRESSION//
 			+ ")*";
 
-	public static Delay create(String expression) {
+	public static Delay create(String baseExpression) {
 
-		expression = expression.replace("after ", "");
+		baseExpression = baseExpression.replace("after ", "");
 
-		if (expression.contains(" + ")) {
-			int index = expression.indexOf(" + ");
-			Delay first = create(expression.substring(0, index));
-			Delay second = create(expression.substring(index + 3, expression.length()));
+		if (baseExpression.contains(" + ")) {
+			int index = baseExpression.indexOf(" + ");
+			Delay first = create(baseExpression.substring(0, index));
+			Delay second = create(baseExpression.substring(index + 3, baseExpression.length()));
 			return new CombinedDelay(first, second);
 		}
 
-		if (expression.matches(TimeOffsetDelay.EXPRESSION)) {
-			return new TimeOffsetDelay(expression);
+		if (baseExpression.matches(TimeOffsetDelay.EXPRESSION)) {
+			return new TimeOffsetDelay(baseExpression);
 		}
-		if (expression.matches(BusinessEventDelay.EXPRESSION)) {
-			return new BusinessEventDelay(expression);
+		if (baseExpression.matches(BusinessEventDelay.EXPRESSION)) {
+			return new BusinessEventDelay(baseExpression);
 		}
 
-		throw new DelayException("No delay for expression : " + expression);
+		throw new DelayException("No delay for expression : " + baseExpression);
 	}
 }

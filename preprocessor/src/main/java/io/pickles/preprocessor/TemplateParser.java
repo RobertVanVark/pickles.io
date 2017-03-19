@@ -1,9 +1,8 @@
 package io.pickles.preprocessor;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import gherkin.parser.Parser;
@@ -19,9 +18,9 @@ public class TemplateParser {
 
 	public FeatureModel parse(String path) {
 		String gherkin;
-		try {
-			gherkin = FixJava.readReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
-		} catch (UnsupportedEncodingException | FileNotFoundException | RuntimeException ex) {
+		try (InputStreamReader stream = new InputStreamReader(new FileInputStream(path), "UTF-8")) {
+			gherkin = FixJava.readReader(stream);
+		} catch (RuntimeException | IOException ex) {
 			throw new PreprocessorException("Could not read feature template file: " + path, ex);
 		}
 

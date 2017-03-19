@@ -58,7 +58,7 @@ public class Preprocessor {
 	private void writeFeature(Path templatePath, List<String> linesToFile) {
 
 		String pathString = templatePath.toString();
-		File featureFile = new File(pathString.substring(0, pathString.lastIndexOf(".")) + ".feature");
+		File featureFile = new File(pathString.substring(0, pathString.lastIndexOf('.')) + ".feature");
 		Path featurePath = Paths.get(featureFile.toURI());
 		try {
 			Files.write(featurePath, linesToFile, StandardCharsets.UTF_8);

@@ -8,7 +8,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
@@ -16,8 +15,7 @@ import gherkin.formatter.model.Tag;
 
 class FeatureModelDeserializer implements JsonDeserializer<FeatureModel> {
 	@Override
-	public FeatureModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
+	public FeatureModel deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
 
 		JsonObject featureJson = json.getAsJsonObject();
 
