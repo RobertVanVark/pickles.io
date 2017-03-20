@@ -83,12 +83,16 @@ class StepModelDeserializer implements JsonDeserializer<StepModel> {
 	private Result constructResult(JsonObject stepJson) {
 		JsonObject resultJson = stepJson.getAsJsonObject("result");
 		String status = resultJson.get("status").getAsString();
-		long duration = resultJson.get("duration").getAsLong();
-		if (resultJson.get("error_message") != null) {
-			String errorMessage = resultJson.get("error_message").getAsString();
-			return new Result(status, duration, errorMessage);
+		Long duration = null;
+		String errorMsg = null;
+		if (resultJson.get("duration") != null) {
+			duration = resultJson.get("duration").getAsLong();
 		}
-		return new Result(status, duration, null);
+		if (resultJson.get("error_message") != null) {
+			errorMsg = resultJson.get("error_message").getAsString();
+		}
+		return new Result(status, duration, errorMsg);
+
 	}
 
 	private boolean hasMatch(JsonObject stepJson) {
