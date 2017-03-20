@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
@@ -17,10 +19,16 @@ import io.pickles.preprocessor.TemplateParser;
 
 public class ReportBuilder {
 
+	private static final String FEATURE_URI_TOKEN = ", dvFeatureUri=";
 	private ReportStore reportStore;
 
 	public void setReportStore(ReportStore reportStore) {
 		this.reportStore = reportStore;
+	}
+
+	public JsonElement generate(DateTime from, DateTime until) {
+		List<TestRun> testRuns = reportStore.readTestRuns(from, until);
+		return generate(testRuns);
 	}
 
 	public JsonElement generate(List<TestRun> testRuns) {
@@ -66,7 +74,7 @@ public class ReportBuilder {
 		} else {
 			ScenarioModel nextScenario = reportStore.findScenarioTriggeredBy(scenario.getNextDvId());
 			if (nextScenario == null) {
-				append(scenario);
+				completeWithFeatureTemplate(scenario);
 			} else {
 				completeScenario(nextScenario);
 				combine(scenario, nextScenario);
@@ -75,24 +83,26 @@ public class ReportBuilder {
 	}
 
 	// TODO please fix step removal
-	private void append(ScenarioModel scenario) {
-		String hashKey = getHashKey(scenario);
-		String templateString = reportStore.readTemplate(hashKey);
-		FeatureModel feature = new TemplateParser().parseGherkin(hashKey, templateString);
+	private void completeWithFeatureTemplate(ScenarioModel scenario) {
+		if (scenario.getLastStep().getName().contains(FEATURE_URI_TOKEN)) {
+			String hashKey = getHashKey(scenario);
+			String templateString = reportStore.readTemplate(hashKey);
+			FeatureModel feature = new TemplateParser().parseGherkin(hashKey, templateString);
 
-		scenario.getSteps().remove(scenario.getSteps().size() - 1);
-		ScenarioModel match = getMatchingScenario(feature, scenario);
-		for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
-			StepModel matchStep = match.getStep(i);
-			StepModel newStep = new StepModel(matchStep.getStep());
-			newStep.setResult(new Result("pending", null, null));
-			scenario.addStep(newStep);
+			scenario.getSteps().remove(scenario.getSteps().size() - 1);
+			ScenarioModel match = getMatchingScenario(feature, scenario);
+			for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
+				StepModel matchStep = match.getStep(i);
+				StepModel newStep = new StepModel(matchStep.getStep());
+				newStep.setResult(new Result("pending", null, null));
+				scenario.addStep(newStep);
+			}
 		}
 	}
 
 	private String getHashKey(ScenarioModel scenario) {
 		String lastStep = scenario.getLastStep().getName();
-		String[] split = lastStep.split(", dvFeatureUri=");
+		String[] split = lastStep.split(FEATURE_URI_TOKEN);
 		String hashKey = split[split.length - 1].substring(0, split[split.length - 1].length() - 1);
 		return hashKey;
 	}

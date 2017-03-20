@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
@@ -216,6 +217,7 @@ public class FeatureModelShould {
 	static FeatureModel modelWith(Feature feature) {
 		FeatureModel featureModel = new FeatureModel();
 		featureModel.setFeature(feature);
+		featureModel.setUri("test uri");
 		return featureModel;
 	}
 }

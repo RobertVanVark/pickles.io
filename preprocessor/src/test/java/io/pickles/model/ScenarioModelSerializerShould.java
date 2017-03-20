@@ -2,8 +2,6 @@ package io.pickles.model;
 
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.iterableWithSize;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +11,8 @@ import org.junit.Test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Step;
@@ -67,18 +67,6 @@ public class ScenarioModelSerializerShould {
 		comment = commentsGson.get(1).getAsJsonObject();
 		assertThat(comment.get("value").getAsString(), equalTo("another comment"));
 		assertThat(comment.get("line").getAsInt(), equalTo(2));
-	}
-
-	@Test
-	public void convertOptionalOutputIntoJsonObjecdt() {
-		ScenarioModel scenarioModel = ScenarioModelShould.modelWithName("scenario");
-		scenarioModel.addOutput("sample output text");
-		scenarioModel.addOutput("text");
-
-		JsonArray outputJson = scenarioModel.toJsonObject().getAsJsonArray("output");
-		assertThat(outputJson, iterableWithSize(2));
-		assertThat(outputJson.get(0).getAsString(), equalTo("sample output text"));
-		assertThat(outputJson.get(1).getAsString(), equalTo("text"));
 	}
 
 	@Test

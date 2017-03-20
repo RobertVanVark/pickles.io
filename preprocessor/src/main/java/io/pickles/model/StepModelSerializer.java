@@ -32,6 +32,15 @@ class StepModelSerializer implements JsonSerializer<StepModel> {
 		if (src.hasRows()) {
 			json.add("rows", rowsJson(src));
 		}
+
+		if (!src.getOutput().isEmpty()) {
+			JsonArray outputJson = new JsonArray();
+			for (String text : src.getOutput()) {
+				outputJson.add(new JsonPrimitive(text));
+			}
+			json.add("output", outputJson);
+		}
+
 		return json;
 	}
 

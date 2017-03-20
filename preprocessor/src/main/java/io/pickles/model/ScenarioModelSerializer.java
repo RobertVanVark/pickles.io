@@ -33,14 +33,6 @@ class ScenarioModelSerializer implements JsonSerializer<ScenarioModel> {
 			json.add("comments", commentsJson(src));
 		}
 
-		if (!src.getOutput().isEmpty()) {
-			JsonArray outputJson = new JsonArray();
-			for (String text : src.getOutput()) {
-				outputJson.add(new JsonPrimitive(text));
-			}
-			json.add("output", outputJson);
-		}
-
 		return json;
 	}
 

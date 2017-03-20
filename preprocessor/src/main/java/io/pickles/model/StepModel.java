@@ -25,6 +25,7 @@ public class StepModel {
 	private Match match;
 	private Result result;
 	private ScenarioModel scenario;
+	private List<String> output = new ArrayList<>();
 
 	public StepModel(Step step) {
 		this.step = step;
@@ -59,6 +60,14 @@ public class StepModel {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public void addOutput(String text) {
+		output.add(text);
+	}
+
+	public List<String> getOutput() {
+		return output;
 	}
 
 	public boolean hasComments() {

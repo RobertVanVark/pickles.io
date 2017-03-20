@@ -31,12 +31,6 @@ class ScenarioModelDeserializer implements JsonDeserializer<ScenarioModel> {
 		Scenario scenario = new Scenario(comments, tags, keyword, name, description, line, id);
 		ScenarioModel scenarioModel = new ScenarioModel(scenario);
 
-		if (scenarioJson.getAsJsonArray("output") != null) {
-			for (JsonElement text : scenarioJson.getAsJsonArray("output")) {
-				scenarioModel.addOutput(text.getAsString());
-			}
-		}
-
 		return scenarioModel;
 	}
 

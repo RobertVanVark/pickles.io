@@ -50,7 +50,7 @@ public class ReportingPlugin extends CorePlugin {
 
 	@Override
 	public void write(String text) {
-		lastFeature().getFirstUnfinishedScenario().addOutput(text);
+		lastFeature().getFirstUnfinishedScenario().getLastStep().addOutput(text);
 		isDryRun = false;
 	}
 

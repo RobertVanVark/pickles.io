@@ -39,6 +39,12 @@ class StepModelDeserializer implements JsonDeserializer<StepModel> {
 			stepModel.setMatch(constructMatch(stepJson));
 		}
 
+		if (stepJson.getAsJsonArray("output") != null) {
+			for (JsonElement text : stepJson.getAsJsonArray("output")) {
+				stepModel.addOutput(text.getAsString());
+			}
+		}
+
 		return stepModel;
 	}
 
@@ -58,7 +64,7 @@ class StepModelDeserializer implements JsonDeserializer<StepModel> {
 		List<DataTableRow> rows = new ArrayList<>();
 		if (stepJson.has("rows")) {
 			for (JsonElement element : stepJson.get("rows").getAsJsonArray()) {
-				List<String> cells = new ArrayList<String>();
+				List<String> cells = new ArrayList<>();
 				for (JsonElement cell : element.getAsJsonObject().get("cells").getAsJsonArray()) {
 					cells.add(cell.getAsString());
 				}
@@ -78,8 +84,11 @@ class StepModelDeserializer implements JsonDeserializer<StepModel> {
 		JsonObject resultJson = stepJson.getAsJsonObject("result");
 		String status = resultJson.get("status").getAsString();
 		long duration = resultJson.get("duration").getAsLong();
-		String errorMessage = resultJson.get("error_message").getAsString();
-		return new Result(status, duration, errorMessage);
+		if (resultJson.get("error_message") != null) {
+			String errorMessage = resultJson.get("error_message").getAsString();
+			return new Result(status, duration, errorMessage);
+		}
+		return new Result(status, duration, null);
 	}
 
 	private boolean hasMatch(JsonObject stepJson) {

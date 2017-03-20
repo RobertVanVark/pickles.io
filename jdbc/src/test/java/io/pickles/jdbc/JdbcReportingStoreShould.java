@@ -2,7 +2,6 @@ package io.pickles.jdbc;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +16,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
@@ -142,6 +143,7 @@ public class JdbcReportingStoreShould {
 		List<Comment> comments = Arrays.asList(new Comment("comment", 3));
 		feature.setFeature(new Feature(comments, tags, "Feature", "cucumber feature", "a very nice feature", 4,
 				"cucumber-feature"));
+		feature.setUri("test uri");
 		feature.setStartedAt(DateTime.now());
 		feature.setTestRun(new TestRun(1, "", "", DateTime.now(), null));
 		return feature;

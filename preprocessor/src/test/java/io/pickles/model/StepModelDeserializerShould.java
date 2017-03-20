@@ -3,13 +3,15 @@ package io.pickles.model;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.iterableWithSize;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
@@ -78,4 +80,16 @@ public class StepModelDeserializerShould {
 		assertThat(model.getResult().getErrorMessage(), equalTo(stepModel.getResult().getErrorMessage()));
 	}
 
+	@Test
+	public void constructOptionalOutputFromJson() {
+		StepModel stepModel = StepModelShould.modelWithName("step");
+		stepModel.addOutput("sample output text");
+		stepModel.addOutput("text");
+		String json = stepModel.toJsonObject().toString();
+
+		StepModel model = StepModel.fromJson(json);
+		assertThat(model.getOutput(), iterableWithSize(2));
+		assertThat(model.getOutput().get(0), equalTo("sample output text"));
+		assertThat(model.getOutput().get(1), equalTo("text"));
+	}
 }

@@ -32,14 +32,14 @@
 			<column name="TEST_RUN_ID">999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
-			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
+			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}],"uri":"test uri"}</column>
 		</insert>
 		<insert tableName="PICKLES_FEATURE">
 			<column name="ID">999</column>
 			<column name="TEST_RUN_ID">999</column>
 			<column name="STARTED_AT" valueDate="2017-03-09T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-03-09T08:10:00" />
-			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
+			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}],"uri":"test uri"}</column>
 		</insert>
 
 		<insert tableName="PICKLES_SCENARIO">
@@ -75,7 +75,7 @@
 			<column name="TEST_RUN_ID">888</column>
 			<column name="STARTED_AT" valueDate="2017-03-10T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-03-10T08:10:00" />
-			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}]}</column>
+			<column name="JSON">{"line":-1,"elements":[],"name":"1st Unit test feature","description":"a description","keyword":"Feature","id":"1st Unit test feature","tags":[{"name":"@tag1","line":4},{"name":"@tag2","line":5}],"uri":"test uri"}</column>
 		</insert>
 
 		<insert tableName="PICKLES_TEST_RUN">

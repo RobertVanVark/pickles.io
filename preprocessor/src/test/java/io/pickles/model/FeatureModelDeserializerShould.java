@@ -3,7 +3,6 @@ package io.pickles.model;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,12 +10,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertThat;
+
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
-import io.pickles.model.FeatureModel;
-import io.pickles.model.ScenarioModel;
 
 public class FeatureModelDeserializerShould {
 
@@ -26,6 +25,7 @@ public class FeatureModelDeserializerShould {
 				"feature description", 14, "a-fancy-id");
 		FeatureModel featureModel = new FeatureModel();
 		featureModel.setFeature(feature);
+		featureModel.setUri("test uri");
 		String json = featureModel.toJsonObject().toString();
 
 		FeatureModel model = FeatureModel.fromJson(json);

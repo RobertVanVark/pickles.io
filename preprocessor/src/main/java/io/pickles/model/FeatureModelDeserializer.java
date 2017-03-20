@@ -32,6 +32,9 @@ class FeatureModelDeserializer implements JsonDeserializer<FeatureModel> {
 		Feature feature = new Feature(comments, tags, keyword, name, description, line, id);
 		model.setFeature(feature);
 
+		String uri = featureJson.get("uri").getAsString();
+		model.setUri(uri);
+
 		return model;
 	}
 
