@@ -101,7 +101,7 @@ public class ReportingPlugin extends CorePlugin {
 			updateTestRun();
 		} else {
 			if (testRun == null) {
-				testRun = new TestRun("not used", "not used", DateTime.now(), DateTime.now());
+				testRun = new TestRun("blank", "intentionally left blank", DateTime.now(), DateTime.now());
 			}
 			if (!isDryRun) {
 				store.create(testRun);
