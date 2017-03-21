@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 
 import org.joda.time.DateTime;
 
+import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Scenario;
 import io.pickles.model.FeatureModel;
 import io.pickles.model.ScenarioModel;
 import io.pickles.model.StepModel;
@@ -27,13 +29,13 @@ public class JdbcReportStore implements ReportStore {
 		this.dataSource = dataSource;
 	}
 
-	Connection getConnection() throws SQLException {
+	Connection getConnection() {
 		try {
 			if (connection == null || connection.isClosed()) {
 				connection = dataSource.getConnection();
 			}
 		} catch (SQLException e) {
-			throw new ReportingStoreException("Unable to get a connection for ReportStore", e);
+			throw new ReportStoreException("Unable to get a connection for ReportStore", e);
 		}
 		return connection;
 	}
@@ -47,11 +49,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setString(1, name);
 			results = testRunsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Test Run for name=" + name, ex);
+			throw new ReportStoreException("Could not retrieve Test Run for name=" + name, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single Test Run found for name=" + name);
+			throw new ReportStoreException("No single Test Run found for name=" + name);
 		}
 		return results.get(0);
 	}
@@ -65,11 +67,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setInt(1, key);
 			results = testRunsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Test Run for id=" + key, ex);
+			throw new ReportStoreException("Could not retrieve Test Run for id=" + key, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single Test Run found for id=" + key);
+			throw new ReportStoreException("No single Test Run found for id=" + key);
 		}
 		return results.get(0);
 	}
@@ -84,7 +86,7 @@ public class JdbcReportStore implements ReportStore {
 			statement.setTimestamp(2, new Timestamp(until.getMillis()));
 			results = testRunsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Test Runs from " + from + " until " + until, ex);
+			throw new ReportStoreException("Could not retrieve Test Runs from " + from + " until " + until, ex);
 		}
 
 		return results;
@@ -113,11 +115,11 @@ public class JdbcReportStore implements ReportStore {
 			results = templatesFrom(statement.executeQuery());
 
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not read feature template for hash key =" + hashKey, ex);
+			throw new ReportStoreException("Could not read feature template for hash key =" + hashKey, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single Feature template found for hash key =" + hashKey);
+			throw new ReportStoreException("No single Feature template found for hash key =" + hashKey);
 		}
 
 		return results.get(0);
@@ -142,11 +144,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setInt(1, id);
 			results = featuresFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Feature for id=" + id, ex);
+			throw new ReportStoreException("Could not retrieve Feature for id=" + id, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single Feature found for id =" + id);
+			throw new ReportStoreException("No single Feature found for id =" + id);
 		}
 		FeatureModel feature = results.get(0);
 		readAllScenariosFor(feature);
@@ -161,9 +163,13 @@ public class JdbcReportStore implements ReportStore {
 			DateTime finishedAt = new DateTime(resultSet.getTimestamp(4));
 			String json = resultSet.getString(5);
 			if (json == null || json.isEmpty()) {
-				throw new ReportingStoreException("Feature without json");
+				throw new ReportStoreException("Feature without json");
 			}
-			FeatureModel model = FeatureModel.fromJson(json);
+			FeatureModel tmp = FeatureModel.fromJson(json);
+			Feature feature = new Feature(tmp.getComments(), tmp.getTags(), tmp.getKeyword(), tmp.getName(),
+					tmp.getDescription(), tmp.getLine(), tmp.getFeatureId() + "-" + id);
+			FeatureModel model = new FeatureModel();
+			model.setFeature(feature);
 			model.setId(id);
 			model.setStartedAt(startedAt);
 			model.setFinishedAt(finishedAt);
@@ -186,7 +192,7 @@ public class JdbcReportStore implements ReportStore {
 					results.add(feature);
 				}
 			} catch (SQLException ex) {
-				throw new ReportingStoreException("Could not retrieve Feature for TestRuns", ex);
+				throw new ReportStoreException("Could not retrieve Feature for TestRuns", ex);
 			}
 
 		}
@@ -202,11 +208,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setInt(1, id);
 			results = scenariosFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve scenario for id=" + id, ex);
+			throw new ReportStoreException("Could not retrieve scenario for id=" + id, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single scenario found for id =" + id);
+			throw new ReportStoreException("No single scenario found for id =" + id);
 		}
 		ScenarioModel scenario = results.get(0);
 		readAllStepsFor(scenario);
@@ -222,7 +228,7 @@ public class JdbcReportStore implements ReportStore {
 			statement.setString(1, dvId);
 			ids = idsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve scenario for trigggering dv id=" + dvId, ex);
+			throw new ReportStoreException("Could not retrieve scenario for trigggering dv id=" + dvId, ex);
 		}
 		if (ids.isEmpty()) {
 			return null;
@@ -241,9 +247,12 @@ public class JdbcReportStore implements ReportStore {
 			String nextDvId = resultSet.getString(6);
 			String json = resultSet.getString(7);
 			if (json == null || json.isEmpty()) {
-				throw new ReportingStoreException("Scenario without json");
+				throw new ReportStoreException("Scenario without json");
 			}
-			ScenarioModel model = ScenarioModel.fromJson(json);
+			ScenarioModel tmp = ScenarioModel.fromJson(json);
+			Scenario scenario = new Scenario(tmp.getComments(), tmp.getTags(), tmp.getKeyword(), tmp.getName(),
+					tmp.getDescription(), tmp.getLine(), tmp.getScenarioId() + "-" + id);
+			ScenarioModel model = new ScenarioModel(scenario);
 			model.setId(id);
 			model.setStartedAt(startedAt);
 			model.setFinishedAt(finishedAt);
@@ -266,7 +275,7 @@ public class JdbcReportStore implements ReportStore {
 				scenarios.add(scenario);
 			}
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve scenario for Feature " + feature.getId(), ex);
+			throw new ReportStoreException("Could not retrieve scenario for Feature " + feature.getId(), ex);
 		}
 
 		return scenarios;
@@ -280,11 +289,11 @@ public class JdbcReportStore implements ReportStore {
 			statement.setInt(1, id);
 			results = stepsFrom(statement.executeQuery());
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve step for id=" + id, ex);
+			throw new ReportStoreException("Could not retrieve step for id=" + id, ex);
 		}
 
 		if (results.size() != 1) {
-			throw new ReportingStoreException("No single step found for id =" + id);
+			throw new ReportStoreException("No single step found for id =" + id);
 		}
 		return results.get(0);
 	}
@@ -295,7 +304,7 @@ public class JdbcReportStore implements ReportStore {
 			Integer id = resultSet.getInt(1);
 			String json = resultSet.getString(3);
 			if (json == null || json.isEmpty()) {
-				throw new ReportingStoreException("Step without json");
+				throw new ReportStoreException("Step without json");
 			}
 			StepModel model = StepModel.fromJson(json);
 			model.setId(id);
@@ -317,7 +326,7 @@ public class JdbcReportStore implements ReportStore {
 				steps.add(step);
 			}
 		} catch (SQLException ex) {
-			throw new ReportingStoreException("Could not retrieve Step for Scenario : " + scenario.getId(), ex);
+			throw new ReportStoreException("Could not retrieve Step for Scenario : " + scenario.getId(), ex);
 		}
 		return steps;
 	}

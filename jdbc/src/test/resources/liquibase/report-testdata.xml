@@ -99,6 +99,15 @@
 			<column name="STARTED_AT" valueDate="2017-01-01T07:50:00" />
 			<column name="FINISHED_AT" valueDate="2017-01-01T08:10:00" />
 		</insert>
+		
+		<insert tableName="PICKLES_FEATURE_TEMPLATE">
+			<column name="ID">999999</column>
+			<column name="HASH_KEY">SomeFakeHashKey</column>
+			<column name="NAME">Feature template</column>
+			<column name="URI">Feature uri</column>
+			<column name="CONTENTS">Feature Template contents</column>
+		</insert>
+		
 
 	</changeSet>
 </databaseChangeLog>

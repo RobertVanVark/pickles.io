@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,8 +17,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static org.junit.Assert.assertThat;
 
 import io.pickles.steps.DelayedVerification;
 import liquibase.Liquibase;
@@ -42,8 +41,8 @@ public class PropertiesDelayedVerificationStoreShould {
 		Liquibase liquibase = new Liquibase("liquibase/pickles.xml", new ClassLoaderResourceAccessor(), database);
 		liquibase.update("");
 
-		liquibase = new Liquibase("io/pickles/jdbc/delayed-verification-testdata.xml",
-				new ClassLoaderResourceAccessor(), database);
+		liquibase = new Liquibase("liquibase/delayed-verification-testdata.xml", new ClassLoaderResourceAccessor(),
+				database);
 		liquibase.update("");
 	}
 
