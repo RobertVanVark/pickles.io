@@ -54,6 +54,25 @@ public class TemplateTransformer {
 		return transformScenarios();
 	}
 
+	public FeatureModel doIt(String splittedInitiationTimeExpression) {
+		for (ScenarioModel originalScenario : originalFeature.getScenarios()) {
+			for (int i = 1; i < originalScenario.getSteps().size(); i++) {
+				StepModel step = originalScenario.getStep(i - 1);
+				StepModel followUp = originalScenario.getStep(i);
+				if ("When ".equals(step.getKeyword()) && "Then ".equals(followUp.getKeyword())
+						&& !followUp.getName().startsWith("after")) {
+
+					String name = "after " + splittedInitiationTimeExpression + " " + followUp.getName();
+					Step thenAfter = new Step(followUp.getComments(), followUp.getKeyword(), name, followUp.getLine(),
+							followUp.getRows(), null);
+					followUp.setStep(thenAfter);
+					originalScenario.getSteps().set(i, followUp);
+				}
+			}
+		}
+		return doIt();
+	}
+
 	private FeatureModel transformScenarios() {
 		for (ScenarioModel originalScenario : originalFeature.getScenarios()) {
 

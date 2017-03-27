@@ -109,7 +109,6 @@ public class FeatureModelShould {
 	public void convertToGherkin() {
 		List<Tag> tags = Arrays.asList(new Tag("@tag1", 4), new Tag("@tag2", 5));
 		FeatureModel featureModel = modelWith("Cucumber feature", tags, Collections.emptyList());
-		System.out.println(featureModel.toJsonObject().toString());
 
 		String[] lines = featureModel.toGherkin().split(System.getProperty("line.separator"));
 		assertThat(lines[0], equalTo("@tag1 @tag2"));

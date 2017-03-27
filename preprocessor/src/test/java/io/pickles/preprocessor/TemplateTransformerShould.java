@@ -5,9 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.Matchers.stringContainsInOrder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +14,9 @@ import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Tag;
@@ -24,10 +26,6 @@ import io.pickles.preprocessor.stubs.SampleFeatureTemplates;
 import io.pickles.preprocessor.stubs.StubDelayedVerificationStore;
 
 public class TemplateTransformerShould {
-
-	/*
-	 * Construct new id for verification scenarios ?
-	 */
 
 	@Test
 	public void splitAtEveryThenAfter() {
@@ -185,8 +183,21 @@ public class TemplateTransformerShould {
 	public void skipVerificationScenarioWithoutDvs() {
 		FeatureModel featureTemplate = transform(SampleFeatureTemplates.twoThenAfterScenario(), 0);
 
-		assertThat(featureTemplate.getScenarios(), Matchers.hasSize(1));
-		assertThat(featureTemplate.getScenario(0).getSteps(), Matchers.hasSize(3));
+		assertThat(featureTemplate.getScenarios(), iterableWithSize(1));
+		assertThat(featureTemplate.getScenario(0).getSteps(), iterableWithSize(3));
+	}
+
+	@Test
+	public void useThenAfterInCaseOfSplittedInitiation() {
+		FeatureModel featureTemplate = transformWithSplittedInitiation(SampleFeatureTemplates.oneScenarioFeature(), 1,
+				"00:05 hr");
+		assertThat(featureTemplate.getScenarios(), iterableWithSize(2));
+		assertThat(featureTemplate.getScenario(0).getSteps(), iterableWithSize(3));
+		assertThat(featureTemplate.getScenario(1).getSteps(), iterableWithSize(2));
+
+		featureTemplate = transformWithSplittedInitiation(SampleFeatureTemplates.oneScenarioFeature(), 0, "00:05 hr");
+		assertThat(featureTemplate.getScenarios(), iterableWithSize(1));
+		assertThat(featureTemplate.getScenario(0).getSteps(), iterableWithSize(3));
 	}
 
 	private FeatureModel transform(List<String> templateLines, int nrDvs) {
@@ -195,6 +206,14 @@ public class TemplateTransformerShould {
 		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
 				new StubDelayedVerificationStore(nrDvs), false);
 		return transformer.doIt();
+	}
+
+	private FeatureModel transformWithSplittedInitiation(List<String> templateLines, int nrDvs, String timeExpression) {
+		FeatureModel featureTemplate = new TemplateParser().parse("src/test/resources/featuretemplate", templateLines);
+		featureTemplate.setTemplateHashKey("dummy feature template hash key");
+		TemplateTransformer transformer = new TemplateTransformer(featureTemplate,
+				new StubDelayedVerificationStore(nrDvs), false);
+		return transformer.doIt(timeExpression);
 	}
 
 	@Test

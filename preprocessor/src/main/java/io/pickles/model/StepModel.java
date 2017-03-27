@@ -46,6 +46,10 @@ public class StepModel {
 		return step;
 	}
 
+	public void setStep(Step step) {
+		this.step = step;
+	}
+
 	public void setScenario(ScenarioModel scenario) {
 		this.scenario = scenario;
 	}

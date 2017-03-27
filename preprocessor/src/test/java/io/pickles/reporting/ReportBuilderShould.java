@@ -2,7 +2,6 @@ package io.pickles.reporting;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +13,8 @@ import org.junit.Test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.DataTableRow;
 import gherkin.formatter.model.Match;
@@ -83,8 +84,6 @@ public class ReportBuilderShould {
 		assertThat(steps.get(2).getAsJsonObject().getAsJsonObject("result").get("duration").getAsInt(),
 				equalTo(999999));
 		assertThat(steps.get(2).getAsJsonObject().getAsJsonArray("rows"), iterableWithSize(2));
-
-		System.out.println(report);
 	}
 
 	@Test
@@ -100,8 +99,6 @@ public class ReportBuilderShould {
 
 		JsonArray steps = scenarios.get(0).getAsJsonObject().getAsJsonArray("steps");
 		assertThat(steps, iterableWithSize(6));
-
-		System.out.println(report);
 	}
 
 	@Test
@@ -117,8 +114,6 @@ public class ReportBuilderShould {
 
 		JsonArray steps = scenarios.get(0).getAsJsonObject().getAsJsonArray("steps");
 		assertThat(steps, iterableWithSize(4));
-
-		System.out.println(report);
 	}
 
 	private TestRun testrunWithoutFeatures() {

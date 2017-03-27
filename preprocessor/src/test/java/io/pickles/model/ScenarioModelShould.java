@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +14,8 @@ import org.junit.Test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import static org.junit.Assert.assertThat;
 
 import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.Scenario;
@@ -126,7 +127,6 @@ public class ScenarioModelShould {
 	public void convertRequiredFieldsIntoJsonObject() {
 		ScenarioModel scenarioModel = modelWithName("scenario name");
 		JsonObject jsonObject = scenarioModel.toJsonObject().getAsJsonObject();
-		System.out.println(jsonObject);
 		assertThat(jsonObject.get("line").getAsInt(), equalTo(scenarioModel.getLine()));
 		assertThat(jsonObject.get("name").getAsString(), equalTo(scenarioModel.getName()));
 		assertThat(jsonObject.get("keyword").getAsString(), equalTo(scenarioModel.getKeyword()));

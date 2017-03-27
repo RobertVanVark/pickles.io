@@ -33,6 +33,8 @@ public class PicklesCucumberRunner extends Runner {
 	private DelayedVerificationStore delayedVerificationStore;
 	private ReportingStore reportingStore;
 
+	private String splittedInitiationExpression;
+
 	private Cucumber cucumber;
 
 	public PicklesCucumberRunner(Class<?> clazz) {
@@ -45,6 +47,10 @@ public class PicklesCucumberRunner extends Runner {
 
 	public void setReportingStore(ReportingStore reportingStore) {
 		this.reportingStore = reportingStore;
+	}
+
+	public void setSplittedInitiation(String timeExpression) {
+		splittedInitiationExpression = timeExpression;
 	}
 
 	@Override
@@ -61,6 +67,7 @@ public class PicklesCucumberRunner extends Runner {
 		Preprocessor preprocessor = new Preprocessor();
 		preprocessor.setDelayedVerificationStore(delayedVerificationStore);
 		preprocessor.setReportingStore(reportingStore);
+		preprocessor.setSplittedInitiation(splittedInitiationExpression);
 		if (getRuntimeOptions().isDryRun()) {
 			preprocessor.setDryRun();
 		}

@@ -19,12 +19,18 @@ public class Preprocessor {
 	private DelayedVerificationStore store;
 	private ReportingStore reportingStore;
 
+	String splittedInitiationExpression;
+
 	public void setDelayedVerificationStore(DelayedVerificationStore store) {
 		this.store = store;
 	}
 
 	public void setReportingStore(ReportingStore store) {
 		reportingStore = store;
+	}
+
+	public void setSplittedInitiation(String timeExpression) {
+		splittedInitiationExpression = timeExpression;
 	}
 
 	public void setDryRun() {
@@ -34,7 +40,12 @@ public class Preprocessor {
 	List<String> process(String uri, List<String> lines) {
 		FeatureModel original = new TemplateParser().parse(uri, lines);
 		storeFeatureTemplate(original, uri, lines);
-		FeatureModel transformed = new TemplateTransformer(original, store, isDryRun).doIt();
+		FeatureModel transformed;
+		if (splittedInitiationExpression == null) {
+			transformed = new TemplateTransformer(original, store, isDryRun).doIt();
+		} else {
+			transformed = new TemplateTransformer(original, store, isDryRun).doIt(splittedInitiationExpression);
+		}
 		return transformed.toGherkinList();
 	}
 
