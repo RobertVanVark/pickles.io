@@ -4,7 +4,7 @@
 
 	<name>Pickles - Jdbc</name>
 	<artifactId>pickles-jdbc</artifactId>
-	<version>${pickles.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -19,13 +19,13 @@
 		<dependency>
 			<groupId>io.pickles</groupId>
 			<artifactId>pickles-core</artifactId>
-			<version>${pickles.version}</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.pickles</groupId>
 			<artifactId>pickles-preprocessor</artifactId>
-			<version>${pickles.version}</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -51,6 +51,13 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 			<version>3.5.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.35</version>
 			<scope>test</scope>
 		</dependency>
 
