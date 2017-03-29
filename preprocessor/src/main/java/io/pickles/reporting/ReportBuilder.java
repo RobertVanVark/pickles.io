@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,6 +21,8 @@ import io.pickles.preprocessor.TemplateParser;
 
 public class ReportBuilder {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReportBuilder.class);
+
 	private static final String FEATURE_URI_TOKEN = ", dvFeatureUri=";
 	private ReportStore reportStore;
 
@@ -27,6 +31,7 @@ public class ReportBuilder {
 	}
 
 	public JsonElement generate(DateTime from, DateTime until) {
+		LOGGER.debug("Generating report from " + from + " to " + until);
 		List<TestRun> testRuns = reportStore.readTestRuns(from, until);
 		return generate(testRuns);
 	}
@@ -44,6 +49,7 @@ public class ReportBuilder {
 		Map<String, FeatureModel> results = new HashMap<>();
 		List<FeatureModel> features = reportStore.readAllFeaturesFor(testRuns);
 		for (FeatureModel feature : features) {
+			LOGGER.debug(feature.getName());
 			feature.keepInitiatingScenariosOnly();
 			if (!results.containsKey(feature.getName())) {
 				results.put(feature.getName(), feature);
@@ -91,11 +97,13 @@ public class ReportBuilder {
 
 			scenario.getSteps().remove(scenario.getSteps().size() - 1);
 			ScenarioModel match = getMatchingScenario(feature, scenario);
-			for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
-				StepModel matchStep = match.getStep(i);
-				StepModel newStep = new StepModel(matchStep.getStep());
-				newStep.setResult(new Result("pending", null, null));
-				scenario.addStep(newStep);
+			if (match != null) {
+				for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
+					StepModel matchStep = match.getStep(i);
+					StepModel newStep = new StepModel(matchStep.getStep());
+					newStep.setResult(new Result("pending", null, null));
+					scenario.addStep(newStep);
+				}
 			}
 		}
 	}

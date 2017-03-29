@@ -173,6 +173,7 @@ public class JdbcReportStore implements ReportStore {
 			model.setId(id);
 			model.setStartedAt(startedAt);
 			model.setFinishedAt(finishedAt);
+			model.setUri(tmp.getUri());
 			results.add(model);
 		}
 		return results;
@@ -180,7 +181,7 @@ public class JdbcReportStore implements ReportStore {
 
 	@Override
 	public List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns) {
-		List<FeatureModel> results = new ArrayList<FeatureModel>();
+		List<FeatureModel> results = new ArrayList<>();
 		for (TestRun run : testRuns) {
 
 			try (PreparedStatement statement = getConnection()

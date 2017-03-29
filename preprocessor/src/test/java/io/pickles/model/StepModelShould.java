@@ -87,7 +87,6 @@ public class StepModelShould {
 	public void convertRequiredFieldsIntoJsonObject() {
 		StepModel stepModel = modelWith("Given", "a step name", Collections.emptyList(), Collections.emptyList());
 		JsonObject jsonObject = stepModel.toJsonObject().getAsJsonObject();
-		System.out.println(jsonObject);
 		assertThat(jsonObject.get("line").getAsInt(), equalTo(stepModel.getLine()));
 		assertThat(jsonObject.get("name").getAsString(), equalTo(stepModel.getName()));
 		assertThat(jsonObject.get("keyword").getAsString(), equalTo(stepModel.getKeyword()));
