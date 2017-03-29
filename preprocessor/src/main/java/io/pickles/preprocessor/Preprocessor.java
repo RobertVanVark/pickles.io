@@ -9,17 +9,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.pickles.model.FeatureModel;
 import io.pickles.reporting.ReportingStore;
 import io.pickles.steps.DelayedVerificationStore;
 
 public class Preprocessor {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Preprocessor.class);
+
 	private boolean isDryRun = false;
 	private DelayedVerificationStore store;
 	private ReportingStore reportingStore;
 
-	String splittedInitiationExpression;
+	String splittedInitiationExpression = null;
 
 	public void setDelayedVerificationStore(DelayedVerificationStore store) {
 		this.store = store;
@@ -42,8 +47,10 @@ public class Preprocessor {
 		storeFeatureTemplate(original, uri, lines);
 		FeatureModel transformed;
 		if (splittedInitiationExpression == null) {
+			LOGGER.info("Preprocessing featuretemplates with direct verification");
 			transformed = new TemplateTransformer(original, store, isDryRun).doIt();
 		} else {
+			LOGGER.info("Preprocessing featuretemplates with initiation separate from verification");
 			transformed = new TemplateTransformer(original, store, isDryRun).doIt(splittedInitiationExpression);
 		}
 		return transformed.toGherkinList();
