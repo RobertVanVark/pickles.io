@@ -116,6 +116,11 @@ public class StepModel {
 		return step.getName();
 	}
 
+	public void setName(String name) {
+		Step tmp = new Step(getComments(), getKeyword(), name, getLine(), getRows(), null);
+		setStep(tmp);
+	}
+
 	public List<Argument> getOutlineArgs() {
 		return step.getOutlineArgs();
 	}

@@ -35,6 +35,12 @@ public class Preprocessor {
 	}
 
 	public void setSplittedInitiation(String timeExpression) {
+		if (timeExpression == null) {
+			LOGGER.info("Preprocessing featuretemplates with direct verification");
+		} else {
+			LOGGER.info("Preprocessing featuretemplates with verifying " + timeExpression + " after initiation");
+		}
+
 		splittedInitiationExpression = timeExpression;
 	}
 

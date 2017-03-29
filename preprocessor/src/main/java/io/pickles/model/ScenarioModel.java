@@ -84,6 +84,12 @@ public class ScenarioModel {
 		step.setScenario(this);
 	}
 
+	public void removeLastStep() {
+		if (stepModels.size() > 0) {
+			stepModels.remove(stepModels.size() - 1);
+		}
+	}
+
 	public List<StepModel> getSteps() {
 		return stepModels;
 	}

@@ -98,7 +98,7 @@ public class ReportBuilder {
 			FeatureModel feature = new TemplateParser().parseGherkin(hashKey, templateString);
 
 			StepModel lastExecuted = scenario.getLastStep();
-			scenario.getSteps().remove(scenario.getSteps().size() - 1);
+			scenario.removeLastStep();
 			ScenarioModel match = getMatchingScenario(feature, scenario);
 			if (match != null) {
 				for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
@@ -154,6 +154,9 @@ public class ReportBuilder {
 
 	private void combine(ScenarioModel base, ScenarioModel addition) {
 		List<StepModel> steps = addition.getSteps();
+		String originalName = base.getLastStep().getName();
+		int pos = originalName.lastIndexOf("(dvChecksum=");
+		base.getLastStep().setName(originalName.substring(0, pos));
 		base.getLastStep().setMatch(steps.get(1).getMatch());
 		base.getLastStep().setResult(steps.get(1).getResult());
 		base.getLastStep().setDatatable(steps.get(1).getDatatable());
