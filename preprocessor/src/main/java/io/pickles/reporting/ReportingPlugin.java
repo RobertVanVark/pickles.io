@@ -123,7 +123,7 @@ public class ReportingPlugin extends CorePlugin {
 
 	@Override
 	protected void log(String msg) {
-		LOGGER.debug(msg);
+		LOGGER.trace(msg);
 	}
 
 }

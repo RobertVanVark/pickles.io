@@ -28,6 +28,6 @@ public class JsonPlugin extends CorePlugin {
 
 	@Override
 	protected void log(String msg) {
-		LOGGER.debug(msg);
+		LOGGER.trace(msg);
 	}
 }

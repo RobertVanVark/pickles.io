@@ -70,13 +70,15 @@ public class PicklesCucumberRunner extends Runner {
 		preprocessor.setSplittedInitiation(splittedInitiationExpression);
 		if (getRuntimeOptions().isDryRun()) {
 			preprocessor.setDryRun();
+			LOGGER.info("Preprocessing in dry-run mode");
 		}
 
 		for (File featureTemplate : getFeatureTemplateFiles()) {
+			LOGGER.info("Preprocessing " + featureTemplate.getName());
 			preprocessor.process(featureTemplate);
 		}
 
-		LOGGER.info("Done in " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds.");
+		LOGGER.info("Done in " + secondsSince(startTime) + " seconds.");
 
 		try {
 			cucumber = new Cucumber(clazz);
@@ -85,6 +87,10 @@ public class PicklesCucumberRunner extends Runner {
 		}
 
 		cucumber.run(notifier);
+	}
+
+	private long secondsSince(long startTime) {
+		return (System.currentTimeMillis() - startTime) / 1000;
 	}
 
 	private List<File> getFeatureTemplateFiles() {

@@ -55,7 +55,8 @@ public abstract class CorePlugin extends TemplateFormatter implements Reporter {
 		// intentionally left blank
 	}
 
+	@Override
 	protected void log(String msg) {
-		LOGGER.debug(msg);
+		LOGGER.trace(msg);
 	}
 }

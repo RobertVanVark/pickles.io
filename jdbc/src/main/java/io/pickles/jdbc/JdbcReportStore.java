@@ -11,6 +11,8 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gherkin.formatter.model.Feature;
 import gherkin.formatter.model.Scenario;
@@ -21,6 +23,8 @@ import io.pickles.model.TestRun;
 import io.pickles.reporting.ReportStore;
 
 public class JdbcReportStore implements ReportStore {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JdbcReportStore.class);
 
 	private DataSource dataSource;
 	private Connection connection;
@@ -183,12 +187,14 @@ public class JdbcReportStore implements ReportStore {
 	public List<FeatureModel> readAllFeaturesFor(List<TestRun> testRuns) {
 		List<FeatureModel> results = new ArrayList<>();
 		for (TestRun run : testRuns) {
+			LOGGER.info("Reading features for TestRun: " + run.getName() + " started at " + run.getStartedAt());
 
 			try (PreparedStatement statement = getConnection()
 					.prepareStatement("SELECT ID FROM PICKLES_FEATURE WHERE TEST_RUN_ID = ?")) {
 				statement.setInt(1, run.getId());
 				for (Integer featureId : idsFrom(statement.executeQuery())) {
 					FeatureModel feature = readFeature(featureId);
+					LOGGER.debug("Read feature: " + feature.getName());
 					feature.setTestRun(run);
 					results.add(feature);
 				}

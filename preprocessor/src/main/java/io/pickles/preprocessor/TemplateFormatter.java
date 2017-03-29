@@ -124,6 +124,6 @@ public class TemplateFormatter implements Formatter {
 	}
 
 	protected void log(String msg) {
-		LOGGER.debug(msg);
+		LOGGER.trace(msg);
 	}
 }

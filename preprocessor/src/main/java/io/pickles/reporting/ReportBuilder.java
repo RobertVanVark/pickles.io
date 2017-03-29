@@ -31,7 +31,9 @@ public class ReportBuilder {
 	}
 
 	public JsonElement generate(DateTime from, DateTime until) {
-		LOGGER.debug("Generating report from " + from + " to " + until);
+		LOGGER.info("Generating report");
+		LOGGER.info("    from " + from);
+		LOGGER.info("    until " + until);
 		List<TestRun> testRuns = reportStore.readTestRuns(from, until);
 		return generate(testRuns);
 	}
@@ -49,7 +51,7 @@ public class ReportBuilder {
 		Map<String, FeatureModel> results = new HashMap<>();
 		List<FeatureModel> features = reportStore.readAllFeaturesFor(testRuns);
 		for (FeatureModel feature : features) {
-			LOGGER.debug(feature.getName());
+			LOGGER.debug("Generating report for : " + feature.getName());
 			feature.keepInitiatingScenariosOnly();
 			if (!results.containsKey(feature.getName())) {
 				results.put(feature.getName(), feature);
@@ -95,17 +97,43 @@ public class ReportBuilder {
 			String templateString = reportStore.readTemplate(hashKey);
 			FeatureModel feature = new TemplateParser().parseGherkin(hashKey, templateString);
 
+			StepModel lastExecuted = scenario.getLastStep();
 			scenario.getSteps().remove(scenario.getSteps().size() - 1);
 			ScenarioModel match = getMatchingScenario(feature, scenario);
 			if (match != null) {
 				for (int i = scenario.getSteps().size(); i < match.getSteps().size(); i++) {
 					StepModel matchStep = match.getStep(i);
 					StepModel newStep = new StepModel(matchStep.getStep());
-					newStep.setResult(new Result("pending", null, null));
+					if (shouldHaveStatusSkipped(lastExecuted.getStatus())) {
+						newStep.setResult(new Result("skipped", null, null));
+					} else {
+						newStep.setResult(new Result("pending", null, null));
+					}
 					scenario.addStep(newStep);
 				}
+				moveOutput(lastExecuted, scenario.getLastStep());
 			}
 		}
+	}
+
+	public void moveOutput(StepModel lastExecuted, StepModel lastStep) {
+		for (String output : lastExecuted.getOutput()) {
+			lastStep.addOutput(output);
+		}
+	}
+
+	private boolean shouldHaveStatusSkipped(String lastActualStatus) {
+		if ("failed".equals(lastActualStatus)) {
+			return true;
+		}
+		if ("undefined".equals(lastActualStatus)) {
+			return true;
+		}
+		if ("skipped".equals(lastActualStatus)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String getHashKey(ScenarioModel scenario) {

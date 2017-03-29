@@ -124,6 +124,10 @@ public class StepModel {
 		return result;
 	}
 
+	public String getStatus() {
+		return result.getStatus();
+	}
+
 	public List<DataTableRow> getRows() {
 		return step.getRows();
 	}
