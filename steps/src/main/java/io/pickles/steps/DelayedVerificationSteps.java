@@ -1,6 +1,8 @@
 package io.pickles.steps;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -13,6 +15,8 @@ import io.pickles.steps.delays.DelayFactory;
  * {@link TestExecutionContext}.
  */
 public class DelayedVerificationSteps {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DelayedVerificationSteps.class);
 
 	private DelayedVerification verification;
 	private DelayedVerificationStore verificationStore;
@@ -77,8 +81,10 @@ public class DelayedVerificationSteps {
 		verificationStore.create(verification);
 
 		context.set(verification);
+		LOGGER.debug("storing delayed verification for " + stepdef + " (" + id + ")");
 
 		if (testData != null) {
+			LOGGER.debug("storing test data for " + stepdef + " (" + id + ")");
 			testData.saveFor(verification);
 		}
 	}
@@ -95,12 +101,14 @@ public class DelayedVerificationSteps {
 	 */
 	@Given("^Test Execution Context is loaded for dvId=(.+)$")
 	public void testExecutionContextIsLoadedForDvId(String dvId) {
+		LOGGER.debug("loading delayed verification " + dvId);
 		verification = verificationStore.read(dvId);
 		verification.setProcessedAt(DateTime.now());
 		verificationStore.update(verification);
 		context.set(verification);
 
 		if (testData != null) {
+			LOGGER.debug("loading test data for " + dvId);
 			testData.loadFor(verification);
 		}
 	}
