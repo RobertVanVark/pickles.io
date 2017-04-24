@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-  agent { docker 'harmpauw/maven-letsencrypt' }
+  agent { docker 'maven' }
   stages {
     stage('Build') {
       steps {
