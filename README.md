@@ -12,5 +12,7 @@ Basically, we’re storing gherkins for later use. Hence, the name Pickles !
 
 All this is implemented in such a way, that you can reuse your existing step definitions without any changes. Pickles will take care of rewriting the stepdefs with time dependencies into regular step definitions so that they can be executed by vanilla Cucumber.
 
+More information can be found on the DevOn [website](https://devon.nl/test-automation), including a detailed [whitepaper](https://devon.nl/kennis/whitepapers) on the subject (unfortunately in Dutch only at the moment).
+
 Pickles is provided as open source under the MIT license. You’re more than welcome to contribute to the project.
 
