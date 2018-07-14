@@ -4,14 +4,14 @@
 
 	<name>Pickles - Jdbc</name>
 	<artifactId>pickles-jdbc</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>io.pickles</groupId>
 		<artifactId>pickles-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<version>1.0</version>
+		<relativePath>../parent-1.0</relativePath>
 	</parent>
 
 	<dependencies>
@@ -19,13 +19,13 @@
 		<dependency>
 			<groupId>io.pickles</groupId>
 			<artifactId>pickles-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.pickles</groupId>
 			<artifactId>pickles-preprocessor</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
